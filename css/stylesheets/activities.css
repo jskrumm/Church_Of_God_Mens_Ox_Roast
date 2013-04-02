@@ -1,0 +1,30 @@
+/* line 5, ../sass/activities.scss */
+.activities .activities-overview {
+  -moz-box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.15) ;
+  -webkit-box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.15) ;
+  box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.15) ;
+  background-color: white;
+  padding: 20px;
+  border-radius: 4px;
+  margin-top: 50px;
+  text-align: left;
+}
+/* line 14, ../sass/activities.scss */
+.activities section {
+  -moz-box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.15) ;
+  -webkit-box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.15) ;
+  box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.15) ;
+  background-color: white;
+  padding: 20px;
+  border-radius: 4px;
+  margin-top: 50px;
+}
+/* line 21, ../sass/activities.scss */
+.activities section img {
+  height: 200px;
+  width: 50%;
+}
+/* line 25, ../sass/activities.scss */
+.activities section p {
+  text-align: left;
+}

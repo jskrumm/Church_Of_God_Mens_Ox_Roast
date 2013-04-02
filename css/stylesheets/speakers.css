@@ -1,0 +1,20 @@
+/* line 3, ../sass/speakers.scss */
+.speakers {
+  -moz-box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.15) ;
+  -webkit-box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.15) ;
+  box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.15) ;
+  background-color: white;
+  padding: 20px;
+  border-radius: 4px;
+  margin-top: 50px;
+}
+/* line 10, ../sass/speakers.scss */
+.speakers img {
+  float: left;
+  margin-right: 10px;
+  margin-top: 18px;
+}
+/* line 15, ../sass/speakers.scss */
+.speakers p {
+  text-align: left;
+}

@@ -1,0 +1,29 @@
+@import "core";
+
+.activities {
+
+    .activities-overview {
+        @include boxShadow(0, 0, 5px, 5px, rgba(0,0,0,0.15));
+        background-color: $or-white-01;
+        padding: 20px;
+        border-radius: 4px; 
+        margin-top: 50px;
+        text-align: left;
+    }
+    
+    section {
+        @include boxShadow(0, 0, 5px, 5px, rgba(0,0,0,0.15));
+            background-color: $or-white-01;
+            padding: 20px;
+            border-radius: 4px; 
+            margin-top: 50px;
+            
+        img {
+            height: 200px;
+            width: 50%;
+        }
+        p {
+            text-align:left;
+        }
+    }
+}

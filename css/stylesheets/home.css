@@ -1,0 +1,14 @@
+/* line 3, ../sass/home.scss */
+.about {
+  -moz-box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.15) ;
+  -webkit-box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.15) ;
+  box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.15) ;
+  background-color: white;
+  padding: 20px;
+  border-radius: 4px;
+  margin-top: 50px;
+}
+/* line 10, ../sass/home.scss */
+.about p {
+  text-align: left;
+}

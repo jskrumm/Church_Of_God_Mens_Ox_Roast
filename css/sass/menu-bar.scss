@@ -1,0 +1,29 @@
+@import "core";
+
+.menu-bar.mobile {
+    @include boxShadow(0, 0, 5px, 5px, rgba(0,0,0,0.15), inset);
+    
+    height: 5%;
+    background-color: $or-blue-02;
+    color: $or-gold-01;
+    padding: 2% 5% 0 0;
+    
+
+    span {
+        @include boxShadow(0, 0, 5px, 5px, rgba(0,0,0,0.15), inset);
+
+        float: right;
+        background-color: $or-blue-01;
+        padding: 4px 10px;
+        cursor: pointer;
+        border-radius: 2px;
+    }
+
+    @extend %_menuIcon;
+ }
+
+@media (min-width: 768px) {
+    .menu-bar.mobile { 
+        display: none;
+    }
+}
