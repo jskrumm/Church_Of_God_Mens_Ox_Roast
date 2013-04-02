@@ -47,6 +47,7 @@ header {
     h1 {
         color: $or-blue-02;
         margin-bottom: 25px;
+        line-height: 25px;
     }
 }
 img.logo {
@@ -64,8 +65,8 @@ a.register-now {
     padding: 10px;
     border-radius: 6px;
     position: absolute;
-    right: 40%;
-    top: -20px;
+    right: 45%;
+    top: -3%;
 }
 .scripture {
     color: $or-black-02;
