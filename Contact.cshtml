@@ -6,6 +6,7 @@
 @section css {
     <link href="css/stylesheets/menu-bar.css" rel="stylesheet" type="text/css" />
     <link href="css/stylesheets/nav.css" rel="stylesheet" type="text/css" />
+    <link href="css/stylesheets/contact-us.css" rel="stylesheet" type="text/css" />
 }
 
 @section js {
@@ -22,4 +23,7 @@
     </p>
 }
 
-@RenderPage("~/Contact Us/EmailForm.cshtml")
+<div class="contact-us">
+    @RenderPage("~/Contact Us/EmailForm.cshtml")
+    @RenderPage("~/Contact Us/FAQ.cshtml")
+</div>

@@ -1,0 +1,44 @@
+@import "core";
+
+.contact-us {
+      @include boxShadow(0, 0, 5px, 5px, rgba(0,0,0,0.15));
+        background-color: $or-white-01;
+        padding: 20px;
+        border-radius: 4px; 
+        margin-top: 50px;
+
+    form {
+        fieldset {
+            border:none;
+        }
+
+        input,textarea,label {
+            display: block;
+            width: 100%;
+            color: #555555;
+        }
+        
+        input,textarea {
+            border: 1px solid #CCCCCC;
+            border-radius: 4px;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+            padding: 4px 6px;
+            max-width: 100%;
+
+            &:focus {
+                border-color: rgba(82,168,236,0.8);
+                box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset,0 0 8px rgba(82,168,236,0.6);
+
+            }
+        }
+
+        input {
+            height: 20px;
+            line-height: 20px;
+        }
+
+        label {
+            text-align: left;
+        }
+    }
+}

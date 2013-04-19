@@ -16,7 +16,7 @@
              msg.Subject = subject;
              msg.Body = message;
 
-             client.EnableSsl = true;
+             client.EnableSsl = false;
              ServicePointManager.ServerCertificateValidationCallback = delegate(object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
 
              client.Send(msg);
@@ -26,9 +26,14 @@
 }
 
 <form action="" method="post">
-    <p>Please contact us</p>
-    <input type="text" name="email" maxlength="30"/>
-    <input type="text" name="subject" maxlength="30"/>
-    <textarea name="message" cols="30" rows="10"></textarea>
-    <input type="submit" value="Send" class="submit" />
+    <p>You can use the form below to contact use with any questions you may have about the Ox Roast.</p>
+    <fieldset>
+        <label for="email">Your Email Address</label>
+        <input type="email" name="email"/>
+        <label for="subject">Subject</label>
+        <input type="text" name="subject" maxlength="30"/>
+        <label for="message">Description</label>
+        <textarea name="message" cols="30" rows="10"></textarea>
+        <input type="submit" value="Send" class="submit" />
+    </fieldset> 
 </form>
