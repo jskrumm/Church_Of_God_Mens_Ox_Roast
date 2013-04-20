@@ -8,35 +8,79 @@
   border-radius: 4px;
   margin-top: 50px;
 }
-/* line 11, ../sass/contact-us.scss */
+/* line 10, ../sass/contact-us.scss */
+.contact-us form {
+  margin-left: 5%;
+  text-align: left;
+  width: 90%;
+}
+/* line 15, ../sass/contact-us.scss */
+.contact-us form p {
+  margin-left: 15px;
+}
+/* line 19, ../sass/contact-us.scss */
 .contact-us form fieldset {
   border: none;
 }
-/* line 15, ../sass/contact-us.scss */
+/* line 23, ../sass/contact-us.scss */
 .contact-us form input, .contact-us form textarea, .contact-us form label {
   display: block;
   width: 100%;
   color: #555555;
 }
-/* line 21, ../sass/contact-us.scss */
+/* line 29, ../sass/contact-us.scss */
 .contact-us form input, .contact-us form textarea {
   border: 1px solid #CCCCCC;
   border-radius: 4px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
   padding: 4px 6px;
-  max-width: 100%;
-}
-/* line 28, ../sass/contact-us.scss */
-.contact-us form input:focus, .contact-us form textarea:focus {
-  border-color: rgba(82, 168, 236, 0.8);
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(82, 168, 236, 0.6);
 }
 /* line 35, ../sass/contact-us.scss */
+.contact-us form input:focus, .contact-us form textarea:focus {
+  border-color: rgba(16, 78, 139, 0.8);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(16, 78, 139, 0.6);
+}
+/* line 42, ../sass/contact-us.scss */
 .contact-us form input {
   height: 20px;
-  line-height: 20px;
+  margin-bottom: 20px;
 }
-/* line 40, ../sass/contact-us.scss */
+/* line 46, ../sass/contact-us.scss */
+.contact-us form input.submit {
+  font-weight: bold;
+  height: 40px;
+  margin-top: 20px;
+  width: 100px;
+}
+/* line 54, ../sass/contact-us.scss */
 .contact-us form label {
+  margin-bottom: 5px;
+  margin-left: 5px;
+  font-weight: bold;
+}
+/* line 60, ../sass/contact-us.scss */
+.contact-us form textarea {
+  height: 200px;
+}
+/* line 65, ../sass/contact-us.scss */
+.contact-us .faq {
+  margin-left: 6%;
   text-align: left;
+}
+/* line 69, ../sass/contact-us.scss */
+.contact-us .faq ul {
+  list-style: none;
+  margin: 0;
+}
+/* line 73, ../sass/contact-us.scss */
+.contact-us .faq ul li {
+  padding: 10px 0;
+}
+/* line 75, ../sass/contact-us.scss */
+.contact-us .faq ul li span {
+  font-weight: bold;
+}
+/* line 79, ../sass/contact-us.scss */
+.contact-us .faq ul li p {
+  margin: 0 0 0 10px;
 }

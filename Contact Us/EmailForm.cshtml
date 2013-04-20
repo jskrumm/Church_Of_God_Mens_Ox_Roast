@@ -26,14 +26,17 @@
 }
 
 <form action="" method="post">
-    <p>You can use the form below to contact use with any questions you may have about the Ox Roast.</p>
+    <p>
+        You can use the form below to contact us with any questions you may have about the Ox Roast.
+    </p>
     <fieldset>
-        <label for="email">Your Email Address</label>
-        <input type="email" name="email"/>
-        <label for="subject">Subject</label>
-        <input type="text" name="subject" maxlength="30"/>
-        <label for="message">Description</label>
-        <textarea name="message" cols="30" rows="10"></textarea>
+        <label for="name">Your Name</label>
+        <input id="name" type="text" name="name" placeholder="Please enter your name" required/>
+        <label for="email">Email Address</label>
+        <input id="email" type="email" name="email" placeholder="Please enter your email address" required/>
+        <label for="message">Question ?</label>
+        <textarea id="message" name="message"
+        placeholder="Please tells what you would like to know about the Ox Roast" spellcheck required></textarea>
         <input type="submit" value="Send" class="submit" />
     </fieldset> 
 </form>

@@ -44,7 +44,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, nav, sectio
     height: 100%;
 }
 header {
-    h1 {
+    hgroup {
         color: $or-blue-02;
         margin-bottom: 25px;
         line-height: 25px;
@@ -65,8 +65,14 @@ a.register-now {
     padding: 10px;
     border-radius: 6px;
     position: absolute;
-    right: 45%;
-    top: -3%;
+    right: 37%;
+    top: -2%;
+    width: 100px;
+}
+@media (min-width: 768px) {
+    a.register-now {
+        display:none;
+    }
 }
 .scripture {
     color: $or-black-02;

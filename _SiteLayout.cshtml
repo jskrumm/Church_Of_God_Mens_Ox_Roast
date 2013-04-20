@@ -7,7 +7,7 @@
         <title>OMM OX Roast</title>
         <link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
         <link href="css/stylesheets/layout.css" rel="stylesheet" type="text/css" />
-        @RenderSection("css", required: false)
+        @RenderSection("css", required: true)
       
         <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
     </head>
@@ -17,8 +17,13 @@
             <div class="header-content-wrap">
             	 @RenderPage("~/_Header.cshtml")
                 <div class="body">
+                     <a href="" class="register-now">Register Now!</a>
                 	@RenderBody()
-                	@RenderSection("scripture", required: false)
+                	<p class="scripture">
+                        "...for he hath said, I will never leave thee, nor forsake thee.<br/> 
+                        So that we may boldly say, The Lord is my helper, and I will not fear what man shall do unto me."<br/> 
+                        ~Hebrews 13:5b-6
+                    </p>
                 </div>
             </div>
         </div>
@@ -27,6 +32,6 @@
         <script src="bootstrap/js/bootstrap.min.js"></script>
         <script src="js/base/knockout-2.1.0.js"></script>
         
-        @RenderSection("js", required: false)
+        @RenderSection("js", required: true)
     </body>
 </html>
