@@ -1,0 +1,73 @@
+/* line 3, ../sass/registration.scss */
+.registration {
+  -moz-box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.15) ;
+  -webkit-box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.15) ;
+  box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.15) ;
+  background-color: white;
+  padding: 20px;
+  border-radius: 4px;
+  margin-top: 50px;
+}
+/* line 10, ../sass/registration.scss */
+.registration form {
+  margin-left: 5%;
+  text-align: left;
+  width: 90%;
+}
+/* line 15, ../sass/registration.scss */
+.registration form p {
+  margin-left: 15px;
+}
+/* line 19, ../sass/registration.scss */
+.registration form fieldset {
+  border: none;
+}
+/* line 23, ../sass/registration.scss */
+.registration form input, .registration form textarea, .registration form label {
+  display: block;
+  width: 100%;
+  color: #555555;
+}
+/* line 29, ../sass/registration.scss */
+.registration form input, .registration form textarea {
+  border: 1px solid #CCCCCC;
+  border-radius: 4px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+  padding: 4px 6px;
+}
+/* line 35, ../sass/registration.scss */
+.registration form input:focus, .registration form textarea:focus {
+  border-color: rgba(16, 78, 139, 0.8);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(16, 78, 139, 0.6);
+}
+/* line 42, ../sass/registration.scss */
+.registration form input {
+  height: 20px;
+  margin-bottom: 20px;
+}
+/* line 46, ../sass/registration.scss */
+.registration form input.submit {
+  font-weight: bold;
+  height: 40px;
+  margin-top: 20px;
+  width: 100px;
+}
+/* line 54, ../sass/registration.scss */
+.registration form label {
+  margin-bottom: 5px;
+  margin-left: 5px;
+  font-weight: bold;
+}
+/* line 60, ../sass/registration.scss */
+.registration form textarea {
+  height: 200px;
+}
+/* line 65, ../sass/registration.scss */
+.registration form div.csz-fields input, .registration form div.csz-fields label {
+  display: inline;
+  width: auto;
+}
+/* line 70, ../sass/registration.scss */
+.registration form div.csz-fields input, .registration form div.csz-fields select {
+  width: 25%;
+}

@@ -6,8 +6,13 @@
 @section css {
     <link href="css/stylesheets/menu-bar.css" rel="stylesheet" type="text/css" />
     <link href="css/stylesheets/nav.css" rel="stylesheet" type="text/css" />
+    <link href="css/stylesheets/registration.css" rel="stylesheet" type="text/css" />
 }
 
 @section js {
     <script src="js/menubar.js"></script>
 }
+
+<div class="registration">
+    @RenderPage("~/Register/RegistrationForm.cshtml")
+</div>

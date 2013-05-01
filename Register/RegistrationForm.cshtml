@@ -1,0 +1,161 @@
+﻿@using System;
+@using System.IO;
+@using System.Text;
+@using System.Net;
+@using System.Web;
+@using System.Collections.Specialized;
+@{
+    if (IsPost) {
+        //Post back to either sandbox or live
+        string strSandboxPayInfoUrl = App.SandboxPayInfoUrl;
+        string strSandboxPayAuthUrl = App.SandboxPayAuthUrl;
+        
+        //string strLive = "https://www.paypal.com/cgi-bin/webscr";
+    
+        NameValueCollection postedForm = new NameValueCollection(Request.Form); //Create new name/value collection from form data
+
+        //Remove any unnessary fields before sending data to PayPal
+        postedForm.Remove("num-att-two-day");
+        postedForm.Remove("num-att-two-day-price");
+        postedForm.Remove("num-att-one-day");
+        postedForm.Remove("num-att-one-day-price");
+        postedForm.Remove("num-att-underage-day");
+        postedForm.Remove("num-att-underage-day-price");
+        postedForm.Remove("num-golfing");
+        postedForm.Remove("num-golfing-price");
+        postedForm.Remove("num-paintballing");
+        postedForm.Remove("num-paintballing-price");
+        postedForm.Remove("num-fishing");
+        postedForm.Remove("num-fishing-price");
+       
+        //Add required data sensitive fields before sending data to PayPal
+        postedForm.Set("USER", App.PayPalUser);
+        postedForm.Set("PWD", App.PayPalPassword);
+        postedForm.Set("SIGNATURE", App.PayPalSignature);
+
+        postedForm.Set("METHOD", App.ExpressCheckoutMethod);
+        postedForm.Set("VERSION", App.ExpressCheckoutVersion);
+        postedForm.Set("PAYMENTREQUEST_0_PAYMENTACTION", App.ExpressCheckoutPaymentAction);
+        postedForm.Set("PAYMENTREQUEST_0_AMT", "19.95");
+        postedForm.Set("PAYMENTREQUEST_0_CURRENCYCODE", App.ExpressCheckoutCurrencyCode);
+        postedForm.Set("RETURNURL", App.ExpressCheckoutReturnUrl);
+        postedForm.Set("CANCELURL", App.ExpressCheckoutCancelUrl);
+
+        //Build query string from name/value collection using StringBuilder
+        var sb = new StringBuilder();
+        var postedFormItems = postedForm.AllKeys.SelectMany(postedForm.GetValues, (k, v) => new {key = k, value = v});
+
+        foreach(var item in postedFormItems) {
+            sb.AppendFormat("{0}={1}&", item.key, HttpUtility.UrlEncode(item.value.ToString()));
+        }
+
+        sb.Remove(sb.Length - 1, 1); // remove the last '&'
+
+        byte[] data = Encoding.UTF8.GetBytes(sb.ToString()); //Convert query string paramenters to byte array
+
+        //Create a new POST request
+        HttpWebRequest req = (HttpWebRequest)WebRequest.Create(strSandboxPayInfoUrl);
+        req.Method = "POST";
+        req.ContentType = "application/x-www-form-urlencoded";
+        req.ContentLength = data.Length;
+        
+        //Create a new request stream
+        Stream newStream = req.GetRequestStream();
+        newStream.Write(data, 0, data.Length);
+        newStream.Close();
+
+        
+        WebResponse response = req.GetResponse(); // Get the original response.
+
+        string status = ((HttpWebResponse)response).StatusDescription;
+
+        newStream = response.GetResponseStream(); // Get the stream containing all content returned by the requested server.
+        
+        StreamReader reader = new StreamReader(newStream); // Open the stream using a StreamReader for easy access.
+
+        string responseFromServer = reader.ReadToEnd(); // Read the content fully up to the end.
+
+        // Clean up the streams.
+        reader.Close();
+        newStream.Close();
+        response.Close();
+
+        @responseFromServer
+
+        NameValueCollection responseObj = HttpUtility.ParseQueryString(responseFromServer); //Parse server response
+
+        App.ExpressCheckoutToken = responseObj.Get("TOKEN");
+
+        if (responseObj.Get("ACK") == "Success") {
+            string token = App.ExpressCheckoutToken;
+            string expressCheckoutCmd = "_express-checkout";
+            Response.Redirect(strSandboxPayAuthUrl + "?cmd=" + expressCheckoutCmd + "&token=" + token);
+        } else {
+            <text>The server could not process your request. If you see this message please contact us at info@ohiomensoxroast.org so that we can fix this issue quickly.</text>
+        }
+    }
+    //http://www.netomatix.com/httppostdata.aspx
+    //http://codesamplez.com/programming/http-request-c-sharp
+}
+
+<form action="" method="post">
+    <fieldset id="generalInfo">
+        <label for="name">Your Name</label>
+        <input id="name" type="text" name="name" placeholder="Please enter your name" required/>
+        <label for="address">Address</label>
+        <input id="address" type="text" name="address" placeholder="Please enter your address" required/>
+        <div class="csz-fields">
+            <label for="city">City</label>
+            <input id="city" type="text" name="city" placeholder="Please enter your city" required/>
+            <label for="state">State</label>
+            <select id="state">
+                <option value="OH">Ohio</option>
+            </select>
+            <label for="zip">Zip</label>
+            <input id="zip" type="text" name="zip" placeholder="Please enter your zip code" required/>
+        </div>
+        <label for="phone">Phone Number</label>
+        <input id="phone" type="text" name="phone" placeholder="Please enter your phone number"/>
+        <label for="church-atteding">Church Attending</label>
+        <input id="church-atteding" type="text" name="church-atteding" placeholder="Please enter the name of the church you attend"/>
+    </fieldset>
+    <fieldset id="eventInfo">
+        <div>
+            <label for="num-att-two-day">Number attending Friday/Saturday</label>
+            <input id="num-att-two-day" type="number" name="num-att-two-day" class="qty"/>
+            <input id="num-att-two-day-price" type="hidden" name="num-att-two-day-price" value="65"/>
+            <span>X $65 =</span><output name="x" for="num-att-two-day num-att-two-day-price"></output>
+        </div>
+        <div>
+            <label for="num-att-one-day">Number attending one day only</label>
+            <input id="num-att-one-day" type="number" name="num-att-one-day" class="qty"/>
+            <input id="num-att-one-day-price" type="hidden" name="num-att-one-day-price" value="35"/>
+            <span>X $35 =</span><output name="x" for="num-att-one-day num-att-one-day-price"></output>
+        </div>
+        <div>
+            <label for="num-att-underage-day">Number attending 12yrs old or younger</label>
+            <input id="num-att-underage-day" type="number" name="num-att-underage-day" class="qty"/>
+            <input id="num-att-underage-day-price" type="hidden" name="num-att-underage-day-price" value="25"/>
+            <span>X $25 =</span><output name="x" for="num-att-underage-day num-att-underage-day-price"></output>
+        </div>
+        <div>
+            <label for="num-golfing">Number playing golf</label>
+            <input id="num-golfing" type="number" name="num-golfing" class="qty"/>
+            <input id="num-golfing-price" type="hidden" name="num-golfing-price" value="45"/>
+            <span>X $45 =</span><output name="x" for="num-golfing num-golfing-price"></output>
+        </div>
+        <div>
+            <label for="num-paintballing">Number paintballing</label>
+            <input id="num-paintballing" type="number" name="num-paintballing" class="qty"/>
+            <input id="num-paintballing-price" type="hidden" name="num-paintballing-price" value="5"/>
+            <span>X $5 =</span><output name="x" for="num-paintballing num-paintballing-price"></output>
+        </div>
+        <div>
+            <label for="num-fishing">Number fishing</label>
+            <input id="num-fishing" type="number" name="num-fishing" class="qty"/>
+            <input id="num-fishing-price" type="hidden" name="num-fishing-price" value="25"/>
+            <span>X $25 =</span><output name="x" for="num-fishing num-fishing-price"></output>
+        </div>
+    </fieldset>
+    <input type=submit class="submit" value="Submit"/>
+</form>

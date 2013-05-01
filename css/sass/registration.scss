@@ -1,0 +1,76 @@
+@import "core";
+
+.registration {
+      @include boxShadow(0, 0, 5px, 5px, rgba(0,0,0,0.15));
+        background-color: $or-white-01;
+        padding: 20px;
+        border-radius: 4px; 
+        margin-top: 50px;
+
+    form {
+        margin-left: 5%;
+        text-align: left;
+        width: 90%;
+
+        p {
+            margin-left: 15px;
+        }
+
+        fieldset {
+            border:none;
+        }
+
+        input,textarea,label {
+            display: block;
+            width: 100%;
+            color: #555555;
+        }
+        
+        input,textarea {
+            border: 1px solid #CCCCCC;
+            border-radius: 4px;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+            padding: 4px 6px;
+
+            &:focus {
+                border-color: rgba(16, 78, 139,0.8);
+                box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset,0 0 8px rgba(16, 78, 139,0.6);
+
+            }
+        }
+
+        input {
+            height: 20px;
+            margin-bottom: 20px;
+
+            &.submit {
+                font-weight: bold;
+                height: 40px;
+                margin-top: 20px;
+                width: 100px;
+            }
+        }
+
+        label {
+            margin-bottom: 5px;
+            margin-left: 5px;
+            font-weight: bold;
+        }
+
+        textarea {
+            height: 200px;
+        }
+
+        div.csz-fields {
+            input, label {
+                display:inline;
+                width: auto;
+            }
+
+            input, select {
+                width: 25%;
+            }
+        }
+    }
+}
+
