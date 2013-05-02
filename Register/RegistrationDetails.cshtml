@@ -1,0 +1,68 @@
+﻿@using System;
+@using System.IO;
+@using System.Text;
+@using System.Net;
+@using System.Web;
+@using System.Collections.Specialized;
+@{
+    string token = Request["token"];
+    string payerId = Request["PayerId"];
+    string method = "GetExpressCheckoutDetails";
+
+    //build action
+    var strGetExpressCheckoutDetails = new StringBuilder();
+    strGetExpressCheckoutDetails.Append("METHOD=");
+    strGetExpressCheckoutDetails.Append(method);
+    strGetExpressCheckoutDetails.Append("&VERSION=");
+    strGetExpressCheckoutDetails.Append(App.ExpressCheckoutVersion);
+    strGetExpressCheckoutDetails.Append("&USER=");
+    strGetExpressCheckoutDetails.Append(App.PayPalUser);
+    strGetExpressCheckoutDetails.Append("&PWD=");
+    strGetExpressCheckoutDetails.Append(App.PayPalPassword);
+    strGetExpressCheckoutDetails.Append("&SIGNATURE=");
+    strGetExpressCheckoutDetails.Append(App.PayPalSignature);
+    strGetExpressCheckoutDetails.Append("&TOKEN=");
+    strGetExpressCheckoutDetails.Append(token);
+    
+    byte[] data = Encoding.UTF8.GetBytes(strGetExpressCheckoutDetails.ToString()); //Convert query string paramenters to byte array
+    
+    HttpWebRequest req = (HttpWebRequest)WebRequest.Create(App.SandboxPayInfoUrl);
+    req.Method = "POST";
+    req.ContentType = "application/x-www-form-urlencoded";
+    req.ContentLength = data.Length;
+        
+    //Create a new request stream
+    Stream newStream = req.GetRequestStream();
+    newStream.Write(data, 0, data.Length);
+    newStream.Close();
+
+    WebResponse response = req.GetResponse(); // Get the original response.
+
+    string status = ((HttpWebResponse)response).StatusDescription;
+
+    newStream = response.GetResponseStream(); // Get the stream containing all content returned by the requested server.
+        
+    StreamReader reader = new StreamReader(newStream); // Open the stream using a StreamReader for easy access.
+
+    string responseFromServer = reader.ReadToEnd(); // Read the content fully up to the end.
+
+    // Clean up the streams.
+    reader.Close();
+    newStream.Close();
+    response.Close();
+
+    @responseFromServer
+
+    if (IsPost) {
+        //DoExpressCheckoutPayment here
+    }
+}
+<div class="registration-details">
+    <p>Please review your order below and confirmation your payment. Note: Make sure you click confirm payment so that we may process your registration fully.</p>
+
+    <form action="" method="post">
+        <fieldset>
+            <input type="submit" value="Confirm Payment"/>
+        </fieldset>
+    </form>
+</div>

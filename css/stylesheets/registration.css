@@ -47,27 +47,44 @@
 }
 /* line 46, ../sass/registration.scss */
 .registration form input.submit {
-  font-weight: bold;
-  height: 40px;
-  margin-top: 20px;
-  width: 100px;
+  background: url("https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif") no-repeat scroll 0 0 transparent;
+  border: none;
+  height: 50px;
+  width: 150px;
+  cursor: pointer;
 }
-/* line 54, ../sass/registration.scss */
+/* line 55, ../sass/registration.scss */
 .registration form label {
   margin-bottom: 5px;
   margin-left: 5px;
   font-weight: bold;
 }
-/* line 60, ../sass/registration.scss */
+/* line 61, ../sass/registration.scss */
 .registration form textarea {
   height: 200px;
 }
-/* line 65, ../sass/registration.scss */
+/* line 66, ../sass/registration.scss */
 .registration form div.csz-fields input, .registration form div.csz-fields label {
   display: inline;
   width: auto;
 }
-/* line 70, ../sass/registration.scss */
+/* line 71, ../sass/registration.scss */
 .registration form div.csz-fields input, .registration form div.csz-fields select {
   width: 25%;
+}
+/* line 77, ../sass/registration.scss */
+.registration form #eventInfo label {
+  display: inline-block;
+  width: 30%;
+}
+/* line 82, ../sass/registration.scss */
+.registration form #eventInfo input {
+  display: inline;
+  width: auto;
+}
+/* line 87, ../sass/registration.scss */
+.registration form #eventInfo span {
+  font-weight: bold;
+  color: #555555;
+  margin: 0 20px;
 }

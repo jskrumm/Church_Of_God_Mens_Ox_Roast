@@ -80,8 +80,6 @@
         newStream.Close();
         response.Close();
 
-        @responseFromServer
-
         NameValueCollection responseObj = HttpUtility.ParseQueryString(responseFromServer); //Parse server response
 
         App.ExpressCheckoutToken = responseObj.Get("TOKEN");
@@ -156,6 +154,8 @@
             <input id="num-fishing-price" type="hidden" name="num-fishing-price" value="25"/>
             <span>X $25 =</span><output name="x" for="num-fishing num-fishing-price"></output>
         </div>
+        <label for="total">Total</label>
+        <output name="x" for="x"></output>
     </fieldset>
-    <input type=submit class="submit" value="Submit"/>
+    <input type=submit class="submit" value=""/>
 </form>
