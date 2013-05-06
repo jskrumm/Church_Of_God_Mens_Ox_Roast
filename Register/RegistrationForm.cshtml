@@ -1,15 +1,17 @@
 ﻿@using System;
 @using System.IO;
 @using System.Text;
+@using System.Text.RegularExpressions;
 @using System.Net;
 @using System.Web;
 @using System.Collections.Specialized;
+@using System.Dynamic;
+@using SD = Simple.Data;
 @{
     if (IsPost) {
         //Post back to either sandbox or live
         string strSandboxPayInfoUrl = App.SandboxPayInfoUrl;
         string strSandboxPayAuthUrl = App.SandboxPayAuthUrl;
-        
         //string strLive = "https://www.paypal.com/cgi-bin/webscr";
     
         NameValueCollection postedForm = new NameValueCollection(Request.Form); //Create new name/value collection from form data
@@ -19,8 +21,8 @@
         postedForm.Remove("num-att-two-day-price");
         postedForm.Remove("num-att-one-day");
         postedForm.Remove("num-att-one-day-price");
-        postedForm.Remove("num-att-underage-day");
-        postedForm.Remove("num-att-underage-day-price");
+        postedForm.Remove("num-att-underage");
+        postedForm.Remove("num-att-underage-price");
         postedForm.Remove("num-golfing");
         postedForm.Remove("num-golfing-price");
         postedForm.Remove("num-paintballing");
@@ -32,7 +34,6 @@
         postedForm.Set("USER", App.PayPalUser);
         postedForm.Set("PWD", App.PayPalPassword);
         postedForm.Set("SIGNATURE", App.PayPalSignature);
-
         postedForm.Set("METHOD", App.ExpressCheckoutMethod);
         postedForm.Set("VERSION", App.ExpressCheckoutVersion);
         postedForm.Set("PAYMENTREQUEST_0_PAYMENTACTION", App.ExpressCheckoutPaymentAction);
@@ -51,43 +52,56 @@
 
         sb.Remove(sb.Length - 1, 1); // remove the last '&'
 
-        byte[] data = Encoding.UTF8.GetBytes(sb.ToString()); //Convert query string paramenters to byte array
+        //Do Post
+        DoPostPayPalData doPostToPayPal = new DoPostPayPalData(sb.ToString(), App.SandboxPayInfoUrl);
+        string response = doPostToPayPal.Post();
 
-        //Create a new POST request
-        HttpWebRequest req = (HttpWebRequest)WebRequest.Create(strSandboxPayInfoUrl);
-        req.Method = "POST";
-        req.ContentType = "application/x-www-form-urlencoded";
-        req.ContentLength = data.Length;
-        
-        //Create a new request stream
-        Stream newStream = req.GetRequestStream();
-        newStream.Write(data, 0, data.Length);
-        newStream.Close();
-
-        
-        WebResponse response = req.GetResponse(); // Get the original response.
-
-        string status = ((HttpWebResponse)response).StatusDescription;
-
-        newStream = response.GetResponseStream(); // Get the stream containing all content returned by the requested server.
-        
-        StreamReader reader = new StreamReader(newStream); // Open the stream using a StreamReader for easy access.
-
-        string responseFromServer = reader.ReadToEnd(); // Read the content fully up to the end.
-
-        // Clean up the streams.
-        reader.Close();
-        newStream.Close();
-        response.Close();
-
-        NameValueCollection responseObj = HttpUtility.ParseQueryString(responseFromServer); //Parse server response
-
-        App.ExpressCheckoutToken = responseObj.Get("TOKEN");
+        NameValueCollection responseObj = HttpUtility.ParseQueryString(response); //Parse server response
 
         if (responseObj.Get("ACK") == "Success") {
-            string token = App.ExpressCheckoutToken;
+            string token = responseObj.Get("TOKEN");
             string expressCheckoutCmd = "_express-checkout";
-            Response.Redirect(strSandboxPayAuthUrl + "?cmd=" + expressCheckoutCmd + "&token=" + token);
+
+            try { 
+               Regex regexObj = new Regex(@"[^\d]");
+               var timeStamp = regexObj.Replace(responseObj.Get("TIMESTAMP"), "");
+
+               dynamic reg = new ExpandoObject();
+               reg.ID = timeStamp;
+               reg.Attendee = Request["name"];
+
+               dynamic regDetails = new ExpandoObject();
+               regDetails.ID = timeStamp;
+               regDetails.Adress = Request["address"];
+               regDetails.City = Request["city"];
+               regDetails.State = Request["state"];
+               regDetails.Zip = Request["zip"];
+               regDetails.Phone_Num = Request["phone"];
+               regDetails.Church = Request["church-atteding"];
+               regDetails.Attendees_Guests = Request["guest"];
+               regDetails.Num_Attending_Two_Days = Request["num-att-two-day"];
+               regDetails.Num_Attending_One_Day = Request["num-att-one-day"];
+               regDetails.Num_12andYounder_Attending = Request["num-att-underage"];
+               regDetails.Num_Golfing = Request["num-golfing"];
+               regDetails.Num_Paintballing = Request["num-paintballing"];
+               regDetails.Num_Fishing = Request["num-fishing"];
+               regDetails.Total_Paid = Request["total"];
+
+               var db = SD.Database.OpenFile(Server.MapPath("~/App_Data/COGMOR.sdf"));
+
+               db.Registration.Insert(reg);
+               db.RegistrationDetails.Insert(regDetails);
+
+               db.Close();
+
+            } catch (Exception ex) {
+                var errMsg = ex.Message;
+                var stackTrace = ex.StackTrace;
+                @errMsg;
+                @stackTrace;
+            }
+           
+            //Response.Redirect(strSandboxPayAuthUrl + "?cmd=" + expressCheckoutCmd + "&token=" + token);
         } else {
             <text>The server could not process your request. If you see this message please contact us at info@ohiomensoxroast.org so that we can fix this issue quickly.</text>
         }
@@ -116,43 +130,45 @@
         <input id="phone" type="text" name="phone" placeholder="Please enter your phone number"/>
         <label for="church-atteding">Church Attending</label>
         <input id="church-atteding" type="text" name="church-atteding" placeholder="Please enter the name of the church you attend"/>
+        <label for="guest">Name of Others Attending (Please DO NOT list yourself!)</label>
+        <input id="guest" type="text" name="guest" placeholder="Please type in the name of your guest that will be attending"/>
     </fieldset>
     <fieldset id="eventInfo">
         <div>
             <label for="num-att-two-day">Number attending Friday/Saturday</label>
-            <input id="num-att-two-day" type="number" name="num-att-two-day" class="qty"/>
-            <input id="num-att-two-day-price" type="hidden" name="num-att-two-day-price" value="65"/>
-            <span>X $65 =</span><output name="x" for="num-att-two-day num-att-two-day-price"></output>
+            <input id="num-att-two-day" type="number" name="num-att-two-day" class="qty" value="0" data-bind='value: numAttTwoDays, valueUpdate: "afterkeydown"'/>
+            <input id="num-att-two-day-price" type="hidden" name="num-att-two-day-price" value="65" data-bind='value: numAttTwoDaysPrice'/>
+            <span>X $65 =</span><output name="num-att-two-day-output" data-bind="text: numAttTwoDaysOutput"></output>
         </div>
         <div>
             <label for="num-att-one-day">Number attending one day only</label>
-            <input id="num-att-one-day" type="number" name="num-att-one-day" class="qty"/>
+            <input id="num-att-one-day" type="number" name="num-att-one-day" class="qty" value="0"/>
             <input id="num-att-one-day-price" type="hidden" name="num-att-one-day-price" value="35"/>
-            <span>X $35 =</span><output name="x" for="num-att-one-day num-att-one-day-price"></output>
+            <span>X $35 =</span><output name="num-att-one-day-output" for="num-att-one-day num-att-one-day-price"></output>
         </div>
         <div>
-            <label for="num-att-underage-day">Number attending 12yrs old or younger</label>
-            <input id="num-att-underage-day" type="number" name="num-att-underage-day" class="qty"/>
-            <input id="num-att-underage-day-price" type="hidden" name="num-att-underage-day-price" value="25"/>
-            <span>X $25 =</span><output name="x" for="num-att-underage-day num-att-underage-day-price"></output>
+            <label for="num-att-underage">Number attending 12yrs old or younger</label>
+            <input id="num-att-underage" type="number" name="num-att-underage" class="qty" value="0"/>
+            <input id="num-att-underage-price" type="hidden" name="num-att-underage-price" value="25"/>
+            <span>X $25 =</span><output name="num-att-underage-ouput" for="num-att-underage num-att-underage-price"></output>
         </div>
         <div>
             <label for="num-golfing">Number playing golf</label>
-            <input id="num-golfing" type="number" name="num-golfing" class="qty"/>
+            <input id="num-golfing" type="number" name="num-golfing" class="qty" value="0"/>
             <input id="num-golfing-price" type="hidden" name="num-golfing-price" value="45"/>
-            <span>X $45 =</span><output name="x" for="num-golfing num-golfing-price"></output>
+            <span>X $45 =</span><output name="num-golfing-ouput" for="num-golfing num-golfing-price"></output>
         </div>
         <div>
             <label for="num-paintballing">Number paintballing</label>
-            <input id="num-paintballing" type="number" name="num-paintballing" class="qty"/>
+            <input id="num-paintballing" type="number" name="num-paintballing" class="qty" value="0"/>
             <input id="num-paintballing-price" type="hidden" name="num-paintballing-price" value="5"/>
-            <span>X $5 =</span><output name="x" for="num-paintballing num-paintballing-price"></output>
+            <span>X $5 =</span><output name="num-paintballing-ouput" for="num-paintballing num-paintballing-price"></output>
         </div>
         <div>
             <label for="num-fishing">Number fishing</label>
-            <input id="num-fishing" type="number" name="num-fishing" class="qty"/>
+            <input id="num-fishing" type="number" name="num-fishing" class="qty" value="0"/>
             <input id="num-fishing-price" type="hidden" name="num-fishing-price" value="25"/>
-            <span>X $25 =</span><output name="x" for="num-fishing num-fishing-price"></output>
+            <span>X $25 =</span><output name="num-fishing-output" for="num-fishing num-fishing-price"></output>
         </div>
         <label for="total">Total</label>
         <output name="x" for="x"></output>

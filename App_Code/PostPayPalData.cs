@@ -12,30 +12,34 @@ public class DoPostPayPalData
 {
     private byte[] data;
     private string queryString;
+    private string endPointUrl;
     private string method;
     private string contentType;
-    
+
     public DoPostPayPalData()
     {
        queryString = "";
+       endPointUrl = "";
        method = "POST";
        contentType = "application/x-www-form-urlencoded";
     }
 
-    public DoPostPayPalData(string qs)
+    public DoPostPayPalData(string qs, string url)
     {
        this.queryString = qs;
+       this.endPointUrl = url;
     }
 
-    public void Post() 
+    public string Post() 
     {
         data = Encoding.UTF8.GetBytes(queryString); //Convert query string paramenters to byte array
-    
-        HttpWebRequest req = (HttpWebRequest)WebRequest.Create(App.SandboxPayInfoUrl);
+   
+        //Create request object
+        HttpWebRequest req = (HttpWebRequest)WebRequest.Create(endPointUrl);
         req.Method = "POST";
         req.ContentType = "application/x-www-form-urlencoded";
         req.ContentLength = data.Length;
-        
+
         //Create a new request stream
         Stream newStream = req.GetRequestStream();
         newStream.Write(data, 0, data.Length);
@@ -52,6 +56,6 @@ public class DoPostPayPalData
         newStream.Close();
         response.Close();
 
-         NameValueCollection responseObj = HttpUtility.ParseQueryString(responseFromServer); //Parse server response
+        return responseFromServer;
     }
 }

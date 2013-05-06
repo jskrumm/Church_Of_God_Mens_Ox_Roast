@@ -24,37 +24,17 @@
     strGetExpressCheckoutDetails.Append("&TOKEN=");
     strGetExpressCheckoutDetails.Append(token);
     
-    byte[] data = Encoding.UTF8.GetBytes(strGetExpressCheckoutDetails.ToString()); //Convert query string paramenters to byte array
-    
-    HttpWebRequest req = (HttpWebRequest)WebRequest.Create(App.SandboxPayInfoUrl);
-    req.Method = "POST";
-    req.ContentType = "application/x-www-form-urlencoded";
-    req.ContentLength = data.Length;
-        
-    //Create a new request stream
-    Stream newStream = req.GetRequestStream();
-    newStream.Write(data, 0, data.Length);
-    newStream.Close();
+    //Do Post
+    DoPostPayPalData doPostToForGetDetails = new DoPostPayPalData(strGetExpressCheckoutDetails.ToString(), App.SandboxPayInfoUrl);
+    string getDetatailsResponse = doPostToForGetDetails.Post();
 
-    WebResponse response = req.GetResponse(); // Get the original response.
-    newStream = response.GetResponseStream(); // Get the stream containing all content returned by the requested server.
-        
-    StreamReader reader = new StreamReader(newStream); // Open the stream using a StreamReader for easy access.
-    string responseFromServer = reader.ReadToEnd(); // Read the content fully up to the end.
-
-    // Clean up the streams.
-    reader.Close();
-    newStream.Close();
-    response.Close();
-
-     NameValueCollection responseObj = HttpUtility.ParseQueryString(responseFromServer); //Parse server response
-     if (responseObj.Get("ACK") == "Success") {
+    NameValueCollection getDetatailsResponseObj = HttpUtility.ParseQueryString(getDetatailsResponse); //Parse server response
+    if (getDetatailsResponseObj.Get("ACK") == "Success") {
         if (IsPost) {
-            App.ExpressCheckoutToken = responseObj.Get("TOKEN");
+            App.ExpressCheckoutToken = getDetatailsResponseObj.Get("TOKEN");
   
             token = App.ExpressCheckoutToken;
             method = "DoExpressCheckoutPayment";
-            payerId = responseObj.Get("PAYERID");
             
             //build action
             var strDoExpressCheckoutPayment = new StringBuilder();
@@ -81,34 +61,13 @@
             strDoExpressCheckoutPayment.Append("&PAYMENTREQUEST_0_ITEMAMT=");
             strDoExpressCheckoutPayment.Append("19.95");
 
-            byte[] data2 = Encoding.UTF8.GetBytes(strDoExpressCheckoutPayment.ToString()); //Convert query string paramenters to byte array
-    
-            HttpWebRequest req2 = (HttpWebRequest)WebRequest.Create(App.SandboxPayInfoUrl);
-            req2.Method = "POST";
-            req2.ContentType = "application/x-www-form-urlencoded";
-            req2.ContentLength = data2.Length;
-        
-            //Create a new request stream
-            Stream newStream2 = req2.GetRequestStream();
-            newStream2.Write(data2, 0, data2.Length);
-            newStream2.Close();
-
-            WebResponse response2 = req2.GetResponse(); // Get the original response.
-            newStream2 = response2.GetResponseStream(); // Get the stream containing all content returned by the requested server.
-        
-            StreamReader reader2 = new StreamReader(newStream2); // Open the stream using a StreamReader for easy access.
-            string responseFromServer2 = reader2.ReadToEnd(); // Read the content fully up to the end.
-
-            // Clean up the streams.
-            reader2.Close();
-            newStream2.Close();
-            response2.Close();
-
-            @responseFromServer2
+            //Do Post
+            DoPostPayPalData doPostToComfirmPayment = new DoPostPayPalData(strDoExpressCheckoutPayment.ToString(), App.SandboxPayInfoUrl);
+            string confirmPaymentResponse = doPostToComfirmPayment.Post();
             
-            NameValueCollection responseObj2 = HttpUtility.ParseQueryString(responseFromServer2); //Parse server response
+            NameValueCollection confirmPaymentResponseObj = HttpUtility.ParseQueryString(confirmPaymentResponse); //Parse server response
      
-            if (responseObj.Get("ACK") == "Success") {
+            if (confirmPaymentResponseObj.Get("ACK") == "Success") {
                <text>
                     Than you for registering for the Ox Roast. When you arrive at the Ox Roast on Septermber 6th 2013 we will veify that you have registered for the Ox Roast. 
                     Below is a copy of your registration please print so that you have a copy for your records.You will not be required to show a copy of your registration the printing
