@@ -57,9 +57,9 @@
             strDoExpressCheckoutPayment.Append("&PAYMENTREQUEST_0_CURRENCYCODE=");
             strDoExpressCheckoutPayment.Append(App.ExpressCheckoutCurrencyCode);
             strDoExpressCheckoutPayment.Append("&PAYMENTREQUEST_0_AMT=");
-            strDoExpressCheckoutPayment.Append("19.95");
+            strDoExpressCheckoutPayment.Append(getDetatailsResponseObj.Get("PAYMENTREQUEST_0_AMT"));
             strDoExpressCheckoutPayment.Append("&PAYMENTREQUEST_0_ITEMAMT=");
-            strDoExpressCheckoutPayment.Append("19.95");
+            strDoExpressCheckoutPayment.Append(getDetatailsResponseObj.Get("PAYMENTREQUEST_0_ITEMAMT"));
 
             //Do Post
             DoPostPayPalData doPostToComfirmPayment = new DoPostPayPalData(strDoExpressCheckoutPayment.ToString(), App.SandboxPayInfoUrl);

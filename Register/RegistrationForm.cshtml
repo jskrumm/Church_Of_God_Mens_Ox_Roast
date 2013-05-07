@@ -37,7 +37,6 @@
         postedForm.Set("METHOD", App.ExpressCheckoutMethod);
         postedForm.Set("VERSION", App.ExpressCheckoutVersion);
         postedForm.Set("PAYMENTREQUEST_0_PAYMENTACTION", App.ExpressCheckoutPaymentAction);
-        postedForm.Set("PAYMENTREQUEST_0_AMT", "19.95");
         postedForm.Set("PAYMENTREQUEST_0_CURRENCYCODE", App.ExpressCheckoutCurrencyCode);
         postedForm.Set("RETURNURL", App.ExpressCheckoutReturnUrl);
         postedForm.Set("CANCELURL", App.ExpressCheckoutCancelUrl);
@@ -68,15 +67,15 @@
 
                dynamic reg = new ExpandoObject();
                reg.ID = timeStamp;
-               reg.Attendee = Request["name"];
+               reg.Attendee = Request["PAYMENTREQUEST_0_SHIPTONAME"];
 
                dynamic regDetails = new ExpandoObject();
                regDetails.ID = timeStamp;
-               regDetails.Adress = Request["address"];
-               regDetails.City = Request["city"];
-               regDetails.State = Request["state"];
-               regDetails.Zip = Request["zip"];
-               regDetails.Phone_Num = Request["phone"];
+               regDetails.Adress = Request["PAYMENTREQUEST_0_SHIPTOSTREET"];
+               regDetails.City = Request["PAYMENTREQUEST_0_SHIPTOCITY"];
+               regDetails.State = Request["PAYMENTREQUEST_0_SHIPTOSTATE"];
+               regDetails.Zip = Request["PAYMENTREQUEST_0_SHIPTOZIP"];
+               regDetails.Phone_Num = Request["PAYMENTREQUEST_0_SHIPTOPHONENUM"];
                regDetails.Church = Request["church-atteding"];
                regDetails.Attendees_Guests = Request["guest"];
                regDetails.Num_Attending_Two_Days = Request["num-att-two-day"];
@@ -85,7 +84,7 @@
                regDetails.Num_Golfing = Request["num-golfing"];
                regDetails.Num_Paintballing = Request["num-paintballing"];
                regDetails.Num_Fishing = Request["num-fishing"];
-               regDetails.Total_Paid = Request["total"];
+               regDetails.Total_Paid = Request["PAYMENTREQUEST_0_AMT"];
 
                var db = SD.Database.OpenFile(Server.MapPath("~/App_Data/COGMOR.sdf"));
 
@@ -112,66 +111,80 @@
 
 <form action="" method="post">
     <fieldset id="generalInfo">
-        <label for="name">Your Name</label>
-        <input id="name" type="text" name="name" placeholder="Please enter your name" required/>
-        <label for="address">Address</label>
-        <input id="address" type="text" name="address" placeholder="Please enter your address" required/>
+        <label for="PAYMENTREQUEST_0_SHIPTONAME">Your Name</label>
+        <input id="PAYMENTREQUEST_0_SHIPTONAME" type="text" name="PAYMENTREQUEST_0_SHIPTONAME" placeholder="Please enter your name" required/>
+        <label for="PAYMENTREQUEST_0_SHIPTOSTREET">Address</label>
+        <input id="PAYMENTREQUEST_0_SHIPTOSTREET" type="text" name="PAYMENTREQUEST_0_SHIPTOSTREET" placeholder="Please enter your address" required/>
         <div class="csz-fields">
-            <label for="city">City</label>
-            <input id="city" type="text" name="city" placeholder="Please enter your city" required/>
-            <label for="state">State</label>
-            <select id="state">
-                <option value="OH">Ohio</option>
+            <label for="PAYMENTREQUEST_0_SHIPTOCITY">City</label>
+            <input id="PAYMENTREQUEST_0_SHIPTOCITY" type="text" name="PAYMENTREQUEST_0_SHIPTOCITY" placeholder="Please enter your city" required/>
+            <label for="PAYMENTREQUEST_0_SHIPTOSTATE">State</label>
+            <select id="PAYMENTREQUEST_0_SHIPTOSTATE">
+                <option value="">Please Select...</option>
+                @foreach (var state in GetStateDropdown.GetStates())
+                {
+                    <option value="@state.Key">@state.Value</option>
+                }
             </select>
-            <label for="zip">Zip</label>
-            <input id="zip" type="text" name="zip" placeholder="Please enter your zip code" required/>
+            <label for="PAYMENTREQUEST_0_SHIPTOZIP">Zip</label>
+            <input id="PAYMENTREQUEST_0_SHIPTOZIP" type="text" name="zip" placeholder="Please enter your zip code" required/>
         </div>
-        <label for="phone">Phone Number</label>
-        <input id="phone" type="text" name="phone" placeholder="Please enter your phone number"/>
+        <label for="PAYMENTREQUEST_0_SHIPTOPHONENUM">Phone Number</label>
+        <input id="PAYMENTREQUEST_0_SHIPTOPHONENUM" type="text" name="PAYMENTREQUEST_0_SHIPTOPHONENUM" placeholder="Please enter your phone number"/>
         <label for="church-atteding">Church Attending</label>
         <input id="church-atteding" type="text" name="church-atteding" placeholder="Please enter the name of the church you attend"/>
-        <label for="guest">Name of Others Attending (Please DO NOT list yourself!)</label>
-        <input id="guest" type="text" name="guest" placeholder="Please type in the name of your guest that will be attending"/>
+        <!--<label for="guest">Name of Others Attending (Please DO NOT list yourself!)</label>
+        <input id="guest" type="text" name="guest" placeholder="Please type in the name of your guest that will be attending"/>-->
+    </fieldset>
+    <fieldset id="Guest_Names" data-bind='appendNameInputs: $data.addField'>
+        <h2>Guests</h2>
+        <div class="fields">
+            <label for="guest_firstname_1">First Name</label>
+            <input id="guest_firstname_1" type="text" name="guest_firstname_1"/>
+            <label for="guest_lastname_1">Last Name</label>
+            <input id="guest_lastname_1" type="text" name="guest_lastname_1"/>
+        </div>
+        <input type="button" value="Add" class="add-guest" data-bind="click: $data.addField"/>
     </fieldset>
     <fieldset id="eventInfo">
         <div>
             <label for="num-att-two-day">Number attending Friday/Saturday</label>
-            <input id="num-att-two-day" type="number" name="num-att-two-day" class="qty" value="0" data-bind='value: numAttTwoDays, valueUpdate: "afterkeydown"'/>
-            <input id="num-att-two-day-price" type="hidden" name="num-att-two-day-price" value="65" data-bind='value: numAttTwoDaysPrice'/>
-            <span>X $65 =</span><output name="num-att-two-day-output" data-bind="text: numAttTwoDaysOutput"></output>
+            <input id="num-att-two-day" type="number" name="num-att-two-day" class="qty" value="0" data-bind="value: $data.numAttTwoDaysQty, valueUpdate: 'afterkeydown'"/>
+            <input id="num-att-two-day-price" type="hidden" name="num-att-two-day-price" value="65" data-bind='value: $data.numAttTwoDaysPrice'/>
+            <span>X $65 =</span><output name="num-att-two-day-output" data-bind="value: $data.numAttTwoDaysTotal"></output>
         </div>
         <div>
             <label for="num-att-one-day">Number attending one day only</label>
-            <input id="num-att-one-day" type="number" name="num-att-one-day" class="qty" value="0"/>
-            <input id="num-att-one-day-price" type="hidden" name="num-att-one-day-price" value="35"/>
-            <span>X $35 =</span><output name="num-att-one-day-output" for="num-att-one-day num-att-one-day-price"></output>
+            <input id="num-att-one-day" type="number" name="num-att-one-day" class="qty" value="0" data-bind="value: $data.numAttOneDayQty, valueUpdate: 'afterkeydown'"/>
+            <input id="num-att-one-day-price" type="hidden" name="num-att-one-day-price" value="35" data-bind='value: $data.numAttOneDayPrice'/>
+            <span>X $35 =</span><output name="num-att-one-day-output" data-bind="value: $data.numAttOneDayTotal"></output>
         </div>
         <div>
             <label for="num-att-underage">Number attending 12yrs old or younger</label>
-            <input id="num-att-underage" type="number" name="num-att-underage" class="qty" value="0"/>
-            <input id="num-att-underage-price" type="hidden" name="num-att-underage-price" value="25"/>
-            <span>X $25 =</span><output name="num-att-underage-ouput" for="num-att-underage num-att-underage-price"></output>
+            <input id="num-att-underage" type="number" name="num-att-underage" class="qty" value="0" data-bind="value: $data.numAttUnderageQty, valueUpdate: 'afterkeydown'"/>
+            <input id="num-att-underage-price" type="hidden" name="num-att-underage-price" value="25" data-bind='value: $data.numAttUnderagePrice'/>
+            <span>X $25 =</span><output name="num-att-underage-ouput" data-bind="value: $data.numAttUnderageTotal"></output>
         </div>
         <div>
             <label for="num-golfing">Number playing golf</label>
-            <input id="num-golfing" type="number" name="num-golfing" class="qty" value="0"/>
-            <input id="num-golfing-price" type="hidden" name="num-golfing-price" value="45"/>
-            <span>X $45 =</span><output name="num-golfing-ouput" for="num-golfing num-golfing-price"></output>
+            <input id="num-golfing" type="number" name="num-golfing" class="qty" value="0" data-bind="value: $data.numGolfingQty, valueUpdate: 'afterkeydown'"/>
+            <input id="num-golfing-price" type="hidden" name="num-golfing-price" value="45" data-bind='value: $data.numGolfingPrice'/>
+            <span>X $45 =</span><output name="num-golfing-ouput" data-bind="value: $data.numGolfingTotal"></output>
         </div>
         <div>
             <label for="num-paintballing">Number paintballing</label>
-            <input id="num-paintballing" type="number" name="num-paintballing" class="qty" value="0"/>
-            <input id="num-paintballing-price" type="hidden" name="num-paintballing-price" value="5"/>
-            <span>X $5 =</span><output name="num-paintballing-ouput" for="num-paintballing num-paintballing-price"></output>
+            <input id="num-paintballing" type="number" name="num-paintballing" class="qty" value="0" data-bind="value: $data.numPaintballingQty, valueUpdate: 'afterkeydown'"/>
+            <input id="num-paintballing-price" type="hidden" name="num-paintballing-price" value="5" data-bind='value: $data.numPaintballingPrice'/>
+            <span>X $5 =</span><output name="num-paintballing-ouput" data-bind="value: $data.numPaintballingTotal"></output>
         </div>
         <div>
             <label for="num-fishing">Number fishing</label>
-            <input id="num-fishing" type="number" name="num-fishing" class="qty" value="0"/>
-            <input id="num-fishing-price" type="hidden" name="num-fishing-price" value="25"/>
-            <span>X $25 =</span><output name="num-fishing-output" for="num-fishing num-fishing-price"></output>
+            <input id="num-fishing" type="number" name="num-fishing" class="qty" value="0" data-bind="value: $data.numFishingQty, valueUpdate: 'afterkeydown'"/>
+            <input id="num-fishing-price" type="hidden" name="num-fishing-price" value="25" data-bind='value: $data.numFishingPrice'/>
+            <span>X $25 =</span><output name="num-fishing-output" data-bind="value: $data.numFishingTotal"></output>
         </div>
-        <label for="total">Total</label>
-        <output name="x" for="x"></output>
+        <label for="PAYMENTREQUEST_0_AMT">Total</label>
+        <output id="name="PAYMENTREQUEST_0_AMT" name="PAYMENTREQUEST_0_AMT" data-bind="value: $data.grandTotal"></output>
     </fieldset>
     <input type=submit class="submit" value=""/>
 </form>
