@@ -7,102 +7,197 @@
 @using System.Collections.Specialized;
 @using System.Dynamic;
 @using SD = Simple.Data;
+@using System.Web.Mvc;
 @{
+    var firstname = "";
+    var lastname = "";
+    var address = "";
+    var city = "";
+    var zip = "";
+    var phone = "";
+    var church = "";
+    var numAttTwoDays = "0";
+    var numAttOneDay = "0";
+    var numAttUnderage = "0";
+    var numGolfing = "0";
+    var numPaintballing = "0";
+    var numFishing = "0";
+    var amt = "0.00";
+    Validation.RequireField("firstname", "You must specify a zipcode.");
+    /*Validation.Add("firstname", 
+        Validator.Required("Please provide a first name"), 
+        Validator.StringLength(100, 0, "Your first name can't be more than 100 characters long.")
+        );
+    Validation.Add("lastname", 
+        Validator.Required("Please provide a last name"), 
+        Validator.StringLength(100, 0, "Your last name can't be more than 100 characters long.")
+        );
+    Validation.Add("PAYMENTREQUEST_0_SHIPTOSTREET", 
+        Validator.Required("Please provide a street address"), 
+        Validator.StringLength(200, 0, "Your street address can't be more than 200 characters long.")
+        );
+    Validation.Add("PAYMENTREQUEST_0_SHIPTOCITY", 
+        Validator.Required("Please provide a city"), 
+        Validator.StringLength(200, 0, "Your city can't be more than 200 characters long.")
+        );
+    Validation.Add("PAYMENTREQUEST_0_SHIPTOSTATE", 
+        Validator.Required("Please select a state")
+        );
+    Validation.Add("PAYMENTREQUEST_0_SHIPTOZIP", 
+        Validator.Required("Please provide a zip code."),
+        Validator.StringLength(10, 0, "Your zip can't be more than 10 characters long."),
+        Validator.Regex(@"^\d{5}(-\d{4})?$", "Invalid zip code format (e.g., 99999-9999 or 99999)") 
+        );
+    Validation.Add("PAYMENTREQUEST_0_SHIPTOPHONENUM",
+        Validator.StringLength(15, 0, "Your zip can't be more than 15 characters long."),
+        Validator.Regex(@"^(1?)(-| ?)(\()?([0-9]{3})(\)|-| |\)-|\) )?([0-9]{3})(-| )?([0-9]{4}|[0-9]{4})$", "Invalid phone number format (e.g., 14165551212, 4165551212, (416)5551212, 416 555 1212, 416-555-1212, (416)-555-1212, (416) 555 1212, or 1-900-888-1212)") 
+        );
+    Validation.Add("church-atteding",
+        Validator.StringLength(4000, 0, "Your zip can't be more than 4000 characters long.")
+        );
+    Validation.Add("guest_firstname", 
+        Validator.StringLength(100, 0, "Your first name can't be more than 100 characters long.")
+        );
+    Validation.Add("guest_lastname", 
+        Validator.StringLength(100, 0, "Your last name can't be more than 100 characters long.")
+        );
+    Validation.Add("num-att-two-day", 
+        Validator.Range(0,21, "You can not purchase more than 20 at a time.")
+        );
+    Validation.Add("num-att-one-day", 
+        Validator.Range(0,21, "You can not purchase more than 20 at a time.")
+        );
+    Validation.Add("num-att-underage", 
+        Validator.Range(0,21, "You can not purchase more than 20 at a time.")
+        );
+    Validation.Add("num-golfing", 
+        Validator.Range(0,21, "You can not purchase more than 20 at a time.")
+        );
+    Validation.Add("num-paintballing", 
+        Validator.Range(0,21, "You can not purchase more than 20 at a time.")
+        );
+    Validation.Add("num-fishing", 
+        Validator.Range(0,21, "You can not purchase more than 20 at a time.")
+        );
+    Validation.Add("PAYMENTREQUEST_0_AMT", 
+        Validator.Required("You must pay for at least one day addmission to register.")
+        );*/
+
     if (IsPost) {
-        //Post back to either sandbox or live
-        string strSandboxPayInfoUrl = App.SandboxPayInfoUrl;
-        string strSandboxPayAuthUrl = App.SandboxPayAuthUrl;
-        //string strLive = "https://www.paypal.com/cgi-bin/webscr";
+        if (Validation.IsValid()) {
+            //Post back to either sandbox or live
+            string strSandboxPayInfoUrl = App.SandboxPayInfoUrl;
+            string strSandboxPayAuthUrl = App.SandboxPayAuthUrl;
+            //string strLive = "https://www.paypal.com/cgi-bin/webscr";
     
-        NameValueCollection postedForm = new NameValueCollection(Request.Form); //Create new name/value collection from form data
+            NameValueCollection postedForm = new NameValueCollection(Request.Form); //Create new name/value collection from form data
 
-        //Remove any unnessary fields before sending data to PayPal
-        postedForm.Remove("num-att-two-day");
-        postedForm.Remove("num-att-two-day-price");
-        postedForm.Remove("num-att-one-day");
-        postedForm.Remove("num-att-one-day-price");
-        postedForm.Remove("num-att-underage");
-        postedForm.Remove("num-att-underage-price");
-        postedForm.Remove("num-golfing");
-        postedForm.Remove("num-golfing-price");
-        postedForm.Remove("num-paintballing");
-        postedForm.Remove("num-paintballing-price");
-        postedForm.Remove("num-fishing");
-        postedForm.Remove("num-fishing-price");
+            //Remove any unnessary fields before sending data to PayPal
+            postedForm.Remove("num-att-two-day");
+            postedForm.Remove("num-att-two-day-price");
+            postedForm.Remove("num-att-one-day");
+            postedForm.Remove("num-att-one-day-price");
+            postedForm.Remove("num-att-underage");
+            postedForm.Remove("num-att-underage-price");
+            postedForm.Remove("num-golfing");
+            postedForm.Remove("num-golfing-price");
+            postedForm.Remove("num-paintballing");
+            postedForm.Remove("num-paintballing-price");
+            postedForm.Remove("num-fishing");
+            postedForm.Remove("num-fishing-price");
        
-        //Add required data sensitive fields before sending data to PayPal
-        postedForm.Set("USER", App.PayPalUser);
-        postedForm.Set("PWD", App.PayPalPassword);
-        postedForm.Set("SIGNATURE", App.PayPalSignature);
-        postedForm.Set("METHOD", App.ExpressCheckoutMethod);
-        postedForm.Set("VERSION", App.ExpressCheckoutVersion);
-        postedForm.Set("PAYMENTREQUEST_0_PAYMENTACTION", App.ExpressCheckoutPaymentAction);
-        postedForm.Set("PAYMENTREQUEST_0_CURRENCYCODE", App.ExpressCheckoutCurrencyCode);
-        postedForm.Set("RETURNURL", App.ExpressCheckoutReturnUrl);
-        postedForm.Set("CANCELURL", App.ExpressCheckoutCancelUrl);
+            //Add required data sensitive fields before sending data to PayPal
+            postedForm.Set("USER", App.PayPalUser);
+            postedForm.Set("PWD", App.PayPalPassword);
+            postedForm.Set("SIGNATURE", App.PayPalSignature);
+            postedForm.Set("METHOD", App.ExpressCheckoutMethod);
+            postedForm.Set("VERSION", App.ExpressCheckoutVersion);
+            postedForm.Set("PAYMENTREQUEST_0_PAYMENTACTION", App.ExpressCheckoutPaymentAction);
+            postedForm.Set("PAYMENTREQUEST_0_CURRENCYCODE", App.ExpressCheckoutCurrencyCode);
+            postedForm.Set("RETURNURL", App.ExpressCheckoutReturnUrl);
+            postedForm.Set("CANCELURL", App.ExpressCheckoutCancelUrl);
 
-        //Build query string from name/value collection using StringBuilder
-        var sb = new StringBuilder();
-        var postedFormItems = postedForm.AllKeys.SelectMany(postedForm.GetValues, (k, v) => new {key = k, value = v});
+            //Build query string from name/value collection using StringBuilder
+            var sb = new StringBuilder();
+            var postedFormItems = postedForm.AllKeys.SelectMany(postedForm.GetValues, (k, v) => new {key = k, value = v});
 
-        foreach(var item in postedFormItems) {
-            sb.AppendFormat("{0}={1}&", item.key, HttpUtility.UrlEncode(item.value.ToString()));
-        }
-
-        sb.Remove(sb.Length - 1, 1); // remove the last '&'
-
-        //Do Post
-        DoPostPayPalData doPostToPayPal = new DoPostPayPalData(sb.ToString(), App.SandboxPayInfoUrl);
-        string response = doPostToPayPal.Post();
-
-        NameValueCollection responseObj = HttpUtility.ParseQueryString(response); //Parse server response
-
-        if (responseObj.Get("ACK") == "Success") {
-            string token = responseObj.Get("TOKEN");
-            string expressCheckoutCmd = "_express-checkout";
-
-            try { 
-               Regex regexObj = new Regex(@"[^\d]");
-               var timeStamp = regexObj.Replace(responseObj.Get("TIMESTAMP"), "");
-
-               dynamic reg = new ExpandoObject();
-               reg.ID = timeStamp;
-               reg.Attendee = Request["PAYMENTREQUEST_0_SHIPTONAME"];
-
-               dynamic regDetails = new ExpandoObject();
-               regDetails.ID = timeStamp;
-               regDetails.Adress = Request["PAYMENTREQUEST_0_SHIPTOSTREET"];
-               regDetails.City = Request["PAYMENTREQUEST_0_SHIPTOCITY"];
-               regDetails.State = Request["PAYMENTREQUEST_0_SHIPTOSTATE"];
-               regDetails.Zip = Request["PAYMENTREQUEST_0_SHIPTOZIP"];
-               regDetails.Phone_Num = Request["PAYMENTREQUEST_0_SHIPTOPHONENUM"];
-               regDetails.Church = Request["church-atteding"];
-               regDetails.Attendees_Guests = Request["guest"];
-               regDetails.Num_Attending_Two_Days = Request["num-att-two-day"];
-               regDetails.Num_Attending_One_Day = Request["num-att-one-day"];
-               regDetails.Num_12andYounder_Attending = Request["num-att-underage"];
-               regDetails.Num_Golfing = Request["num-golfing"];
-               regDetails.Num_Paintballing = Request["num-paintballing"];
-               regDetails.Num_Fishing = Request["num-fishing"];
-               regDetails.Total_Paid = Request["PAYMENTREQUEST_0_AMT"];
-
-               var db = SD.Database.OpenFile(Server.MapPath("~/App_Data/COGMOR.sdf"));
-
-               db.Registration.Insert(reg);
-               db.RegistrationDetails.Insert(regDetails);
-
-               db.Close();
-
-            } catch (Exception ex) {
-                var errMsg = ex.Message;
-                var stackTrace = ex.StackTrace;
-                @errMsg;
-                @stackTrace;
+            foreach(var item in postedFormItems) {
+                sb.AppendFormat("{0}={1}&", item.key, HttpUtility.UrlEncode(item.value.ToString()));
             }
+
+            sb.Remove(sb.Length - 1, 1); // remove the last '&'
+
+            //Do Post
+            DoPostPayPalData doPostToPayPal = new DoPostPayPalData(sb.ToString(), App.SandboxPayInfoUrl);
+            string response = doPostToPayPal.Post();
+
+            NameValueCollection responseObj = HttpUtility.ParseQueryString(response); //Parse server response
+
+            if (responseObj.Get("ACK") == "Success") {
+                string token = responseObj.Get("TOKEN");
+                string expressCheckoutCmd = "_express-checkout";
+
+                try { 
+                   Regex regexObj = new Regex(@"[^\d]");
+                   var timeStamp = regexObj.Replace(responseObj.Get("TIMESTAMP"), "");
+
+                   dynamic reg = new ExpandoObject();
+                   reg.ID = timeStamp;
+                   reg.Attendee = Request["PAYMENTREQUEST_0_SHIPTONAME"];
+
+                   dynamic regDetails = new ExpandoObject();
+                   regDetails.ID = timeStamp;
+                   regDetails.Adress = Request["PAYMENTREQUEST_0_SHIPTOSTREET"];
+                   regDetails.City = Request["PAYMENTREQUEST_0_SHIPTOCITY"];
+                   regDetails.State = Request["PAYMENTREQUEST_0_SHIPTOSTATE"];
+                   regDetails.Zip = Request["PAYMENTREQUEST_0_SHIPTOZIP"];
+                   regDetails.Phone_Num = Request["PAYMENTREQUEST_0_SHIPTOPHONENUM"];
+                   regDetails.Church = Request["church-atteding"];
+                   regDetails.Attendees_Guests = Request["guest"];
+                   regDetails.Num_Attending_Two_Days = Request["num-att-two-day"];
+                   regDetails.Num_Attending_One_Day = Request["num-att-one-day"];
+                   regDetails.Num_12andYounder_Attending = Request["num-att-underage"];
+                   regDetails.Num_Golfing = Request["num-golfing"];
+                   regDetails.Num_Paintballing = Request["num-paintballing"];
+                   regDetails.Num_Fishing = Request["num-fishing"];
+                   regDetails.Total_Paid = Request["PAYMENTREQUEST_0_AMT"];
+
+                   var db = SD.Database.OpenFile(Server.MapPath("~/App_Data/COGMOR.sdf"));
+
+                   db.Registration.Insert(reg);
+                   db.RegistrationDetails.Insert(regDetails);
+
+                   db.Close();
+
+                } catch (Exception ex) {
+                    var errMsg = ex.Message;
+                    var stackTrace = ex.StackTrace;
+                    @errMsg;
+                    @stackTrace;
+                }
            
-            //Response.Redirect(strSandboxPayAuthUrl + "?cmd=" + expressCheckoutCmd + "&token=" + token);
+                //Response.Redirect(strSandboxPayAuthUrl + "?cmd=" + expressCheckoutCmd + "&token=" + token);
+            } else {
+                <text>The server could not process your request. If you see this message please contact us at info@ohiomensoxroast.org so that we can fix this issue quickly.</text>
+            }   
         } else {
-            <text>The server could not process your request. If you see this message please contact us at info@ohiomensoxroast.org so that we can fix this issue quickly.</text>
+            ModelState.AddFormError("You must resolve all errors before you can proceed.");
+            
+
+            firstname = Request["firstname"];
+            lastname = Request["lastname"];
+            address = Request["PAYMENTREQUEST_0_SHIPTOSTREET"];
+            city = Request["PAYMENTREQUEST_0_SHIPTOCITY"];
+            zip = Request["PAYMENTREQUEST_0_SHIPTOZIP"];
+            phone = Request["PAYMENTREQUEST_0_SHIPTOPHONENUM"];
+            church = Request["church-atteding"];
+            numAttTwoDays = Request["num-att-two-day"];
+            numAttOneDay = Request["num-att-one-day"];
+            numAttUnderage = Request["num-att-underage"];
+            numGolfing = Request["num-golfing"];
+            numPaintballing = Request["num-paintballing"];
+            numFishing = Request["num-fishing"];
+            amt = Request["PAYMENTREQUEST_0_AMT"];
         }
     }
     //http://www.netomatix.com/httppostdata.aspx
@@ -110,15 +205,23 @@
 }
 
 <form action="" method="post">
+    @Html.ValidationSummary()
     <fieldset id="generalInfo">
-        <label for="PAYMENTREQUEST_0_SHIPTONAME">Your Name</label>
-        <input id="PAYMENTREQUEST_0_SHIPTONAME" type="text" name="PAYMENTREQUEST_0_SHIPTONAME" placeholder="Please enter your name" required/>
-        <label for="PAYMENTREQUEST_0_SHIPTOSTREET">Address</label>
-        <input id="PAYMENTREQUEST_0_SHIPTOSTREET" type="text" name="PAYMENTREQUEST_0_SHIPTOSTREET" placeholder="Please enter your address" required/>
+        <div class="name-fields">
+            <label for="firstname">Your First Name*</label>@Html.ValidationMessage("firstname")
+            @if(ModelState["firstname"] != null){
+     @Html.ValidationMessage("firstname")
+}
+            <input id="firstname" type="text" name="firstname" placeholder="Please enter your first name" value="@firstname" />
+            <label for="lastname">Your Last Name*</label>@Html.ValidationMessage("lastname")
+            <input id="lastname" type="text" name="lastname" placeholder="Please enter your last name" value="@lastname" required/>
+        </div>
+        <label for="PAYMENTREQUEST_0_SHIPTOSTREET">Address*</label>@Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOSTREET")
+        <input id="PAYMENTREQUEST_0_SHIPTOSTREET" type="text" name="PAYMENTREQUEST_0_SHIPTOSTREET" placeholder="Please enter your address" value="@address" required/>
         <div class="csz-fields">
-            <label for="PAYMENTREQUEST_0_SHIPTOCITY">City</label>
-            <input id="PAYMENTREQUEST_0_SHIPTOCITY" type="text" name="PAYMENTREQUEST_0_SHIPTOCITY" placeholder="Please enter your city" required/>
-            <label for="PAYMENTREQUEST_0_SHIPTOSTATE">State</label>
+            <label for="PAYMENTREQUEST_0_SHIPTOCITY">City*</label>@Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOCITY")
+            <input id="PAYMENTREQUEST_0_SHIPTOCITY" type="text" name="PAYMENTREQUEST_0_SHIPTOCITY" placeholder="Please enter your city" value="@city" required/>
+            <label for="PAYMENTREQUEST_0_SHIPTOSTATE">State*</label>@Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOSTATE")
             <select id="PAYMENTREQUEST_0_SHIPTOSTATE">
                 <option value="">Please Select...</option>
                 @foreach (var state in GetStateDropdown.GetStates())
@@ -126,65 +229,74 @@
                     <option value="@state.Key">@state.Value</option>
                 }
             </select>
-            <label for="PAYMENTREQUEST_0_SHIPTOZIP">Zip</label>
-            <input id="PAYMENTREQUEST_0_SHIPTOZIP" type="text" name="zip" placeholder="Please enter your zip code" required/>
+            <label for="PAYMENTREQUEST_0_SHIPTOZIP">Zip*</label> @Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOZIP")
+            <input id="PAYMENTREQUEST_0_SHIPTOZIP" type="text" name="PAYMENTREQUEST_0_SHIPTOZIP" placeholder="Please enter your zip code" value="@zip" required/>
         </div>
-        <label for="PAYMENTREQUEST_0_SHIPTOPHONENUM">Phone Number</label>
-        <input id="PAYMENTREQUEST_0_SHIPTOPHONENUM" type="text" name="PAYMENTREQUEST_0_SHIPTOPHONENUM" placeholder="Please enter your phone number"/>
-        <label for="church-atteding">Church Attending</label>
-        <input id="church-atteding" type="text" name="church-atteding" placeholder="Please enter the name of the church you attend"/>
-        <!--<label for="guest">Name of Others Attending (Please DO NOT list yourself!)</label>
-        <input id="guest" type="text" name="guest" placeholder="Please type in the name of your guest that will be attending"/>-->
+        <label for="PAYMENTREQUEST_0_SHIPTOPHONENUM">Phone Number</label>@Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOPHONENUM")
+        <input id="PAYMENTREQUEST_0_SHIPTOPHONENUM" type="text" name="PAYMENTREQUEST_0_SHIPTOPHONENUM" placeholder="Please enter your phone number" value="@phone"/>
+        <label for="church-atteding">Church Attending</label>@Html.ValidationMessage("church-atteding")
+        <input id="church-atteding" type="text" name="church-atteding" placeholder="Please enter the name of the church you attend" value="@church"/>
     </fieldset>
-    <fieldset id="Guest_Names" data-bind='appendNameInputs: $data.addField'>
-        <h2>Guests</h2>
-        <div class="fields">
-            <label for="guest_firstname_1">First Name</label>
-            <input id="guest_firstname_1" type="text" name="guest_firstname_1"/>
-            <label for="guest_lastname_1">Last Name</label>
-            <input id="guest_lastname_1" type="text" name="guest_lastname_1"/>
+    <fieldset id="Guest_Names" data-bind='appendGuestInputs: $data.addField'>
+        <h3>Guests</h3>
+        <div class="first-last-name-fields">
+            <label for="guest_firstname_1">First Name</label>@Html.ValidationMessage("guest_firstname")
+            <input id="guest_firstname_1" type="text" name="guest_firstname"/>
+            <label for="guest_lastname_1">Last Name</label>@Html.ValidationMessage("guest_lastname")
+            <input id="guest_lastname_1" type="text" name="guest_lastname"/>
         </div>
-        <input type="button" value="Add" class="add-guest" data-bind="click: $data.addField"/>
+        <input id="guest-count" name="guest-count" type="hidden" value="1" data-bind="value: $data.guestCount"/>
+        <input type="button" value="Add Another Guest" class="add-guest" data-bind="click: $data.addField, disable: $data.hasClickedTooManyTimes"/>
+        <div data-bind="visible: $data.hasClickedTooManyTimes">
+            You have excedeed the max number of guest you are allowed to register!
+        </div>
     </fieldset>
     <fieldset id="eventInfo">
         <div>
             <label for="num-att-two-day">Number attending Friday/Saturday</label>
-            <input id="num-att-two-day" type="number" name="num-att-two-day" class="qty" value="0" data-bind="value: $data.numAttTwoDaysQty, valueUpdate: 'afterkeydown'"/>
+            <input id="num-att-two-day" type="number" name="num-att-two-day" class="qty" value="@numAttTwoDays" data-bind="value: $data.numAttTwoDaysQty, valueUpdate: 'afterkeydown'"/>
             <input id="num-att-two-day-price" type="hidden" name="num-att-two-day-price" value="65" data-bind='value: $data.numAttTwoDaysPrice'/>
             <span>X $65 =</span><output name="num-att-two-day-output" data-bind="value: $data.numAttTwoDaysTotal"></output>
+            @Html.ValidationMessage("num-att-two-day")
         </div>
         <div>
             <label for="num-att-one-day">Number attending one day only</label>
-            <input id="num-att-one-day" type="number" name="num-att-one-day" class="qty" value="0" data-bind="value: $data.numAttOneDayQty, valueUpdate: 'afterkeydown'"/>
+            <input id="num-att-one-day" type="number" name="num-att-one-day" class="qty" value="@numAttOneDay" data-bind="value: $data.numAttOneDayQty, valueUpdate: 'afterkeydown'"/>
             <input id="num-att-one-day-price" type="hidden" name="num-att-one-day-price" value="35" data-bind='value: $data.numAttOneDayPrice'/>
             <span>X $35 =</span><output name="num-att-one-day-output" data-bind="value: $data.numAttOneDayTotal"></output>
+            @Html.ValidationMessage("num-att-one-day")
         </div>
         <div>
             <label for="num-att-underage">Number attending 12yrs old or younger</label>
-            <input id="num-att-underage" type="number" name="num-att-underage" class="qty" value="0" data-bind="value: $data.numAttUnderageQty, valueUpdate: 'afterkeydown'"/>
+            <input id="num-att-underage" type="number" name="num-att-underage" class="qty" value="@numAttUnderage" data-bind="value: $data.numAttUnderageQty, valueUpdate: 'afterkeydown'"/>
             <input id="num-att-underage-price" type="hidden" name="num-att-underage-price" value="25" data-bind='value: $data.numAttUnderagePrice'/>
             <span>X $25 =</span><output name="num-att-underage-ouput" data-bind="value: $data.numAttUnderageTotal"></output>
+            @Html.ValidationMessage("num-att-underage")
         </div>
         <div>
             <label for="num-golfing">Number playing golf</label>
-            <input id="num-golfing" type="number" name="num-golfing" class="qty" value="0" data-bind="value: $data.numGolfingQty, valueUpdate: 'afterkeydown'"/>
+            <input id="num-golfing" type="number" name="num-golfing" class="qty" value="@numGolfing" data-bind="value: $data.numGolfingQty, valueUpdate: 'afterkeydown'"/>
             <input id="num-golfing-price" type="hidden" name="num-golfing-price" value="45" data-bind='value: $data.numGolfingPrice'/>
             <span>X $45 =</span><output name="num-golfing-ouput" data-bind="value: $data.numGolfingTotal"></output>
+            @Html.ValidationMessage("num-golfing")
         </div>
         <div>
             <label for="num-paintballing">Number paintballing</label>
-            <input id="num-paintballing" type="number" name="num-paintballing" class="qty" value="0" data-bind="value: $data.numPaintballingQty, valueUpdate: 'afterkeydown'"/>
+            <input id="num-paintballing" type="number" name="num-paintballing" class="qty" value="@numPaintballing" data-bind="value: $data.numPaintballingQty, valueUpdate: 'afterkeydown'"/>
             <input id="num-paintballing-price" type="hidden" name="num-paintballing-price" value="5" data-bind='value: $data.numPaintballingPrice'/>
             <span>X $5 =</span><output name="num-paintballing-ouput" data-bind="value: $data.numPaintballingTotal"></output>
+            @Html.ValidationMessage("num-paintballing")
         </div>
         <div>
             <label for="num-fishing">Number fishing</label>
-            <input id="num-fishing" type="number" name="num-fishing" class="qty" value="0" data-bind="value: $data.numFishingQty, valueUpdate: 'afterkeydown'"/>
+            <input id="num-fishing" type="number" name="num-fishing" class="qty" value="@numFishing" data-bind="value: $data.numFishingQty, valueUpdate: 'afterkeydown'"/>
             <input id="num-fishing-price" type="hidden" name="num-fishing-price" value="25" data-bind='value: $data.numFishingPrice'/>
             <span>X $25 =</span><output name="num-fishing-output" data-bind="value: $data.numFishingTotal"></output>
+            @Html.ValidationMessage("num-fishing")
         </div>
         <label for="PAYMENTREQUEST_0_AMT">Total</label>
-        <output id="name="PAYMENTREQUEST_0_AMT" name="PAYMENTREQUEST_0_AMT" data-bind="value: $data.grandTotal"></output>
+        <output id="PAYMENTREQUEST_0_AMT" name="PAYMENTREQUEST_0_AMT" data-bind="value: $data.grandTotal">@amt</output>
+        @Html.ValidationMessage("PAYMENTREQUEST_0_AMT")
     </fieldset>
     <input type=submit class="submit" value=""/>
 </form>

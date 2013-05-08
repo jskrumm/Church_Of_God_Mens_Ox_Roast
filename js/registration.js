@@ -52,4 +52,4 @@ var RegistrationVM = function () {
     });
 };
  
-ko.applyBindings(new RegistrationVM()); 
+ko.applyBindings(new RegistrationVM(),document.getElementById('eventInfo')); 
