@@ -14,9 +14,9 @@ ko.bindingHandlers.appendGuestInputs = {
             lastSetsId = $(element).find("div.first-last-name-fields").length,
             count = lastSetsId + 1,
             html = '<div class="first-last-name-fields">' +
-                    '<label for="guest_firstname_' + count + '">First Name</label>@Html.ValidationMessage("guest_firstname")' +
+                    '<label for="guest_firstname_' + count + '">First Name</label>' +
                     '<input id="guest_firstname_' + count + '" type="text" name="guest_firstname"/>' +
-                    '<label for="guest_lastname_' + count + '">Last Name</label>@Html.ValidationMessage("guest_lastname")' +
+                    '<label for="guest_lastname_' + count + '">Last Name</label>' +
                     '<input id="guest_lastname_' + count + '" type="text" name="guest_lastname"/>' +
                     '</div>';
 
