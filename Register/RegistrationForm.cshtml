@@ -58,24 +58,73 @@
         Validator.Range(0,21, "You can not purchase more than 20 at a time.")
         );
 
+    int guestCount = 1;
+
     if (IsPost) {
-        //TODO: Validate guest info
-        //TODO: Format guest into string
-        //TODO: Validate state
-        if (Validation.IsValid() && !Request["PAYMENTREQUEST_0_AMT"].IsEmpty()) {
-            //Post back to either sandbox or live
+        var guestSB = new StringBuilder();
+        var guestFirstName = "";
+        var guestLastName = "";
+        string guestFullName = "";
+        string guestList = "";
+        int finalGuestCount = 0;
+        bool invalidGuestNameInputs = false;
+        int twoDayCount = Request["num-att-two-day"].IsEmpty() ? 0 : int.Parse(Request["num-att-two-day"]);
+        int oneDayCount = Request["num-att-one-day"].IsEmpty() ? 0 : int.Parse(Request["num-att-one-day"]);
+        int underageCount = Request["num-att-underage"].IsEmpty() ? 0 : int.Parse(Request["num-att-underage"]);
+
+        int golfCount = Request["num-golfing"].IsEmpty() ? 0 : int.Parse(Request["num-golfing"]);
+        int paintballCount = Request["num-paintballing"].IsEmpty() ? 0 : int.Parse(Request["num-paintballing"]);
+        int fishingCount = Request["num-fishing"].IsEmpty() ? 0 : int.Parse(Request["num-fishing"]);
+
+        int totalMarkedForRegistration = twoDayCount + oneDayCount + underageCount;
+        bool invalidRegistrationCount = false;
+
+        NameValueCollection postedForm = new NameValueCollection(Request.Form); //Create new name/value collection from form data
+
+        guestCount = Request["guest-count"].IsEmpty() ? 1 : int.Parse(Request["guest-count"]);
+        @guestCount
+        for(int i=0; i<guestCount; i++)
+        {
+            guestFirstName = Request["guest_firstname_" + guestCount].Trim();
+            guestLastName = Request["guest_lastname_" + guestCount].Trim();
+
+            if (!guestFirstName.IsEmpty() && !guestLastName.IsEmpty()) {
+          
+                guestFullName = guestLastName + ", " + guestFirstName + ";";
+
+                guestSB.Append(guestFirstName);
+                guestSB.Remove(guestSB.Length - 1, 1); // remove the last ';'
+
+                finalGuestCount += 1;
+            }
+            
+            guestList = guestSB.ToString();
+
+            postedForm.Remove("guest_firstname_" + guestCount);
+            postedForm.Remove("guest_lastname_" + guestCount);
+        }
+
+        @finalGuestCount;
+        @guestCount;
+
+        if (finalGuestCount >=1 && finalGuestCount != guestCount) {
+            invalidGuestNameInputs = true;
+        } else {
+            if ((finalGuestCount + 1) != totalMarkedForRegistration) {
+                invalidRegistrationCount = true;
+            }
+        }
+
+        if (Validation.IsValid() && !Request["PAYMENTREQUEST_0_AMT"].IsEmpty() && !Request["PAYMENTREQUEST_0_SHIPTOSTATE"].IsEmpty() && !invalidGuestNameInputs && !invalidRegistrationCount) {
+             //Post back to either sandbox or live
             string strSandboxPayInfoUrl = App.SandboxPayInfoUrl;
             string strSandboxPayAuthUrl = App.SandboxPayAuthUrl;
             //string strLive = "https://www.paypal.com/cgi-bin/webscr";
-    
-            NameValueCollection postedForm = new NameValueCollection(Request.Form); //Create new name/value collection from form data
 
             //Remove any unnessary fields before sending data to PayPal
             postedForm.Remove("firstname");
             postedForm.Remove("lastname");
             postedForm.Remove("church-atteding");
-            postedForm.Remove("guest_firstname");
-            postedForm.Remove("guest_lastname");
             postedForm.Remove("guest-count");
             postedForm.Remove("num-att-two-day");
             postedForm.Remove("num-att-two-day-price");
@@ -102,17 +151,17 @@
             postedForm.Set("CANCELURL", App.ExpressCheckoutCancelUrl);
 
             //Build query string from name/value collection using StringBuilder
-            var sb = new StringBuilder();
+            var formSB = new StringBuilder();
             var postedFormItems = postedForm.AllKeys.SelectMany(postedForm.GetValues, (k, v) => new {key = k, value = v});
 
             foreach(var item in postedFormItems) {
-                sb.AppendFormat("{0}={1}&", item.key, HttpUtility.UrlEncode(item.value.ToString()));
+                formSB.AppendFormat("{0}={1}&", item.key, HttpUtility.UrlEncode(item.value.ToString()));
             }
 
-            sb.Remove(sb.Length - 1, 1); // remove the last '&'
-            @sb.ToString()
+            formSB.Remove(formSB.Length - 1, 1); // remove the last '&'
+
             //Do Post
-            DoPostPayPalData doPostToPayPal = new DoPostPayPalData(sb.ToString(), App.SandboxPayInfoUrl);
+            DoPostPayPalData doPostToPayPal = new DoPostPayPalData(formSB.ToString(), App.SandboxPayInfoUrl);
             string response = doPostToPayPal.Post();
 
             NameValueCollection responseObj = HttpUtility.ParseQueryString(response); //Parse server response
@@ -127,7 +176,7 @@
 
                    dynamic reg = new ExpandoObject();
                    reg.ID = timeStamp;
-                   reg.Attendee = Request["PAYMENTREQUEST_0_SHIPTONAME"];
+                   reg.Attendee = Request["lastname"] + ", " + Request["firstname"];
 
                    dynamic regDetails = new ExpandoObject();
                    regDetails.ID = timeStamp;
@@ -137,14 +186,14 @@
                    regDetails.Zip = Request["PAYMENTREQUEST_0_SHIPTOZIP"];
                    regDetails.Phone_Num = Request["PAYMENTREQUEST_0_SHIPTOPHONENUM"];
                    regDetails.Church = Request["church-atteding"];
-                   regDetails.Attendees_Guests = Request["guest"];
-                   regDetails.Num_Attending_Two_Days = Request["num-att-two-day"];
-                   regDetails.Num_Attending_One_Day = Request["num-att-one-day"];
-                   regDetails.Num_12andYounder_Attending = Request["num-att-underage"];
-                   regDetails.Num_Golfing = Request["num-golfing"];
-                   regDetails.Num_Paintballing = Request["num-paintballing"];
-                   regDetails.Num_Fishing = Request["num-fishing"];
-                   regDetails.Total_Paid = Request["PAYMENTREQUEST_0_AMT"];
+                   regDetails.Attendees_Guests = guestList;
+                   regDetails.Num_Attending_Two_Days = twoDayCount;
+                   regDetails.Num_Attending_One_Day = oneDayCount;
+                   regDetails.Num_12andYounder_Attending = underageCount;
+                   regDetails.Num_Golfing = golfCount;
+                   regDetails.Num_Paintballing = paintballCount;
+                   regDetails.Num_Fishing = fishingCount;
+                   regDetails.Total_Paid = int.Parse(Request["PAYMENTREQUEST_0_AMT"]);
 
                    var db = SD.Database.OpenFile(Server.MapPath("~/App_Data/COGMOR.sdf"));
 
@@ -158,6 +207,19 @@
                     var stackTrace = ex.StackTrace;
                     @errMsg;
                     @stackTrace;
+                    @Request["PAYMENTREQUEST_0_SHIPTOSTREET"];
+                   @Request["PAYMENTREQUEST_0_SHIPTOCITY"];
+                   @Request["PAYMENTREQUEST_0_SHIPTOSTATE"];
+                   @Request["PAYMENTREQUEST_0_SHIPTOZIP"];
+                   @Request["PAYMENTREQUEST_0_SHIPTOPHONENUM"];
+                   @Request["church-atteding"];
+                   @guestList;
+                   @twoDayCount;
+                   @oneDayCount;
+                   @underageCount;
+                   @golfCount;
+                   @fishingCount;
+                   @Request["PAYMENTREQUEST_0_AMT"];
                 }
            
                 //Response.Redirect(strSandboxPayAuthUrl + "?cmd=" + expressCheckoutCmd + "&token=" + token);
@@ -166,14 +228,23 @@
             }   
         } else {
            
-            //if (Request["PAYMENTREQUEST_0_SHIPTOSTATE"].IsEmpty()) {
-                //ModelState.AddFormError("Please select a state.");
-            //}else 
-            if (Request["PAYMENTREQUEST_0_AMT"].IsEmpty()) {
-                ModelState.AddFormError("You choose at least 1 event or activity to complete registration.");
-            } else {
-                ModelState.AddFormError("You must resolve all errors before you can proceed.");
+            ModelState.AddFormError("You must resolve all errors before you can proceed.");
+
+            if (invalidRegistrationCount) {
+                ModelState.AddFormError("The total number of guest plus yourself must match the total counts for registring for two day registration, one day registration, or underage registration");
             }
+
+            if (invalidGuestNameInputs) {
+                ModelState.AddFormError("If you wish to register a guest please provide us with there first and last name; starting with the first guest fields you come to and adding more if needed.");
+            }
+
+            if (Request["PAYMENTREQUEST_0_SHIPTOSTATE"].IsEmpty()) {
+                ModelState.AddFormError("Please choose a state from the dropdown.");
+            }
+
+            if (Request["PAYMENTREQUEST_0_AMT"].IsEmpty()) {
+                ModelState.AddFormError("Please choose at least 1 event or activity to complete registration.");
+            }   
         }
     }
     //http://www.netomatix.com/httppostdata.aspx
@@ -181,7 +252,7 @@
 }
 
 <form action="" method="post">
-    @Html.ValidationSummary()
+    @Html.ValidationSummary(true)
     <fieldset id="generalInfo">
         <div class="name-fields">
             @Html.Label("Your First Name*", "firstname")@Html.ValidationMessage("firstname")
@@ -193,18 +264,24 @@
         @Html.Label("Address*", "PAYMENTREQUEST_0_SHIPTOSTREET")@Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOSTREET")
         @Html.TextBox("PAYMENTREQUEST_0_SHIPTOSTREET",Request["PAYMENTREQUEST_0_SHIPTOSTREET"],new {required="required", placeholder="Please enter your address"})
         <div class="csz-fields">
-            @Html.Label("City*", "PAYMENTREQUEST_0_SHIPTOCITY")@Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOCITY")
+            @Html.Label("City*", "PAYMENTREQUEST_0_SHIPTOCITY")
             @Html.TextBox("PAYMENTREQUEST_0_SHIPTOCITY",Request["PAYMENTREQUEST_0_SHIPTOCITY"],new {required="required", placeholder="Please enter your city"})
             <label for="PAYMENTREQUEST_0_SHIPTOSTATE">State*</label>@Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOSTATE")
-            <select id="PAYMENTREQUEST_0_SHIPTOSTATE">
+            
+            <select id="PAYMENTREQUEST_0_SHIPTOSTATE" name="PAYMENTREQUEST_0_SHIPTOSTATE">
                 <option value="">Please Select...</option>
                 @foreach (var state in GetStateDropdown.GetStates())
                 {
-                    <option value="@state.Key" @(Request["PAYMENTREQUEST_0_SHIPTOSTATE"] == state.Key ? " selected=\"selected\"" : "")>@state.Value</option>
+                    <option value="@state.Key" @(Request["PAYMENTREQUEST_0_SHIPTOSTATE"] == state.Key ? " selected" : "")>@state.Value</option>
                 }
             </select>
-            @Html.Label("Zip*", "PAYMENTREQUEST_0_SHIPTOZIP")@Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOZIP")
+            @Html.Label("Zip*", "PAYMENTREQUEST_0_SHIPTOZIP")
             @Html.TextBox("PAYMENTREQUEST_0_SHIPTOZIP",Request["PAYMENTREQUEST_0_SHIPTOZIP"],new {required="required", placeholder="Please enter your zip code"})
+
+            <div class="csz-field-errors">
+                @Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOCITY")
+                @Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOZIP")
+            </div>
         </div>
         @Html.Label("Phone Number", "PAYMENTREQUEST_0_SHIPTOPHONENUM")@Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOPHONENUM")
         @Html.TextBox("PAYMENTREQUEST_0_SHIPTOPHONENUM",Request["PAYMENTREQUEST_0_SHIPTOPHONENUM"],new {placeholder="Please enter your phone number"})
@@ -212,27 +289,35 @@
         @Html.Label("Church You Attend", "church-atteding")@Html.ValidationMessage("church-atteding")
         @Html.TextBox("church-atteding",Request["church-atteding"],new {placeholder="Please enter the name of the church you attend"})
     </fieldset>
-    <fieldset id="Guest_Names" data-bind='appendGuestInputs: $data.addField'>
+    <fieldset id="guests" data-bind='appendGuestInputs: $data.addField'>
         <h3>Guests</h3>
-        <div class="first-last-name-fields">
-            <label for="guest_firstname_1">First Name</label>
-            <input id="guest_firstname_1" type="text" name="guest_firstname"/>
-            <label for="guest_lastname_1">Last Name</label>
-            <input id="guest_lastname_1" type="text" name="guest_lastname"/>
-        </div>
-        <input id="guest-count" name="guest-count" type="hidden" value="1" data-bind="value: $data.guestCount"/>
+        @for (var j=1; j<=guestCount; j++)
+        {
+            <div class="first-last-name-fields">
+                <label for="guest_firstname_@j">First Name</label>
+                <input id="guest_firstname_@j" type="text" name="guest_firstname_@j" value="@Request["guest_firstname_" + j]"/>
+                <label for="guest_lastname_@j">Last Name</label>
+                <input id="guest_lastname_@j" type="text" name="guest_lastname_@j" value="@Request["guest_lastname_" + j]"/>
+            </div>
+        }
+        <input id="guest-count" name="guest-count" type="hidden" value="@guestCount" data-initalVal="@guestCount" data-bind="value: $data.guestCount"/>
         <input type="button" value="Add Another Guest" class="add-guest" data-bind="click: $data.addField, disable: $data.hasClickedTooManyTimes"/>
         <div data-bind="visible: $data.hasClickedTooManyTimes">
             You have excedeed the max number of guest you are allowed to register!
         </div>
     </fieldset>
     <fieldset id="eventInfo">
+        <p>
+            *** You must have your guest and yourself registered for either two days, one day. 
+            If your guest is under age please register them using the underage section and not in the two day or one day. 
+            All ages under 12 will attend the same amount of days as their guardian. ***
+        </p>
         <div>
             @Html.Label("Number attending Friday/Saturday", "num-att-two-day")
-            @Html.TextBox("num-att-two-day",Request["num-att-two-day"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numAttTwoDaysQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}})            
+            @Html.TextBox("num-att-two-day",Request["num-att-two-day"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numAttTwoDaysQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}, {"data-initalVal", Request["num-att-two-day"]}})            
             
             <input id="num-att-two-day-price" type="hidden" name="num-att-two-day-price" value="65" data-bind='value: $data.numAttTwoDaysPrice'/>
-            <span>X $65 =</span><output name="num-att-two-day-output" data-bind="value: $data.numAttTwoDaysTotal"></output>
+            <span>X $65 =</span><output name="num-att-two-day-output" data-bind="value: $data.numAttTwoDaysTotal">@Request["num-att-two-day-output"]</output>
             @Html.ValidationMessage("num-att-two-day")
         </div>
         <div>
@@ -240,7 +325,7 @@
             @Html.TextBox("num-att-one-day",Request["num-att-one-day"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numAttOneDayQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}}) 
 
             <input id="num-att-one-day-price" type="hidden" name="num-att-one-day-price" value="35" data-bind='value: $data.numAttOneDayPrice'/>
-            <span>X $35 =</span><output name="num-att-one-day-output" data-bind="value: $data.numAttOneDayTotal"></output>
+            <span>X $35 =</span><output name="num-att-one-day-output" data-bind="value: $data.numAttOneDayTotal">@Request["num-att-one-day-output"]</output>
             @Html.ValidationMessage("num-att-one-day")
         </div>
         <div>
@@ -248,7 +333,7 @@
             @Html.TextBox("num-att-underage",Request["num-att-underage"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numAttUnderageQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}}) 
 
             <input id="num-att-underage-price" type="hidden" name="num-att-underage-price" value="25" data-bind='value: $data.numAttUnderagePrice'/>
-            <span>X $25 =</span><output name="num-att-underage-ouput" data-bind="value: $data.numAttUnderageTotal"></output>
+            <span>X $25 =</span><output name="num-att-underage-ouput" data-bind="value: $data.numAttUnderageTotal">@Request["num-att-underage-ouput"]</output>
             @Html.ValidationMessage("num-att-underage")
         </div>
         <div>
@@ -256,7 +341,7 @@
             @Html.TextBox("num-golfing",Request["num-golfing"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numGolfingQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}}) 
 
             <input id="num-golfing-price" type="hidden" name="num-golfing-price" value="45" data-bind='value: $data.numGolfingPrice'/>
-            <span>X $45 =</span><output name="num-golfing-ouput" data-bind="value: $data.numGolfingTotal"></output>
+            <span>X $45 =</span><output name="num-golfing-ouput" data-bind="value: $data.numGolfingTotal">@Request["num-golfing-ouput"]</output>
             @Html.ValidationMessage("num-golfing")
         </div>
         <div>
@@ -264,7 +349,7 @@
             @Html.TextBox("num-paintballing",Request["num-paintballing"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numPaintballingQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}}) 
 
             <input id="num-paintballing-price" type="hidden" name="num-paintballing-price" value="5" data-bind='value: $data.numPaintballingPrice'/>
-            <span>X $5 =</span><output name="num-paintballing-ouput" data-bind="value: $data.numPaintballingTotal"></output>
+            <span>X $5 =</span><output name="num-paintballing-ouput" data-bind="value: $data.numPaintballingTotal">@Request["num-paintballing-ouput"]</output>
             @Html.ValidationMessage("num-paintballing")
         </div>
         <div>
@@ -272,12 +357,12 @@
             @Html.TextBox("num-fishing",Request["num-fishing"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numFishingQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}}) 
 
             <input id="num-fishing-price" type="hidden" name="num-fishing-price" value="25" data-bind='value: $data.numFishingPrice'/>
-            <span>X $25 =</span><output name="num-fishing-output" data-bind="value: $data.numFishingTotal"></output>
+            <span>X $25 =</span><output name="num-fishing-output" data-bind="value: $data.numFishingTotal">@Request["num-fishing-output"]</output>
             @Html.ValidationMessage("num-fishing")
         </div>
-        <label for="PAYMENTREQUEST_0_AMT">Total</label>
+        <label for="PAYMENTREQUEST_0_AMT" class="totalLabel">Total</label>
         <input id="PAYMENTREQUEST_0_AMT" type="hidden" name="PAYMENTREQUEST_0_AMT" data-bind="value: $data.grandTotal"/>
-        <output id="total" name="total" data-bind="value: $data.grandTotal"></output>
+        <output id="total" name="total" data-bind="value: $data.grandTotal">@Request["total"]</output>
     </fieldset>
     <input type=submit class="submit" value=""/>
 </form>

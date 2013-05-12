@@ -15,9 +15,9 @@ ko.bindingHandlers.appendGuestInputs = {
             count = lastSetsId + 1,
             html = '<div class="first-last-name-fields">' +
                     '<label for="guest_firstname_' + count + '">First Name</label>' +
-                    '<input id="guest_firstname_' + count + '" type="text" name="guest_firstname"/>' +
+                    '<input id="guest_firstname_' + count + '" type="text" name="guest_firstname_' + count + '"/>' +
                     '<label for="guest_lastname_' + count + '">Last Name</label>' +
-                    '<input id="guest_lastname_' + count + '" type="text" name="guest_lastname"/>' +
+                    '<input id="guest_lastname_' + count + '" type="text" name="guest_lastname_' + count + '"/>' +
                     '</div>';
 
         if (typeof valueUnwrapped === 'object') {
@@ -28,4 +28,4 @@ ko.bindingHandlers.appendGuestInputs = {
     }
 };
 
-ko.applyBindings(appendGuestInputsVM, document.getElementById('Guest_Names'));
+ko.applyBindings(appendGuestInputsVM);

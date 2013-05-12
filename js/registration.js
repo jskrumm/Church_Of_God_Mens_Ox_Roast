@@ -11,7 +11,7 @@ var getTotal = function (qty, price) {
 var RegistrationVM = function () {
     var self = this;
 
-    self.numAttTwoDaysQty = ko.observable(0);
+    self.numAttTwoDaysQty = ko.observable(parseInt($("#num-att-two-day").attr("data-initalVal")));
     self.numAttTwoDaysPrice = ko.observable(65);
     self.numAttTwoDaysTotal = ko.computed(function () {
         return getTotal(self.numAttTwoDaysQty(), self.numAttTwoDaysPrice());

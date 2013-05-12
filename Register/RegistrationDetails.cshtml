@@ -68,6 +68,7 @@
             NameValueCollection confirmPaymentResponseObj = HttpUtility.ParseQueryString(confirmPaymentResponse); //Parse server response
      
             if (confirmPaymentResponseObj.Get("ACK") == "Success") {
+                //Updated  database with succss order info from paypal
                <text>
                     Than you for registering for the Ox Roast. When you arrive at the Ox Roast on Septermber 6th 2013 we will veify that you have registered for the Ox Roast. 
                     Below is a copy of your registration please print so that you have a copy for your records.You will not be required to show a copy of your registration the printing
