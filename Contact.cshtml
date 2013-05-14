@@ -11,9 +11,11 @@
 
 @section js {
     <script src="js/menubar.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
 }
 
 <div class="contact-us">
     @RenderPage("~/Contact Us/EmailForm.cshtml")
-    @RenderPage("~/Contact Us/FAQ.cshtml")
+    @*@RenderPage("~/Contact Us/FAQ.cshtml")*@
 </div>

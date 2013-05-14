@@ -174,38 +174,41 @@
                    Regex regexObj = new Regex(@"[^\d]");
                    var timeStamp = regexObj.Replace(responseObj.Get("TIMESTAMP"), "");
 
+                   Regex phoneNumberRegexObj = new Regex(@"(?<!^)\+|[^\d]");
+                   int? phoneNumber = Request["PAYMENTREQUEST_0_SHIPTOPHONENUM"].IsEmpty() ? (int?)null : int.Parse(phoneNumberRegexObj.Replace(Request["PAYMENTREQUEST_0_SHIPTOPHONENUM"], "").Trim());
+
                    dynamic reg = new ExpandoObject();
                    reg.ID = timeStamp;
                    reg.Attendee = Request["lastname"] + ", " + Request["firstname"];
 
                    dynamic regDetails = new ExpandoObject();
                    regDetails.ID = timeStamp;
-                   regDetails.Adress = Request["PAYMENTREQUEST_0_SHIPTOSTREET"];
+                   regDetails.Address = Request["PAYMENTREQUEST_0_SHIPTOSTREET"];
                    regDetails.City = Request["PAYMENTREQUEST_0_SHIPTOCITY"];
                    regDetails.State = Request["PAYMENTREQUEST_0_SHIPTOSTATE"];
                    regDetails.Zip = Request["PAYMENTREQUEST_0_SHIPTOZIP"];
-                   regDetails.Phone_Num = Request["PAYMENTREQUEST_0_SHIPTOPHONENUM"];
+                   regDetails.Phone_Num = phoneNumber;
                    regDetails.Church = Request["church-atteding"];
                    regDetails.Attendees_Guests = guestList;
                    regDetails.Num_Attending_Two_Days = twoDayCount;
                    regDetails.Num_Attending_One_Day = oneDayCount;
-                   regDetails.Num_12andYounder_Attending = underageCount;
+                   regDetails.Num_12andYounger_Attending = underageCount;
                    regDetails.Num_Golfing = golfCount;
                    regDetails.Num_Paintballing = paintballCount;
                    regDetails.Num_Fishing = fishingCount;
-                   regDetails.Total_Paid = int.Parse(Request["PAYMENTREQUEST_0_AMT"]);
+                   regDetails.Total_Paided = int.Parse(Request["PAYMENTREQUEST_0_AMT"]);
 
                    var db = SD.Database.OpenFile(Server.MapPath("~/App_Data/COGMOR.sdf"));
 
                    db.Registration.Insert(reg);
                    db.RegistrationDetails.Insert(regDetails);
 
-                   db.Close();
+                   //db.Close();
 
                 } catch (Exception ex) {
                     var errMsg = ex.Message;
                     var stackTrace = ex.StackTrace;
-                    @errMsg;
+                  @errMsg;
                     @stackTrace;
                     @Request["PAYMENTREQUEST_0_SHIPTOSTREET"];
                    @Request["PAYMENTREQUEST_0_SHIPTOCITY"];

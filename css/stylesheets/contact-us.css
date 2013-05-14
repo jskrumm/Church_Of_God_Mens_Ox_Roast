@@ -9,78 +9,120 @@
   margin-top: 50px;
 }
 /* line 10, ../sass/contact-us.scss */
+.contact-us .success-msg {
+  color: #468847;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 16px;
+}
+/* line 17, ../sass/contact-us.scss */
 .contact-us form {
   margin-left: 5%;
   text-align: left;
   width: 90%;
 }
-/* line 15, ../sass/contact-us.scss */
+/* line 22, ../sass/contact-us.scss */
 .contact-us form p {
-  margin-left: 15px;
+  text-align: center;
+  font-style: italic;
 }
-/* line 19, ../sass/contact-us.scss */
+/* line 27, ../sass/contact-us.scss */
 .contact-us form fieldset {
   border: none;
+  margin: 0;
+  padding: 0;
 }
-/* line 23, ../sass/contact-us.scss */
+/* line 33, ../sass/contact-us.scss */
 .contact-us form input, .contact-us form textarea, .contact-us form label {
   display: block;
   width: 100%;
   color: #555555;
 }
-/* line 29, ../sass/contact-us.scss */
+/* line 39, ../sass/contact-us.scss */
 .contact-us form input, .contact-us form textarea {
   border: 1px solid #CCCCCC;
   border-radius: 4px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
   padding: 4px 6px;
 }
-/* line 35, ../sass/contact-us.scss */
+/* line 45, ../sass/contact-us.scss */
 .contact-us form input:focus, .contact-us form textarea:focus {
   border-color: rgba(16, 78, 139, 0.8);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(16, 78, 139, 0.6);
 }
-/* line 42, ../sass/contact-us.scss */
+/* line 52, ../sass/contact-us.scss */
 .contact-us form input {
   height: 20px;
   margin-bottom: 20px;
 }
-/* line 46, ../sass/contact-us.scss */
+/* line 56, ../sass/contact-us.scss */
 .contact-us form input.submit {
   font-weight: bold;
   height: 40px;
   margin-top: 20px;
   width: 100px;
 }
-/* line 54, ../sass/contact-us.scss */
+/* line 64, ../sass/contact-us.scss */
 .contact-us form label {
   margin-bottom: 5px;
   margin-left: 5px;
   font-weight: bold;
 }
-/* line 60, ../sass/contact-us.scss */
+/* line 70, ../sass/contact-us.scss */
 .contact-us form textarea {
   height: 200px;
+  margin-bottom: 20px;
 }
-/* line 65, ../sass/contact-us.scss */
+/* line 75, ../sass/contact-us.scss */
+.contact-us form .validation-summary-errors {
+  border: 2px solid #B94A48;
+  color: #B94A48;
+  margin-bottom: 20px;
+  padding: 5px;
+}
+/* line 81, ../sass/contact-us.scss */
+.contact-us form .validation-summary-errors ul {
+  margin-bottom: 0;
+}
+/* line 85, ../sass/contact-us.scss */
+.contact-us form .validation-summary-errors + p {
+  display: none;
+}
+/* line 90, ../sass/contact-us.scss */
+.contact-us form .field-validation-error {
+  color: #B94A48;
+}
+/* line 94, ../sass/contact-us.scss */
+.contact-us form .input-validation-error {
+  background-color: pink;
+  color: #B94A48;
+  border-color: #B94A48;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+}
+/* line 99, ../sass/contact-us.scss */
+.contact-us form .input-validation-error:focus {
+  border-color: rgba(149, 59, 57, 0.8);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(149, 59, 57, 0.6);
+}
+/* line 106, ../sass/contact-us.scss */
 .contact-us .faq {
   margin-left: 6%;
   text-align: left;
 }
-/* line 69, ../sass/contact-us.scss */
+/* line 110, ../sass/contact-us.scss */
 .contact-us .faq ul {
   list-style: none;
   margin: 0;
 }
-/* line 73, ../sass/contact-us.scss */
+/* line 114, ../sass/contact-us.scss */
 .contact-us .faq ul li {
   padding: 10px 0;
 }
-/* line 75, ../sass/contact-us.scss */
+/* line 116, ../sass/contact-us.scss */
 .contact-us .faq ul li span {
   font-weight: bold;
 }
-/* line 79, ../sass/contact-us.scss */
+/* line 120, ../sass/contact-us.scss */
 .contact-us .faq ul li p {
   margin: 0 0 0 10px;
 }

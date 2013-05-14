@@ -1,42 +1,70 @@
 ﻿@using System.Net.Mail;
 @using System.Net.Security;
 @using System.Security.Cryptography.X509Certificates;
+@using System.Web.Helpers;
+@using Microsoft.Web.Helpers;
 @{
+    Validation.Add("name", 
+        Validator.Required("Please provide use with your name") 
+        );
+    Validation.Add("email", 
+        Validator.Required("Please provide us with a valid email address"),
+        Validator.Regex(@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$", "Invalid format for an email address.")
+        );
+    Validation.Add("message", 
+        Validator.Required("Please provide us with your question.") 
+        );
     if (IsPost)
     {
-        var email = Request["Email"];       
-        var subject = Request["Subject"];       
-        var message = Request["Message"];       
-        using (var client = new SmtpClient())
-        {
+        if (!ReCaptcha.Validate(ReCaptcha.PrivateKey)) {
+            ModelState.AddError("ReCaptcha","The code entered doesn't match the image.");
+        }
+
+        if (ModelState.IsValid) {
+            if (Validation.IsValid())
+            {
+                var email = Request["Email"];       
+                var subject = Request["Subject"];       
+                var message = Request["Message"];       
+                using (var client = new SmtpClient())
+                {
             
-             var msg = new MailMessage();
-             msg.From = new MailAddress(email);
-             msg.To.Add("info@ohiomensoxroast.org");
-             msg.Subject = subject;
-             msg.Body = message;
+                     var msg = new MailMessage();
+                     msg.From = new MailAddress(email);
+                     msg.To.Add("info@ohiomensoxroast.org");
+                     msg.Subject = subject;
+                     msg.Body = message;
 
-             client.EnableSsl = false;
-             ServicePointManager.ServerCertificateValidationCallback = delegate(object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
+                     client.EnableSsl = false;
+                     ServicePointManager.ServerCertificateValidationCallback = delegate(object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
 
-             client.Send(msg);
-             <text>The email has been successfully sent</text>
+                     client.Send(msg);
+                     <p class="success-msg">Your email has been successfully sent</p>
+                 }
+             } else {
+                 ModelState.AddFormError("You must resolve the following errors:");
+             }
          }
      }
 }
 
 <form action="" method="post">
+    @Html.ValidationSummary()
     <p>
-        You can use the form below to contact us with any questions you may have about the Ox Roast.
+        ** You can use the form below to contact us with any questions you may have about the Ox Roast. **
     </p>
     <fieldset>
-        <label for="name">Your Name</label>
-        <input id="name" type="text" name="name" placeholder="Please enter your name" required/>
-        <label for="email">Email Address</label>
-        <input id="email" type="email" name="email" placeholder="Please enter your email address" required/>
-        <label for="message">Question ?</label>
-        <textarea id="message" name="message"
-        placeholder="Please tells what you would like to know about the Ox Roast" spellcheck required></textarea>
+        @Html.Label("Your Name", "name")
+        @Html.TextBox("name",Request["name"],new {required="required", placeholder="Please enter your name"})
+
+        @Html.Label("Email Address", "email")
+        @Html.TextBox("email",Request["email"],new {required="required", placeholder="Please enter your email address"})
+
+        @Html.Label("Question ?", "message")
+        @Html.TextArea("message",Request["message"],new {required="required", placeholder="Please tells what you would like to know about the Ox Roast", spellcheck="spellcheck"})
+
+        @ReCaptcha.GetHtml(ReCaptcha.PublicKey, theme: "white")
+
         <input type="submit" value="Send" class="submit" />
     </fieldset> 
 </form>

@@ -10,4 +10,42 @@
     p {
         text-align: left;
     }
+
+    section {
+        width: 100%;
+        margin: 25px 0;
+        border-top: 1px dashed #ccc;
+        padding-top: 25px;
+
+        div {
+            width: 45%;
+            display: inline-block;
+
+            &:first-child {
+                float: left;
+
+                img {
+                    width: 50%;
+                }
+            }
+
+            h3 {
+                color: $or-blue-02;
+                font-weight: bold;
+                text-transform: uppercase;
+                text-decoration: underline;
+                font-size: 20px;
+            }
+
+            span {
+                display:block;
+                color: #555555;
+                margin-bottom: 10px;
+                font-size: 16px;
+                font-weight: bold;
+            }
+        }
+    }
+
+
 }
