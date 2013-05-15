@@ -9,12 +9,32 @@
   margin-top: 50px;
 }
 /* line 10, ../sass/speakers.scss */
+.speakers h2 {
+  color: #104e8b;
+  margin-top: 30px;
+}
+/* line 15, ../sass/speakers.scss */
+.speakers h3 {
+  color: #555555;
+}
+/* line 18, ../sass/speakers.scss */
 .speakers img {
   float: left;
   margin-right: 10px;
-  margin-top: 18px;
+  margin-top: 4px;
 }
-/* line 15, ../sass/speakers.scss */
+/* line 23, ../sass/speakers.scss */
+.speakers img.current-special-music {
+  margin-top: 0;
+  width: 25%;
+}
+/* line 28, ../sass/speakers.scss */
 .speakers p {
+  text-align: left;
+}
+/* line 32, ../sass/speakers.scss */
+.speakers section {
+  border-top: 1px dashed #ccc;
+  margin-top: 150px;
   text-align: left;
 }

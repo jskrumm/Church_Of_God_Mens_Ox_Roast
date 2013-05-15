@@ -28,3 +28,7 @@
 .activities section p {
   text-align: left;
 }
+/* line 29, ../sass/activities.scss */
+.activities section h2 {
+  color: #555555;
+}

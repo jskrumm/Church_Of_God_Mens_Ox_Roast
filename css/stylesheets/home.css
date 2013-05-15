@@ -13,26 +13,30 @@
   text-align: left;
 }
 /* line 14, ../sass/home.scss */
+.about a {
+  text-decoration: none;
+}
+/* line 17, ../sass/home.scss */
 .about section {
   width: 100%;
   margin: 25px 0;
   border-top: 1px dashed #ccc;
   padding-top: 25px;
 }
-/* line 20, ../sass/home.scss */
+/* line 23, ../sass/home.scss */
 .about section div {
   width: 45%;
   display: inline-block;
 }
-/* line 24, ../sass/home.scss */
+/* line 27, ../sass/home.scss */
 .about section div:first-child {
   float: left;
 }
-/* line 27, ../sass/home.scss */
+/* line 30, ../sass/home.scss */
 .about section div:first-child img {
   width: 50%;
 }
-/* line 32, ../sass/home.scss */
+/* line 35, ../sass/home.scss */
 .about section div h3 {
   color: #104e8b;
   font-weight: bold;
@@ -40,7 +44,7 @@
   text-decoration: underline;
   font-size: 20px;
 }
-/* line 40, ../sass/home.scss */
+/* line 43, ../sass/home.scss */
 .about section div span {
   display: block;
   color: #555555;
