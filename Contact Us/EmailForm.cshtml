@@ -60,8 +60,8 @@
         @Html.Label("Email Address", "email")
         @Html.TextBox("email",Request["email"],new {required="required", placeholder="Please enter your email address"})
 
-        @Html.Label("Question ?", "message")
-        @Html.TextArea("message",Request["message"],new {required="required", placeholder="Please tells what you would like to know about the Ox Roast", spellcheck="spellcheck"})
+        @Html.Label("Question?", "message")
+        @Html.TextArea("message",Request["message"],new {required="required", placeholder="Please tell us what you would like to know about the Ox Roast", spellcheck="spellcheck"})
 
         @ReCaptcha.GetHtml(ReCaptcha.PublicKey, theme: "white")
 
