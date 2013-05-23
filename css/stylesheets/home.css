@@ -16,27 +16,27 @@
 .about a {
   text-decoration: none;
 }
-/* line 17, ../sass/home.scss */
+/* line 18, ../sass/home.scss */
 .about section {
   width: 100%;
   margin: 25px 0;
   border-top: 1px dashed #ccc;
   padding-top: 25px;
 }
-/* line 23, ../sass/home.scss */
+/* line 24, ../sass/home.scss */
 .about section div {
   width: 45%;
   display: inline-block;
 }
-/* line 27, ../sass/home.scss */
+/* line 28, ../sass/home.scss */
 .about section div:first-child {
   float: left;
 }
-/* line 30, ../sass/home.scss */
+/* line 31, ../sass/home.scss */
 .about section div:first-child img {
   width: 50%;
 }
-/* line 35, ../sass/home.scss */
+/* line 36, ../sass/home.scss */
 .about section div h3 {
   color: #104e8b;
   font-weight: bold;
@@ -44,7 +44,7 @@
   text-decoration: underline;
   font-size: 20px;
 }
-/* line 43, ../sass/home.scss */
+/* line 44, ../sass/home.scss */
 .about section div span {
   display: block;
   color: #555555;

@@ -1,10 +1,17 @@
 ﻿@using System;
 @using System.IO;
 @using System.Text;
+@using System.Text.RegularExpressions;
 @using System.Net;
 @using System.Web;
 @using System.Collections.Specialized;
+@using System.Dynamic;
+@using SD = Simple.Data;
+@using System.Web.Mvc;
+@using System.Web.Helpers;
 @{
+    List<dynamic> registrationInfo = new List<dynamic>();
+
     string token = Request["token"];
     string payerId = Request["PayerId"];
     string method = "GetExpressCheckoutDetails";
@@ -30,6 +37,34 @@
 
     NameValueCollection getDetatailsResponseObj = HttpUtility.ParseQueryString(getDetatailsResponse); //Parse server response
     if (getDetatailsResponseObj.Get("ACK") == "Success") {
+
+        var db = SD.Database.OpenFile(Server.MapPath("~/App_Data/COGMOR.sdf"));
+
+        registrationInfo = db.RegistrationDetails.All()
+              .Join(db.Registration)
+              .On(db.RegistrationDetails.ID == db.Registration.Id)
+              .Select(
+                db.Registration.Id, 
+                db.Registration.Attendee, 
+                db.RegistrationDetails.Address,
+                db.RegistrationDetails.City,
+                db.RegistrationDetails.State,
+                db.RegistrationDetails.Zip,
+                db.RegistrationDetails.Phone_Num,
+                db.RegistrationDetails.Church,
+                //db.RegistrationDetails.Attendees_Guests,
+                db.RegistrationDetails.Num_Attending_Two_Days,
+                db.RegistrationDetails.Num_Attending_One_Day,
+                db.RegistrationDetails.Num_12andYounger_Attending,
+                db.RegistrationDetails.Num_Golfing,
+                db.RegistrationDetails.Num_Paintballing,
+                db.RegistrationDetails.Num_Fishing,
+                db.RegistrationDetails.Total_Paided)
+              .Where(db.Registration.Id == 20130516222115)
+              .ToList();
+
+       
+
         if (IsPost) {
             App.ExpressCheckoutToken = getDetatailsResponseObj.Get("TOKEN");
   
@@ -70,7 +105,7 @@
             if (confirmPaymentResponseObj.Get("ACK") == "Success") {
                 //Updated  database with succss order info from paypal
                <text>
-                    Than you for registering for the Ox Roast. When you arrive at the Ox Roast on Septermber 6th 2013 we will veify that you have registered for the Ox Roast. 
+                    Thank you for registering for the Ox Roast. When you arrive at the Ox Roast on Septermber 6th 2013 we will veify that you have registered for the Ox Roast. 
                     Below is a copy of your registration please print so that you have a copy for your records.You will not be required to show a copy of your registration the printing
                     of this page is purly for your benefit, however it may not hurt to have this copy with you as prof of payment incase your registration is lost.
                </text>
@@ -85,11 +120,67 @@
 }
 <div class="registration-details">
     <p>Please review your order below and confirmation your payment. Note: Make sure you click confirm payment so that we may process your registration fully.</p>
-
+    @foreach (var info in registrationInfo) {
+        <ul class="generalInfo">
+			<li>
+				<h4>Name</h4>
+				@info.Attendee <!-- Ex. Smith, Bob -->
+			</li>
+			<li>
+				<h4>Address</h4>
+				@info.Address @info.City, @info.State @info.Zip<!-- Ex. Street, State Zip -->
+			</li>
+				<h4>Phone Num</h4>
+				@info.Phone_Num <!-- Ex. 740.497.2943 -->
+			<li>
+				<h4>Church Attending</h4>
+				@info.Church
+			</li>
+			<!--<li>
+				<h4>Guest</h4>
+				<ul>
+					<li>guest1</li>
+					<li>guest2</li>
+					<li>guest3</li>
+					<li>guest4</li>
+				</ul>
+			</li>-->
+		</ul>
+		<ul class="pricingInfo">
+			<!--<li>
+				<span>ActivityName</span>
+				<span>ActivityPrice</span>
+			</li>
+			<li>
+				<span>ActivityName</span>
+				<span>ActivityPrice</span>
+			</li>
+			<li>
+				<span>ActivityName</span>
+				<span>ActivityPrice</span>
+			</li>
+			<li>
+				<span>ActivityName</span>
+				<span>ActivityPrice</span>
+			</li>
+			<li>
+				<span>ActivityName</span>
+				<span>ActivityPrice</span>
+			</li>
+			<li>
+				<span>ActivityName</span>
+				<span>ActivityPrice</span>
+			</li>-->
+			<li>
+				<span>Total</span>
+				<span>@info.Total_Paided</span>
+			</li>
+		</ul>
+    }
     <form action="" method="post">
         <fieldset>
+            <input type="submit" value="Cancel"/>
             <input type="submit" value="Confirm Payment"/>
         </fieldset>
     </form>
 </div>
-

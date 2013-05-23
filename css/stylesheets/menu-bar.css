@@ -7,15 +7,16 @@
   right: 5px;
   top: 2px;
   width: 20px;
+  margin-bottom: 5px;
 }
-/* line 28, ../sass/core.scss */
+/* line 29, ../sass/core.scss */
 .menu-bar.mobile em:before {
   border-bottom: 2px solid #fdd017;
   content: "";
   width: inherit;
 }
 
-/* line 38, ../sass/core.scss */
+/* line 39, ../sass/core.scss */
 .menu-bar.mobile em, .menu-bar.mobile em:before {
   display: inline-block;
   zoom: 1;

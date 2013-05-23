@@ -1,4 +1,4 @@
-/* line 38, ../sass/core.scss */
+/* line 39, ../sass/core.scss */
 a.register-now {
   display: inline-block;
   zoom: 1;
@@ -7,7 +7,7 @@ a.register-now {
 
 /* line 3, ../sass/layout.scss */
 html, body {
-  height: 100%;
+  height: auto;
   padding: 0;
   margin: 0;
   font-family: sans, sans-serif, serif, MS sans, MS serif;
