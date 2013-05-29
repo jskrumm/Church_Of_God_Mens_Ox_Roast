@@ -1,4 +1,35 @@
-/* line 3, ../sass/registration.scss */
+/* line 4, ../sass/registrationDetails.scss */
+.registration div.registration-details h3 {
+  background-color: #104e8b;
+  border-radius: 4px;
+  padding: 10px;
+  color: white;
+}
+/* line 10, ../sass/registrationDetails.scss */
+.registration div.registration-details h4 {
+  display: inline-block;
+  margin: 0;
+  width: 150px;
+}
+/* line 15, ../sass/registrationDetails.scss */
+.registration div.registration-details ul {
+  list-style: none;
+  margin: 0 34%;
+  padding: 0;
+}
+/* line 20, ../sass/registrationDetails.scss */
+.registration div.registration-details ul li {
+  text-align: left;
+}
+/* line 25, ../sass/registrationDetails.scss */
+.registration div.registration-details .confirm {
+  font-weight: bold;
+  height: 40px;
+  margin-top: 20px;
+  width: 150px;
+}
+
+/* line 4, ../sass/registration.scss */
 .registration {
   -moz-box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.15) ;
   -webkit-box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.15) ;
@@ -8,44 +39,44 @@
   border-radius: 4px;
   margin-top: 50px;
 }
-/* line 10, ../sass/registration.scss */
+/* line 11, ../sass/registration.scss */
 .registration form {
   margin-left: 5%;
   text-align: left;
   width: 90%;
 }
-/* line 15, ../sass/registration.scss */
+/* line 16, ../sass/registration.scss */
 .registration form p {
   margin-left: 15px;
 }
-/* line 19, ../sass/registration.scss */
+/* line 20, ../sass/registration.scss */
 .registration form fieldset {
   border: none;
 }
-/* line 23, ../sass/registration.scss */
+/* line 24, ../sass/registration.scss */
 .registration form input, .registration form textarea, .registration form label {
   display: block;
   width: 100%;
   color: #555555;
 }
-/* line 29, ../sass/registration.scss */
+/* line 30, ../sass/registration.scss */
 .registration form input, .registration form textarea {
   border: 1px solid #CCCCCC;
   border-radius: 4px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
   padding: 4px 6px;
 }
-/* line 35, ../sass/registration.scss */
+/* line 36, ../sass/registration.scss */
 .registration form input:focus, .registration form textarea:focus {
   border-color: rgba(16, 78, 139, 0.8);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(16, 78, 139, 0.6);
 }
-/* line 41, ../sass/registration.scss */
+/* line 42, ../sass/registration.scss */
 .registration form input {
   height: 20px;
   margin-bottom: 20px;
 }
-/* line 45, ../sass/registration.scss */
+/* line 46, ../sass/registration.scss */
 .registration form input.submit {
   background: url("https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif") no-repeat scroll 0 0 transparent;
   border: none;
@@ -54,23 +85,23 @@
   cursor: pointer;
   margin-top: 20px;
 }
-/* line 53, ../sass/registration.scss */
+/* line 54, ../sass/registration.scss */
 .registration form input.submit:focus {
   border: none;
   box-shadow: none;
 }
-/* line 60, ../sass/registration.scss */
+/* line 61, ../sass/registration.scss */
 .registration form label {
   display: inline-block;
   margin: 0 10px 5px 5px;
   font-weight: bold;
   width: auto;
 }
-/* line 67, ../sass/registration.scss */
+/* line 68, ../sass/registration.scss */
 .registration form textarea {
   height: 200px;
 }
-/* line 71, ../sass/registration.scss */
+/* line 72, ../sass/registration.scss */
 .registration form select {
   color: #555555;
   height: 30px;
@@ -78,7 +109,7 @@
   padding: 6px;
   vertical-align: middle;
 }
-/* line 79, ../sass/registration.scss */
+/* line 80, ../sass/registration.scss */
 .registration form output {
   color: #468847;
   font-size: 20px;
@@ -86,40 +117,40 @@
   vertical-align: middle;
   margin-right: 30px;
 }
-/* line 86, ../sass/registration.scss */
+/* line 87, ../sass/registration.scss */
 .registration form output#total {
   display: inline-block;
   font-size: 30px;
   margin-top: 20px;
   vertical-align: top;
 }
-/* line 94, ../sass/registration.scss */
+/* line 95, ../sass/registration.scss */
 .registration form input[type="button"] {
   height: 40px;
   margin-top: 20px;
   width: auto;
   margin-bottom: 5px;
 }
-/* line 100, ../sass/registration.scss */
+/* line 101, ../sass/registration.scss */
 .registration form input[type="button"]:focus {
   border: none;
   box-shadow: none;
 }
-/* line 106, ../sass/registration.scss */
+/* line 107, ../sass/registration.scss */
 .registration form div.csz-fields input, .registration form div.csz-fields label {
   display: inline;
   width: auto;
 }
-/* line 111, ../sass/registration.scss */
+/* line 112, ../sass/registration.scss */
 .registration form div.csz-fields input, .registration form div.csz-fields select {
   margin-right: 25px;
   width: 25%;
 }
-/* line 116, ../sass/registration.scss */
+/* line 117, ../sass/registration.scss */
 .registration form div.csz-fields label {
   margin: 0 0 5px 5px;
 }
-/* line 121, ../sass/registration.scss */
+/* line 122, ../sass/registration.scss */
 .registration form #guests h3 {
   border-top: 1px dashed #CCCCCC;
   color: #555555;
@@ -127,7 +158,7 @@
   margin-top: 0;
   padding-top: 20px;
 }
-/* line 130, ../sass/registration.scss */
+/* line 131, ../sass/registration.scss */
 .registration form #eventInfo p:first-child {
   border-top: 1px dashed #CCCCCC;
   color: #555555;
@@ -136,54 +167,58 @@
   margin-bottom: 25px;
   padding-top: 20px;
 }
-/* line 139, ../sass/registration.scss */
+/* line 140, ../sass/registration.scss */
 .registration form #eventInfo label {
   width: 30%;
 }
-/* line 143, ../sass/registration.scss */
+/* line 144, ../sass/registration.scss */
 .registration form #eventInfo input {
   display: inline;
   width: auto;
 }
-/* line 147, ../sass/registration.scss */
+/* line 148, ../sass/registration.scss */
 .registration form #eventInfo input + span {
   font-weight: bold;
   color: #555555;
   margin: 0 30px;
 }
-/* line 154, ../sass/registration.scss */
+/* line 155, ../sass/registration.scss */
 .registration form #eventInfo .totalLabel {
   font-size: 25px;
   margin-left: 32%;
   margin-top: 20px;
   width: 26%;
 }
-/* line 163, ../sass/registration.scss */
+/* line 164, ../sass/registration.scss */
 .registration .validation-summary-errors {
   border: 2px solid #B94A48;
   color: #B94A48;
 }
-/* line 168, ../sass/registration.scss */
+/* line 169, ../sass/registration.scss */
 .registration .field-validation-error {
   color: #B94A48;
 }
-/* line 172, ../sass/registration.scss */
+/* line 173, ../sass/registration.scss */
 .registration .input-validation-error {
   background-color: pink;
   color: #B94A48;
   border-color: #B94A48;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
 }
-/* line 177, ../sass/registration.scss */
+/* line 178, ../sass/registration.scss */
 .registration .input-validation-error:focus {
   border-color: rgba(149, 59, 57, 0.8);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(149, 59, 57, 0.6);
 }
-/* line 183, ../sass/registration.scss */
+/* line 184, ../sass/registration.scss */
 .registration .csz-field-errors {
   margin-bottom: 20px;
 }
-/* line 185, ../sass/registration.scss */
+/* line 186, ../sass/registration.scss */
 .registration .csz-field-errors .field-validation-error {
   display: block;
+}
+/* line 193, ../sass/registration.scss */
+.registration p.error + div.registration-details > p {
+  display: none;
 }

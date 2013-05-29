@@ -82,7 +82,7 @@
         NameValueCollection postedForm = new NameValueCollection(Request.Form); //Create new name/value collection from form data
 
         guestCount = Request["guest-count"].IsEmpty() ? 1 : int.Parse(Request["guest-count"]);
-        @guestCount
+
         for(int i=0; i<guestCount; i++)
         {
             guestFirstName = Request["guest_firstname_" + guestCount].Trim();
@@ -103,9 +103,6 @@
             postedForm.Remove("guest_firstname_" + guestCount);
             postedForm.Remove("guest_lastname_" + guestCount);
         }
-
-        @finalGuestCount;
-        @guestCount;
 
         if (finalGuestCount >=1 && finalGuestCount != guestCount) {
             invalidGuestNameInputs = true;
@@ -165,7 +162,7 @@
             string response = doPostToPayPal.Post();
 
             NameValueCollection responseObj = HttpUtility.ParseQueryString(response); //Parse server response
-            @responseObj
+  
             if (responseObj.Get("ACK") == "Success") {
                 string token = responseObj.Get("TOKEN");
                 string expressCheckoutCmd = "_express-checkout";
@@ -203,8 +200,6 @@
                    db.Registration.Insert(reg);
                    db.RegistrationDetails.Insert(regDetails);
 
-                   //db.Close();
-
                 } catch (Exception ex) {
                     var errMsg = ex.Message;
                     var stackTrace = ex.StackTrace;
@@ -227,7 +222,10 @@
            
                 Response.Redirect(strSandboxPayAuthUrl + "?cmd=" + expressCheckoutCmd + "&token=" + token);
             } else {
-                <text>The server could not process your request. If you see this message please contact us at info@ohiomensoxroast.org so that we can fix this issue quickly.</text>
+                <p class="error">
+                    The server could not process your request. 
+                    If you see this message please contact us at info@ohiomensoxroast.org so that we can fix this issue quickly.
+                </p>
             }   
         } else {
            
@@ -250,8 +248,6 @@
             }   
         }
     }
-    //http://www.netomatix.com/httppostdata.aspx
-    //http://codesamplez.com/programming/http-request-c-sharp
 }
 
 <form action="" method="post">

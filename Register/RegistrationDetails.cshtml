@@ -11,6 +11,9 @@
 @using System.Web.Helpers;
 @{
     List<dynamic> registrationInfo = new List<dynamic>();
+    var shipToStreet = "";
+    var billingAddress = "";
+    bool gotExpressCheckoutDetails = false;
 
     string token = Request["token"];
     string payerId = Request["PayerId"];
@@ -36,8 +39,13 @@
     string getDetatailsResponse = doPostToForGetDetails.Post();
 
     NameValueCollection getDetatailsResponseObj = HttpUtility.ParseQueryString(getDetatailsResponse); //Parse server response
+    @getDetatailsResponseObj;
     if (getDetatailsResponseObj.Get("ACK") == "Success") {
+        gotExpressCheckoutDetails = true;
 
+        shipToStreet = getDetatailsResponseObj.Get("SHIPTOSTREET");
+        billingAddress = getDetatailsResponseObj.Get("SHIPTOSTREET") + " " + getDetatailsResponseObj.Get("SHIPTOCITY") + ", " + getDetatailsResponseObj.Get("SHIPTOSTATE") + " " + getDetatailsResponseObj.Get("SHIPTOZIP");
+       
         var db = SD.Database.OpenFile(Server.MapPath("~/App_Data/COGMOR.sdf"));
 
         registrationInfo = db.RegistrationDetails.All()
@@ -104,83 +112,110 @@
      
             if (confirmPaymentResponseObj.Get("ACK") == "Success") {
                 //Updated  database with succss order info from paypal
-               <text>
+                dynamic expSuccess = new ExpandoObject();
+                expSuccess.ID = confirmPaymentResponseObj["TOKEN"];
+
+                db.DoExpressCheckoutSuccessDetails.Insert(expSuccess);
+
+                //Send user email and copy email to info@ohiomensoxroast.org
+
+               <p class="success">
                     Thank you for registering for the Ox Roast. When you arrive at the Ox Roast on Septermber 6th 2013 we will veify that you have registered for the Ox Roast. 
                     Below is a copy of your registration please print so that you have a copy for your records.You will not be required to show a copy of your registration the printing
                     of this page is purly for your benefit, however it may not hurt to have this copy with you as prof of payment incase your registration is lost.
-               </text>
+               </p>
             } else {
-                <text>The server could not process your request. If you see this message please contact us at info@ohiomensoxroast.org so that we can fix this issue quickly.</text>
+                <p class="error">
+                    The server could not process your request. 
+                    If you see this message please contact us at info@ohiomensoxroast.org so that we can fix this issue quickly.
+                </p>
             }
             
         }
     } else {
-        <text>The server could not process your request. If you see this message please contact us at info@ohiomensoxroast.org so that we can fix this issue quickly.</text>
+        <p class="error">
+            The server could not process your request. 
+            If you see this message please contact us at info@ohiomensoxroast.org so that we can fix this issue quickly.
+        </p>
     }
 }
 <div class="registration-details">
     <p>Please review your order below and confirmation your payment. Note: Make sure you click confirm payment so that we may process your registration fully.</p>
-    @foreach (var info in registrationInfo) {
-        <ul class="generalInfo">
-			<li>
-				<h4>Name</h4>
-				@info.Attendee <!-- Ex. Smith, Bob -->
-			</li>
-			<li>
-				<h4>Address</h4>
-				@info.Address @info.City, @info.State @info.Zip<!-- Ex. Street, State Zip -->
-			</li>
-				<h4>Phone Num</h4>
-				@info.Phone_Num <!-- Ex. 740.497.2943 -->
-			<li>
-				<h4>Church Attending</h4>
-				@info.Church
-			</li>
-			<!--<li>
-				<h4>Guest</h4>
-				<ul>
-					<li>guest1</li>
-					<li>guest2</li>
-					<li>guest3</li>
-					<li>guest4</li>
-				</ul>
-			</li>-->
-		</ul>
-		<ul class="pricingInfo">
-			<!--<li>
-				<span>ActivityName</span>
-				<span>ActivityPrice</span>
-			</li>
-			<li>
-				<span>ActivityName</span>
-				<span>ActivityPrice</span>
-			</li>
-			<li>
-				<span>ActivityName</span>
-				<span>ActivityPrice</span>
-			</li>
-			<li>
-				<span>ActivityName</span>
-				<span>ActivityPrice</span>
-			</li>
-			<li>
-				<span>ActivityName</span>
-				<span>ActivityPrice</span>
-			</li>
-			<li>
-				<span>ActivityName</span>
-				<span>ActivityPrice</span>
-			</li>-->
-			<li>
-				<span>Total</span>
-				<span>@info.Total_Paided</span>
-			</li>
-		</ul>
+    @if (gotExpressCheckoutDetails) {
+        foreach (var info in registrationInfo) {
+            NameValueCollection eventTotals = new NameValueCollection();
+
+            eventTotals.Add(info.Num_Attending_Two_Days + " Two Day", Math.BigMul(info.Num_Attending_Two_Days, 65).ToString());
+            eventTotals.Add(info.Num_Attending_One_Day + " One Day", Math.BigMul(info.Num_Attending_One_Day, 35).ToString());
+            eventTotals.Add(info.Num_12andYounger_Attending + " 12 and under", Math.BigMul(info.Num_12andYounger_Attending, 25).ToString());
+            eventTotals.Add(info.Num_Golfing + " Golfing", Math.BigMul(info.Num_Golfing, 45).ToString());
+            eventTotals.Add(info.Num_Paintballing + " Painting", Math.BigMul(info.Num_Paintballing, 5).ToString());
+            eventTotals.Add(info.Num_Fishing + " Fishing", Math.BigMul(info.Num_Fishing, 25).ToString());
+
+            <h3>Registration/Billing Info</h3>
+            <ul class="generalInfo">
+                <li>
+                    <h4>Confirmation #:</h4>
+                    <span>@info.ID</span>
+                </li>
+			    <li>
+				    <h4>Name:</h4>
+				    <span>@info.Attendee</span> <!-- Ex. Smith, Bob -->
+			    </li>
+			    <li>
+				    <h4>Registed Address:</h4>
+				    <span>@info.Address @info.City, @info.State @info.Zip</span><!-- Ex. Street, State Zip -->
+			    </li>
+                <li>
+                    <h4>Billing Address:</h4>
+                    @if (info.Address != shipToStreet) {
+                        <span>@billingAddress</span>
+                    } else {
+                        <span>Same as registered address</span>
+                    }
+                </li>
+                @if (info.Phone_Num != null && info.Phone_Num != "") {
+                    <li>
+				        <h4>Phone Num:</h4>
+				        <span>@info.Phone_Num</span> <!-- Ex. 740.497.2943 -->
+                    </li>
+                }
+                @if (info.Church != null && info.Church != "") {
+			        <li>
+				        <h4>Church Attending:</h4>
+				        <span>@info.Church</span>
+			        </li>
+                }
+			    <!--<li>
+				    <h4>Guest</h4>
+				    <ul>
+					    <li>guest1</li>
+					    <li>guest2</li>
+					    <li>guest3</li>
+					    <li>guest4</li>
+				    </ul>
+			    </li>-->
+		    </ul>
+            <h3>Event Pricing Info</h3>
+		    <ul class="pricingInfo">
+                @foreach (var evt in eventTotals.AllKeys) {
+                    if (int.Parse(eventTotals[evt]) > 0 ) {
+                        <li>
+				            <h4>@evt</h4>
+				            <span>@eventTotals[evt]</span>
+			            </li>   
+                    }
+                }
+			    <li>
+				    <h4>Total</h4>
+				    <span>@info.Total_Paided</span>
+			    </li>
+		    </ul>
+        }
+        <form action="" method="post">
+            <fieldset>
+                <input type="submit" class="confirm" value="Confirm Payment"/>
+            </fieldset>
+        </form>
     }
-    <form action="" method="post">
-        <fieldset>
-            <input type="submit" value="Cancel"/>
-            <input type="submit" value="Confirm Payment"/>
-        </fieldset>
-    </form>
 </div>

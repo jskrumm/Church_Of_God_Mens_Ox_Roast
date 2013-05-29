@@ -1,4 +1,5 @@
 @import "core";
+@import "registrationDetails";
 
 .registration {
       @include boxShadow(0, 0, 5px, 5px, rgba(0,0,0,0.15));
@@ -185,6 +186,18 @@
         .field-validation-error {
             display: block;
         }
+    }
+
+    p.error {
+        + div.registration-details {
+            > p {
+                display:none;
+            }    
+        }
+    }
+
+    div.registration-details {
+        @extend %_regDetails;
     }
 }
 
