@@ -21,12 +21,67 @@
 .registration div.registration-details ul li {
   text-align: left;
 }
-/* line 25, ../sass/registrationDetails.scss */
+/* line 24, ../sass/registrationDetails.scss */
+.registration div.registration-details ul.pricingInfo {
+  margin: 0 38% 0 34%;
+}
+/* line 28, ../sass/registrationDetails.scss */
+.registration div.registration-details ul.pricingInfo li.headings {
+  margin-bottom: 10px;
+}
+/* line 31, ../sass/registrationDetails.scss */
+.registration div.registration-details ul.pricingInfo li.headings h4:first-child + h4 + h4 {
+  width: auto;
+}
+/* line 36, ../sass/registrationDetails.scss */
+.registration div.registration-details ul.pricingInfo li.last {
+  padding-left: 94px;
+  border-top: 1px solid #ccc;
+  margin-top: 10px;
+}
+/* line 41, ../sass/registrationDetails.scss */
+.registration div.registration-details ul.pricingInfo li.last h4:first-child {
+  width: 150px;
+}
+/* line 45, ../sass/registrationDetails.scss */
+.registration div.registration-details ul.pricingInfo li.last span {
+  width: auto;
+}
+/* line 50, ../sass/registrationDetails.scss */
+.registration div.registration-details ul.pricingInfo li h4:first-child {
+  width: 90px;
+}
+/* line 54, ../sass/registrationDetails.scss */
+.registration div.registration-details ul.pricingInfo li span {
+  display: inline-block;
+  width: 150px;
+}
+/* line 58, ../sass/registrationDetails.scss */
+.registration div.registration-details ul.pricingInfo li span:first-child {
+  width: 90px;
+}
+/* line 62, ../sass/registrationDetails.scss */
+.registration div.registration-details ul.pricingInfo li span + span + span {
+  width: auto;
+}
+/* line 70, ../sass/registrationDetails.scss */
 .registration div.registration-details .confirm {
   font-weight: bold;
   height: 40px;
   margin-top: 20px;
   width: 150px;
+}
+/* line 77, ../sass/registrationDetails.scss */
+.registration div.registration-details form {
+  margin: 20px 0 0;
+  padding: 0;
+  border-top: 1px dashed #CCCCCC;
+  width: 100%;
+}
+/* line 84, ../sass/registrationDetails.scss */
+.registration div.registration-details fieldset {
+  margin: 0;
+  padding: 0;
 }
 
 /* line 4, ../sass/registration.scss */
@@ -218,7 +273,12 @@
 .registration .csz-field-errors .field-validation-error {
   display: block;
 }
-/* line 193, ../sass/registration.scss */
+/* line 191, ../sass/registration.scss */
+.registration p.error {
+  border: 2px solid #B94A48;
+  color: #B94A48;
+}
+/* line 195, ../sass/registration.scss */
 .registration p.error + div.registration-details > p {
   display: none;
 }

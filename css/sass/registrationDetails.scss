@@ -20,6 +20,51 @@
         li {
             text-align: left
         }
+
+        &.pricingInfo {
+            margin: 0 38% 0 34%;
+
+            li {
+                &.headings {
+                    margin-bottom: 10px;
+
+                    h4:first-child + h4 + h4{
+                        width: auto;
+                    }
+                }
+
+                &.last {
+                    padding-left: 94px;
+                    border-top: 1px solid #ccc;
+                    margin-top: 10px;
+
+                    h4:first-child {
+                        width: 150px;
+                    }
+
+                    span {
+                        width: auto;
+                    }
+                }
+                h4 {
+                    &:first-child {
+                        width: 90px;
+                    }
+                }
+                span {
+                    display: inline-block;
+                    width: 150px;
+
+                    &:first-child {
+                        width: 90px;
+                    }
+
+                    + span + span {
+                        width: auto;
+                    }
+                }
+            }
+        }
     }
 
    .confirm {
@@ -27,5 +72,17 @@
         height: 40px;
         margin-top: 20px;
         width: 150px;
+   }
+
+   form {
+       margin: 20px 0 0;
+       padding: 0;
+       border-top: 1px dashed #CCCCCC;
+       width: 100%;
+   }
+
+   fieldset {
+        margin: 0;
+        padding: 0;
    }
 }
