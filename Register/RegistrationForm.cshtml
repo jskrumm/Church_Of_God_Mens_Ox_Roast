@@ -36,6 +36,10 @@
         Validator.StringLength(15, 0, "Your zip can't be more than 15 characters long."),
         Validator.Regex(@"^(1?)(-| ?)(\()?([0-9]{3})(\)|-| |\)-|\) )?([0-9]{3})(-| )?([0-9]{4}|[0-9]{4})$", "Invalid phone number format (e.g., 14165551212, 4165551212, (416)5551212, 416 555 1212, 416-555-1212, (416)-555-1212, (416) 555 1212, or 1-900-888-1212)") 
         );
+   Validation.Add("EMAIL", 
+        Validator.Required("Please provide us with a valid email address"),
+        Validator.Regex(@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$", "Invalid format for an email address.")
+        );
     Validation.Add("church-atteding",
         Validator.StringLength(4000, 0, "Your zip can't be more than 4000 characters long.")
         );
@@ -59,13 +63,19 @@
         );
 
     int guestCount = 1;
+    string monthDay = DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString();
+    string twoDayPrice = "65";
+
+    if (int.Parse(monthDay) <= 815) {
+        twoDayPrice = "55";
+    }
 
     if (IsPost) {
         var guestSB = new StringBuilder();
         var guestFirstName = "";
         var guestLastName = "";
         string guestFullName = "";
-        string guestList = "";
+        string guestList = null;
         int finalGuestCount = 0;
         bool invalidGuestNameInputs = false;
         int twoDayCount = Request["num-att-two-day"].IsEmpty() ? 0 : int.Parse(Request["num-att-two-day"]);
@@ -99,6 +109,10 @@
             }
             
             guestList = guestSB.ToString();
+
+            if (guestList == "") {
+                guestList = null;
+            }
 
             postedForm.Remove("guest_firstname_" + guestCount);
             postedForm.Remove("guest_lastname_" + guestCount);
@@ -169,62 +183,52 @@
 
                 try { 
                    Regex regexObj = new Regex(@"[^\d]");
-                   var timeStamp = regexObj.Replace(responseObj.Get("TIMESTAMP"), "");
+                   var confirmID = regexObj.Replace(token, "");
 
                    Regex phoneNumberRegexObj = new Regex(@"(?<!^)\+|[^\d]");
                    int? phoneNumber = Request["PAYMENTREQUEST_0_SHIPTOPHONENUM"].IsEmpty() ? (int?)null : int.Parse(phoneNumberRegexObj.Replace(Request["PAYMENTREQUEST_0_SHIPTOPHONENUM"], "").Trim());
+                   
+                   Regex gTotalRegexObj = new Regex(@"\$");
+                   int gTotal = int.Parse(gTotalRegexObj.Replace(Request["PAYMENTREQUEST_0_AMT"], "").Trim());
 
                    dynamic reg = new ExpandoObject();
-                   reg.ID = timeStamp;
+                   reg.ID = confirmID;
                    reg.Attendee = Request["lastname"] + ", " + Request["firstname"];
+                   reg.Address = Request["PAYMENTREQUEST_0_SHIPTOSTREET"];
+                   reg.City = Request["PAYMENTREQUEST_0_SHIPTOCITY"];
+                   reg.State = Request["PAYMENTREQUEST_0_SHIPTOSTATE"];
+                   reg.Zip = Request["PAYMENTREQUEST_0_SHIPTOZIP"];
+                   reg.Phone_Num = phoneNumber;
+                   reg.Email = Request["EMAIL"];
+                   reg.Church = Request["church-atteding"];
+                   reg.Guests = guestList;
 
                    dynamic regDetails = new ExpandoObject();
-                   regDetails.ID = timeStamp;
-                   regDetails.Address = Request["PAYMENTREQUEST_0_SHIPTOSTREET"];
-                   regDetails.City = Request["PAYMENTREQUEST_0_SHIPTOCITY"];
-                   regDetails.State = Request["PAYMENTREQUEST_0_SHIPTOSTATE"];
-                   regDetails.Zip = Request["PAYMENTREQUEST_0_SHIPTOZIP"];
-                   regDetails.Phone_Num = phoneNumber;
-                   regDetails.Church = Request["church-atteding"];
-                   regDetails.Attendees_Guests = guestList;
+                   regDetails.ID = confirmID;
                    regDetails.Num_Attending_Two_Days = twoDayCount;
                    regDetails.Num_Attending_One_Day = oneDayCount;
                    regDetails.Num_12andYounger_Attending = underageCount;
                    regDetails.Num_Golfing = golfCount;
                    regDetails.Num_Paintballing = paintballCount;
                    regDetails.Num_Fishing = fishingCount;
-                   regDetails.Total_Paided = int.Parse(Request["PAYMENTREQUEST_0_AMT"]);
+                   regDetails.Total_Paided = gTotal;
 
                    var db = SD.Database.OpenFile(Server.MapPath("~/App_Data/COGMOR.sdf"));
 
                    db.Registration.Insert(reg);
                    db.RegistrationDetails.Insert(regDetails);
 
+                   Response.Redirect(strSandboxPayAuthUrl + "?cmd=" + expressCheckoutCmd + "&token=" + token);
                 } catch (Exception ex) {
-                    var errMsg = ex.Message;
-                    var stackTrace = ex.StackTrace;
-                  @errMsg;
-                    @stackTrace;
-                    @Request["PAYMENTREQUEST_0_SHIPTOSTREET"];
-                   @Request["PAYMENTREQUEST_0_SHIPTOCITY"];
-                   @Request["PAYMENTREQUEST_0_SHIPTOSTATE"];
-                   @Request["PAYMENTREQUEST_0_SHIPTOZIP"];
-                   @Request["PAYMENTREQUEST_0_SHIPTOPHONENUM"];
-                   @Request["church-atteding"];
-                   @guestList;
-                   @twoDayCount;
-                   @oneDayCount;
-                   @underageCount;
-                   @golfCount;
-                   @fishingCount;
-                   @Request["PAYMENTREQUEST_0_AMT"];
+                    @ex.Message;
+                    @ex.StackTrace;
+                    <p class="error">
+                        Sorry, we can not continue processing your regestration request at this time. Please contact us at info@ohiomensoxroast.org for assisatance.
+                    </p>
                 }
-           
-                Response.Redirect(strSandboxPayAuthUrl + "?cmd=" + expressCheckoutCmd + "&token=" + token);
             } else {
                 <p class="error">
-                    The server could not process your request. 
-                    If you see this message please contact us at info@ohiomensoxroast.org so that we can fix this issue quickly.
+                    Sorry, we can not continue processing your regestration request at this time. Please contact us at info@ohiomensoxroast.org for assisatance.
                 </p>
             }   
         } else {
@@ -284,11 +288,14 @@
         </div>
         @Html.Label("Phone Number", "PAYMENTREQUEST_0_SHIPTOPHONENUM")@Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOPHONENUM")
         @Html.TextBox("PAYMENTREQUEST_0_SHIPTOPHONENUM",Request["PAYMENTREQUEST_0_SHIPTOPHONENUM"],new {placeholder="Please enter your phone number"})
+        
+        @Html.Label("Email", "EMAIL")@Html.ValidationMessage("EMAIL")
+        @Html.TextBox("EMAIL",Request["EMAIL"],new {placeholder="Please enter an email address", type="email"})
 
         @Html.Label("Church You Attend", "church-atteding")@Html.ValidationMessage("church-atteding")
         @Html.TextBox("church-atteding",Request["church-atteding"],new {placeholder="Please enter the name of the church you attend"})
     </fieldset>
-    <fieldset id="guests" data-bind='appendGuestInputs: $data.addField'>
+    <fieldset id="guests" data-bind='appendGuestInputs: $data.addField, removeGuestInputs: $data.removeField'>
         <h3>Guests</h3>
         @for (var j=1; j<=guestCount; j++)
         {
@@ -301,8 +308,9 @@
         }
         <input id="guest-count" name="guest-count" type="hidden" value="@guestCount" data-initalVal="@guestCount" data-bind="value: $data.guestCount"/>
         <input type="button" value="Add Another Guest" class="add-guest" data-bind="click: $data.addField, disable: $data.hasClickedTooManyTimes"/>
+        <input type="button" value="Remove A Guest" class="remove-guest" data-bind="click: $data.removeField, enable: $data.hasMoreThanOneGuest"/>
         <div data-bind="visible: $data.hasClickedTooManyTimes">
-            You have excedeed the max number of guest you are allowed to register!
+            You have reached the max number of guests you are allowed to register!
         </div>
     </fieldset>
     <fieldset id="eventInfo">
@@ -313,55 +321,55 @@
         </p>
         <div>
             @Html.Label("Number attending Friday/Saturday", "num-att-two-day")
-            @Html.TextBox("num-att-two-day",Request["num-att-two-day"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numAttTwoDaysQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}, {"data-initalVal", Request["num-att-two-day"]}})            
-            
-            <input id="num-att-two-day-price" type="hidden" name="num-att-two-day-price" value="65" data-bind='value: $data.numAttTwoDaysPrice'/>
-            <span>X $65 =</span><output name="num-att-two-day-output" data-bind="value: $data.numAttTwoDaysTotal">@Request["num-att-two-day-output"]</output>
+            @Html.TextBox("num-att-two-day",Request["num-att-two-day"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numAttTwoDaysQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}, {"data-initalVal", Request["num-att-two-day"]}, {"min", "0"}})            
+
+            <input id="num-att-two-day-price" type="hidden" name="num-att-two-day-price" value="@twoDayPrice" data-bind='value: $data.numAttTwoDaysPrice'/>
+            <span>X $@twoDayPrice =</span><output name="num-att-two-day-output" data-bind="text: $data.numAttTwoDaysTotalFormated">@Request["num-att-two-day-output"]</output>
             @Html.ValidationMessage("num-att-two-day")
         </div>
         <div>
             @Html.Label("Number attending one day only", "num-att-one-day")
-            @Html.TextBox("num-att-one-day",Request["num-att-one-day"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numAttOneDayQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}}) 
+            @Html.TextBox("num-att-one-day",Request["num-att-one-day"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numAttOneDayQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}, {"min", "0"}}) 
 
             <input id="num-att-one-day-price" type="hidden" name="num-att-one-day-price" value="35" data-bind='value: $data.numAttOneDayPrice'/>
-            <span>X $35 =</span><output name="num-att-one-day-output" data-bind="value: $data.numAttOneDayTotal">@Request["num-att-one-day-output"]</output>
+            <span>X $35 =</span><output name="num-att-one-day-output" data-bind="text: $data.numAttOneDayTotalFormated">@Request["num-att-one-day-output"]</output>
             @Html.ValidationMessage("num-att-one-day")
         </div>
         <div>
             @Html.Label("Number attending 12yrs old or younger", "num-att-underage")
-            @Html.TextBox("num-att-underage",Request["num-att-underage"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numAttUnderageQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}}) 
+            @Html.TextBox("num-att-underage",Request["num-att-underage"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numAttUnderageQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}, {"min", "0"}}) 
 
             <input id="num-att-underage-price" type="hidden" name="num-att-underage-price" value="25" data-bind='value: $data.numAttUnderagePrice'/>
-            <span>X $25 =</span><output name="num-att-underage-ouput" data-bind="value: $data.numAttUnderageTotal">@Request["num-att-underage-ouput"]</output>
+            <span>X $25 =</span><output name="num-att-underage-ouput" data-bind="text: $data.numAttUnderageTotalFormated">@Request["num-att-underage-ouput"]</output>
             @Html.ValidationMessage("num-att-underage")
         </div>
         <div>
             @Html.Label("Number playing golf", "num-golfing")
-            @Html.TextBox("num-golfing",Request["num-golfing"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numGolfingQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}}) 
+            @Html.TextBox("num-golfing",Request["num-golfing"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numGolfingQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}, {"min", "0"}}) 
 
             <input id="num-golfing-price" type="hidden" name="num-golfing-price" value="45" data-bind='value: $data.numGolfingPrice'/>
-            <span>X $45 =</span><output name="num-golfing-ouput" data-bind="value: $data.numGolfingTotal">@Request["num-golfing-ouput"]</output>
+            <span>X $45 =</span><output name="num-golfing-ouput" data-bind="text: $data.numGolfingTotalFormated">@Request["num-golfing-ouput"]</output>
             @Html.ValidationMessage("num-golfing")
         </div>
         <div>
             @Html.Label("Number paintballing", "num-paintballing")
-            @Html.TextBox("num-paintballing",Request["num-paintballing"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numPaintballingQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}}) 
+            @Html.TextBox("num-paintballing",Request["num-paintballing"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numPaintballingQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}, {"min", "0"}}) 
 
             <input id="num-paintballing-price" type="hidden" name="num-paintballing-price" value="5" data-bind='value: $data.numPaintballingPrice'/>
-            <span>X $5 =</span><output name="num-paintballing-ouput" data-bind="value: $data.numPaintballingTotal">@Request["num-paintballing-ouput"]</output>
+            <span>X $5 =</span><output name="num-paintballing-ouput" data-bind="text: $data.numPaintballingTotalFormated">@Request["num-paintballing-ouput"]</output>
             @Html.ValidationMessage("num-paintballing")
         </div>
         <div>
             @Html.Label("Number fishing", "num-fishing")
-            @Html.TextBox("num-fishing",Request["num-fishing"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numFishingQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}}) 
+            @Html.TextBox("num-fishing",Request["num-fishing"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numFishingQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}, {"min", "0"}}) 
 
             <input id="num-fishing-price" type="hidden" name="num-fishing-price" value="25" data-bind='value: $data.numFishingPrice'/>
-            <span>X $25 =</span><output name="num-fishing-output" data-bind="value: $data.numFishingTotal">@Request["num-fishing-output"]</output>
+            <span>X $25 =</span><output name="num-fishing-output" data-bind="text: $data.numFishingTotalFormated">@Request["num-fishing-output"]</output>
             @Html.ValidationMessage("num-fishing")
         </div>
         <label for="PAYMENTREQUEST_0_AMT" class="totalLabel">Total</label>
         <input id="PAYMENTREQUEST_0_AMT" type="hidden" name="PAYMENTREQUEST_0_AMT" data-bind="value: $data.grandTotal"/>
-        <output id="total" name="total" data-bind="value: $data.grandTotal">@Request["total"]</output>
+        <output id="total" name="total" data-bind="text: $data.grandTotal">@Request["total"]</output>
     </fieldset>
     <input type=submit class="submit" value=""/>
 </form>

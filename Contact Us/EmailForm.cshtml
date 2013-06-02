@@ -1,6 +1,5 @@
 ﻿@using System.Net.Mail;
 @using System.Net.Security;
-@using System.Security.Cryptography.X509Certificates;
 @using System.Web.Helpers;
 @using Microsoft.Web.Helpers;
 @{
@@ -23,7 +22,21 @@
         if (ModelState.IsValid) {
             if (Validation.IsValid())
             {
-                var email = Request["Email"];       
+                try {
+                    // Send email
+                    WebMail.Send(
+                        to: "info@ohiomensoxroast.org",
+                        subject: Request["Subject"],
+                        body: Request["Message"],
+                        from: Request["Email"]
+                    );
+
+                    <p class="success-msg">Your email has been successfully sent</p> 
+                } catch {
+                   ModelState.AddFormError("Sorry, we are unable to send any emails at this time for assitance please contact us at info@ohiomensoxroast.org"); 
+                }
+                
+               /* var email = Request["Email"];       
                 var subject = Request["Subject"];       
                 var message = Request["Message"];       
                 using (var client = new SmtpClient())
@@ -40,7 +53,7 @@
 
                      client.Send(msg);
                      <p class="success-msg">Your email has been successfully sent</p>
-                 }
+                 }*/
              } else {
                  ModelState.AddFormError("You must resolve the following errors:");
              }
