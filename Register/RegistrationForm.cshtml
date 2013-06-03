@@ -92,7 +92,7 @@
         NameValueCollection postedForm = new NameValueCollection(Request.Form); //Create new name/value collection from form data
 
         guestCount = Request["guest-count"].IsEmpty() ? 1 : int.Parse(Request["guest-count"]);
-
+       
         for(int i=0; i<guestCount; i++)
         {
             guestFirstName = Request["guest_firstname_" + guestCount].Trim();
@@ -102,7 +102,7 @@
           
                 guestFullName = guestLastName + ", " + guestFirstName + ";";
 
-                guestSB.Append(guestFirstName);
+                guestSB.Append(guestFullName);
                 guestSB.Remove(guestSB.Length - 1, 1); // remove the last ';'
 
                 finalGuestCount += 1;
@@ -117,7 +117,7 @@
             postedForm.Remove("guest_firstname_" + guestCount);
             postedForm.Remove("guest_lastname_" + guestCount);
         }
-
+        @guestList;
         if (finalGuestCount >=1 && finalGuestCount != guestCount) {
             invalidGuestNameInputs = true;
         } else {
@@ -133,7 +133,7 @@
             //string strLive = "https://www.paypal.com/cgi-bin/webscr";
 
             //Remove any unnessary fields before sending data to PayPal
-            postedForm.Remove("firstname");
+            /*postedForm.Remove("firstname");
             postedForm.Remove("lastname");
             postedForm.Remove("church-atteding");
             postedForm.Remove("guest-count");
@@ -148,7 +148,7 @@
             postedForm.Remove("num-paintballing");
             postedForm.Remove("num-paintballing-price");
             postedForm.Remove("num-fishing");
-            postedForm.Remove("num-fishing-price");
+            postedForm.Remove("num-fishing-price");*/
        
             //Add required data sensitive fields before sending data to PayPal
             postedForm.Set("USER", App.PayPalUser);
@@ -256,6 +256,9 @@
 
 <form action="" method="post">
     @Html.ValidationSummary(true)
+    <p>
+        * = Required
+    </p>
     <fieldset id="generalInfo">
         <div class="name-fields">
             @Html.Label("Your First Name*", "firstname")@Html.ValidationMessage("firstname")
@@ -289,7 +292,7 @@
         @Html.Label("Phone Number", "PAYMENTREQUEST_0_SHIPTOPHONENUM")@Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOPHONENUM")
         @Html.TextBox("PAYMENTREQUEST_0_SHIPTOPHONENUM",Request["PAYMENTREQUEST_0_SHIPTOPHONENUM"],new {placeholder="Please enter your phone number"})
         
-        @Html.Label("Email", "EMAIL")@Html.ValidationMessage("EMAIL")
+        @Html.Label("Email*", "EMAIL")@Html.ValidationMessage("EMAIL")
         @Html.TextBox("EMAIL",Request["EMAIL"],new {placeholder="Please enter an email address", type="email"})
 
         @Html.Label("Church You Attend", "church-atteding")@Html.ValidationMessage("church-atteding")
@@ -323,47 +326,47 @@
             @Html.Label("Number attending Friday/Saturday", "num-att-two-day")
             @Html.TextBox("num-att-two-day",Request["num-att-two-day"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numAttTwoDaysQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}, {"data-initalVal", Request["num-att-two-day"]}, {"min", "0"}})            
 
-            <input id="num-att-two-day-price" type="hidden" name="num-att-two-day-price" value="@twoDayPrice" data-bind='value: $data.numAttTwoDaysPrice'/>
+            <!--<input id="num-att-two-day-price" type="hidden" name="num-att-two-day-price" value="@twoDayPrice" data-bind='value: $data.numAttTwoDaysPrice'/>-->
             <span>X $@twoDayPrice =</span><output name="num-att-two-day-output" data-bind="text: $data.numAttTwoDaysTotalFormated">@Request["num-att-two-day-output"]</output>
             @Html.ValidationMessage("num-att-two-day")
         </div>
         <div>
             @Html.Label("Number attending one day only", "num-att-one-day")
-            @Html.TextBox("num-att-one-day",Request["num-att-one-day"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numAttOneDayQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}, {"min", "0"}}) 
+            @Html.TextBox("num-att-one-day",Request["num-att-one-day"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numAttOneDayQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}, {"min", "0"}, {"data-initalVal", Request["num-att-one-day"]}}) 
 
-            <input id="num-att-one-day-price" type="hidden" name="num-att-one-day-price" value="35" data-bind='value: $data.numAttOneDayPrice'/>
+            <!--<input id="num-att-one-day-price" type="hidden" name="num-att-one-day-price" value="35" data-bind='value: $data.numAttOneDayPrice'/>-->
             <span>X $35 =</span><output name="num-att-one-day-output" data-bind="text: $data.numAttOneDayTotalFormated">@Request["num-att-one-day-output"]</output>
             @Html.ValidationMessage("num-att-one-day")
         </div>
         <div>
             @Html.Label("Number attending 12yrs old or younger", "num-att-underage")
-            @Html.TextBox("num-att-underage",Request["num-att-underage"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numAttUnderageQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}, {"min", "0"}}) 
+            @Html.TextBox("num-att-underage",Request["num-att-underage"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numAttUnderageQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}, {"min", "0"}, {"data-initalVal", Request["num-att-underage"]}}) 
 
-            <input id="num-att-underage-price" type="hidden" name="num-att-underage-price" value="25" data-bind='value: $data.numAttUnderagePrice'/>
+            <!--<input id="num-att-underage-price" type="hidden" name="num-att-underage-price" value="25" data-bind='value: $data.numAttUnderagePrice'/>-->
             <span>X $25 =</span><output name="num-att-underage-ouput" data-bind="text: $data.numAttUnderageTotalFormated">@Request["num-att-underage-ouput"]</output>
             @Html.ValidationMessage("num-att-underage")
         </div>
         <div>
             @Html.Label("Number playing golf", "num-golfing")
-            @Html.TextBox("num-golfing",Request["num-golfing"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numGolfingQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}, {"min", "0"}}) 
+            @Html.TextBox("num-golfing",Request["num-golfing"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numGolfingQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}, {"min", "0"}, {"data-initalVal", Request["num-golfing"]}}) 
 
-            <input id="num-golfing-price" type="hidden" name="num-golfing-price" value="45" data-bind='value: $data.numGolfingPrice'/>
+            <!--<input id="num-golfing-price" type="hidden" name="num-golfing-price" value="45" data-bind='value: $data.numGolfingPrice'/>-->
             <span>X $45 =</span><output name="num-golfing-ouput" data-bind="text: $data.numGolfingTotalFormated">@Request["num-golfing-ouput"]</output>
             @Html.ValidationMessage("num-golfing")
         </div>
         <div>
             @Html.Label("Number paintballing", "num-paintballing")
-            @Html.TextBox("num-paintballing",Request["num-paintballing"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numPaintballingQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}, {"min", "0"}}) 
+            @Html.TextBox("num-paintballing",Request["num-paintballing"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numPaintballingQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}, {"min", "0"}, {"data-initalVal", Request["num-paintballing"]}}) 
 
-            <input id="num-paintballing-price" type="hidden" name="num-paintballing-price" value="5" data-bind='value: $data.numPaintballingPrice'/>
+            <!--<input id="num-paintballing-price" type="hidden" name="num-paintballing-price" value="5" data-bind='value: $data.numPaintballingPrice'/>-->
             <span>X $5 =</span><output name="num-paintballing-ouput" data-bind="text: $data.numPaintballingTotalFormated">@Request["num-paintballing-ouput"]</output>
             @Html.ValidationMessage("num-paintballing")
         </div>
         <div>
             @Html.Label("Number fishing", "num-fishing")
-            @Html.TextBox("num-fishing",Request["num-fishing"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numFishingQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}, {"min", "0"}}) 
+            @Html.TextBox("num-fishing",Request["num-fishing"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numFishingQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}, {"min", "0"}, {"data-initalVal", Request["num-fishing"]}}) 
 
-            <input id="num-fishing-price" type="hidden" name="num-fishing-price" value="25" data-bind='value: $data.numFishingPrice'/>
+            <!--<input id="num-fishing-price" type="hidden" name="num-fishing-price" value="25" data-bind='value: $data.numFishingPrice'/>-->
             <span>X $25 =</span><output name="num-fishing-output" data-bind="text: $data.numFishingTotalFormated">@Request["num-fishing-output"]</output>
             @Html.ValidationMessage("num-fishing")
         </div>

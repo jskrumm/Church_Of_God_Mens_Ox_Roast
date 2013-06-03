@@ -1,4 +1,11 @@
-var getTotal = function (qty, price) {
+var getQty = function (qty) {
+   if (isNaN(qty)) {
+        return 0;
+    } else {
+        return qty;
+    } 
+},
+getTotal = function (qty, price) {
     var total = parseInt(qty) * parseInt(price);
 
     if (isNaN(total)) {
@@ -22,7 +29,7 @@ RegistrationVM = function () {
         twoDayPrice = 55;
     }
 
-    self.numAttTwoDaysQty = ko.observable(parseInt($("#num-att-two-day").attr("data-initalVal")));
+    self.numAttTwoDaysQty = ko.observable(getQty(parseInt($("#num-att-two-day").attr("data-initalVal"))));
     self.numAttTwoDaysPrice = ko.observable(twoDayPrice);
     self.numAttTwoDaysTotal = ko.computed(function () {
         return getTotal(self.numAttTwoDaysQty(), self.numAttTwoDaysPrice());
@@ -31,7 +38,7 @@ RegistrationVM = function () {
         return formatCurrency(self.numAttTwoDaysTotal());
     });
 
-    self.numAttOneDayQty = ko.observable(0);
+    self.numAttOneDayQty = ko.observable(getQty(parseInt($("#num-att-one-day").attr("data-initalVal"))));
     self.numAttOneDayPrice = ko.observable(35);
     self.numAttOneDayTotal = ko.computed(function () {
         return getTotal(self.numAttOneDayQty(), self.numAttOneDayPrice());
@@ -40,7 +47,7 @@ RegistrationVM = function () {
         return formatCurrency(self.numAttOneDayTotal());
     });
 
-    self.numAttUnderageQty = ko.observable(0);
+    self.numAttUnderageQty = ko.observable(getQty(parseInt($("#num-att-underage").attr("data-initalVal"))));
     self.numAttUnderagePrice = ko.observable(25);
     self.numAttUnderageTotal = ko.computed(function () {
         return getTotal(self.numAttUnderageQty(), self.numAttUnderagePrice());
@@ -49,7 +56,7 @@ RegistrationVM = function () {
         return formatCurrency(self.numAttUnderageTotal());
     });
 
-    self.numGolfingQty = ko.observable(0);
+    self.numGolfingQty = ko.observable(getQty(parseInt($("#num-golfing").attr("data-initalVal"))));
     self.numGolfingPrice = ko.observable(45);
     self.numGolfingTotal = ko.computed(function () {
         return getTotal(self.numGolfingQty(), self.numGolfingPrice());
@@ -58,7 +65,7 @@ RegistrationVM = function () {
         return formatCurrency(self.numGolfingTotal());
     });
 
-    self.numPaintballingQty = ko.observable(0);
+    self.numPaintballingQty = ko.observable(getQty(parseInt($("#num-paintballing").attr("data-initalVal"))));
     self.numPaintballingPrice = ko.observable(5);
     self.numPaintballingTotal = ko.computed(function () {
         return getTotal(self.numPaintballingQty(), self.numPaintballingPrice());
@@ -67,7 +74,7 @@ RegistrationVM = function () {
         return formatCurrency(self.numPaintballingTotal());
     });
 
-    self.numFishingQty = ko.observable(0);
+    self.numFishingQty = ko.observable(getQty(parseInt($("#num-fishing").attr("data-initalVal"))));
     self.numFishingPrice = ko.observable(25);
     self.numFishingTotal = ko.computed(function () {
         return getTotal(self.numFishingQty(), self.numFishingPrice());
@@ -80,5 +87,6 @@ RegistrationVM = function () {
         return formatCurrency(self.numFishingTotal() + self.numPaintballingTotal() + self.numGolfingTotal() + self.numAttUnderageTotal() + self.numAttOneDayTotal() + self.numAttTwoDaysTotal());
     });
 };
- 
-ko.applyBindings(new RegistrationVM(), document.getElementById('eventInfo')); 
+$(document).ready(function () {
+    ko.applyBindings(new RegistrationVM(), document.getElementById('eventInfo')); 
+});

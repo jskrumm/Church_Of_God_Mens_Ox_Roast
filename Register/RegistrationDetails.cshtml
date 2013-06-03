@@ -64,6 +64,7 @@
                 db.Registration.State,
                 db.Registration.Zip,
                 db.Registration.Phone_Num,
+                db.Registration.Email,
                 db.Registration.Church,
                 db.Registration.Guests,
                 db.RegistrationDetails.Num_Attending_Two_Days,
@@ -122,11 +123,71 @@
 
                 //Send user email and copy email to info@ohiomensoxroast.org
                 try {
+                    foreach (var regInfo in registrationInfo) {
+                        var regInfoID = regInfo.ID;
+                        var regInfoAttendee = regInfo.Attendee;
+                        var regInfoAddress = regInfo.Address;
+                        var regInfoCity = regInfo.City;
+                        var regInfoState = regInfo.State;
+                        var regInfoZip = regInfo.Zip;
+                        var regInfoPhoneNum = regInfo.Phone_Num;
+                        var regInfoEmail = regInfo.Email;
+                        var regInfoChurch = regInfo.Church;
+                        string[,] regPInfo = new string[6, 3] { 
+                            {regInfo.Num_Attending_Two_Days.ToString(), "Two Day", "$ " + Math.BigMul(regInfo.Num_Attending_Two_Days, 65).ToString()}, 
+                            {regInfo.Num_Attending_One_Day.ToString(), "One Day", "$ " + Math.BigMul(regInfo.Num_Attending_One_Day, 35).ToString()},
+                            {regInfo.Num_12andYounger_Attending.ToString(), "12 and under", "$ " + Math.BigMul(regInfo.Num_12andYounger_Attending, 25).ToString()}, 
+                            {regInfo.Num_Golfing.ToString(), "Golfing", "$ " + Math.BigMul(regInfo.Num_Golfing, 45).ToString()}, 
+                            {regInfo.Num_Paintballing.ToString(), "Paintball", "$ " + Math.BigMul(regInfo.Num_Paintballing, 5).ToString()}, 
+                            {regInfo.Num_Fishing.ToString(), "Fishing", "$ " + Math.BigMul(regInfo.Num_Fishing, 25).ToString()}, 
+                        };
+                        var regInfoTotalPaid = regInfo.Total_Paided;
+                    }
+
+                    var emailBody = new StringBuilder();
+
+                    emailBody.Append("<html>");
+                    emailBody.Append("<body style='margin: 0'>");
+                    emailBody.Append("<h3>Registration/Billing Info</h3>");
+                    emailBody.Append("<table>");
+                    emailBody.Append("<tr><td>Confirmation #:</td><td>" + regInfoID + "</td></tr>");
+                    emailBody.Append("<tr><td>Name:</td><td>" + regInfoAttendee + "</td></tr>");
+                    emailBody.Append("<tr><td>Registered Address:</td><td>" + regInfoAddress + " " + regInfoCity + ", " + regInfoState + " " + regInfoZip + "</td></tr>");
+                    if (regInfoAddress != shipToStreet) {
+                        emailBody.Append("<tr><td>Billing Address:</td><td>" + billingAddress + "</td></tr>");
+                    } else {
+                        emailBody.Append("<tr><td>Billing Address:</td><td>Same as registered address</td></tr>");
+                    }
+                    if (regInfoPhoneNum != null && regInfoPhoneNum != "") {
+                        emailBody.Append("<tr><td>Phone Num:</td><td>" + regInfoPhoneNum + "</td></tr>");
+                    }
+                    emailBody.Append("<tr><td>Email:</td><td>" + regInfoEmail + "</td></tr>");
+                    if (regInfoChurch != null && regInfoChurch != "") {
+                        emailBody.Append("<tr><td>Church Attending:</td><td>" + regInfoChurch + "</td></tr>");
+                    }
+                    emailBody.Append("<tr><td>Guest:</td><td>Guest</td></tr>");
+                    emailBody.Append("</table>");
+                    emailBody.Append("<h3>Event/Activity Pricing Info</h3>");
+                    emailBody.Append("<table>");
+                    emailBody.Append("<tr><th>Qty.</th><th>Event/Activity</th><th>Price</th></tr>");
+
+                    for (int i = 0; i < regPInfo.GetLength(0); i++) {
+                       if (int.Parse(regPInfo[i,0]) > 0){
+                            emailBody.Append("<tr><td>" + regPInfo[i,0] + "</td><td>" + regPInfo[i,1] + "</td><td>" + regPInfo[i,2] + "</td></tr>");
+                        }
+                    }
+
+                    emailBody.Append("<tr><td colspan='2'>Total</td><td>" + regInfoTotalPaid + "</td></tr>");
+                    emailBody.Append("</table>");
+                    emailBody.Append("</body>");
+                    emailBody.Append("</html>");
+
                     // Send email
                     WebMail.Send(
                         to: "info@ohiomensoxroast.org",
                         subject: "Registration Receipt",
-                        body: "",
+                        body: emailBody.ToString(),
+                        isBodyHtml: true,
                         from: "info@ohiomensoxroast.org"
                     );
 
@@ -179,7 +240,7 @@
 				    <span>@info.Attendee</span> <!-- Ex. Smith, Bob -->
 			    </li>
 			    <li>
-				    <h4>Registed Address:</h4>
+				    <h4>Registered Address:</h4>
 				    <span>@info.Address @info.City, @info.State @info.Zip</span><!-- Ex. Street, State Zip -->
 			    </li>
                 <li>
@@ -196,6 +257,10 @@
 				        <span>@info.Phone_Num</span> <!-- Ex. 740.497.2943 -->
                     </li>
                 }
+                <li>
+				    <h4>Email:</h4>
+				    <span>@info.Email</span> <!-- Ex. 740.497.2943 -->
+                </li>
                 @if (info.Church != null && info.Church != "") {
 			        <li>
 				        <h4>Church Attending:</h4>
@@ -212,7 +277,7 @@
 				    </ul>
 			    </li>-->
 		    </ul>
-            <h3>Event Pricing Info</h3>
+            <h3>Event/Activity Pricing Info</h3>
 		    <ul class="pricingInfo">
                 <li class="headings">
                     <h4>Qty.</h4>
