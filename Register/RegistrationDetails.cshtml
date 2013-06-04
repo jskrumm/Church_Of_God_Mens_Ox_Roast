@@ -14,6 +14,7 @@
     var shipToStreet = "";
     var billingAddress = "";
     bool gotExpressCheckoutDetails = false;
+    bool didDoExpressCheckoutPayment = false;
 
     string token = Request["token"];
     string payerId = Request["PayerId"];
@@ -113,8 +114,13 @@
             string confirmPaymentResponse = doPostToComfirmPayment.Post();
             
             NameValueCollection confirmPaymentResponseObj = HttpUtility.ParseQueryString(confirmPaymentResponse); //Parse server response
-  
+
+            if (confirmPaymentResponseObj.Get("ACK").Contains("Success")) {
+               didDoExpressCheckoutPayment = true; 
+            }
+
             if (confirmPaymentResponseObj.Get("ACK") == "Success") {
+                
                 //Updated  database with succss order info from paypal
                 dynamic expSuccess = new ExpandoObject();
                 expSuccess.ID = confirmID;
@@ -123,6 +129,7 @@
 
                 //Send user email and copy email to info@ohiomensoxroast.org
                 try {
+
                     foreach (var regInfo in registrationInfo) {
                         var regInfoID = regInfo.ID;
                         var regInfoAttendee = regInfo.Attendee;
@@ -142,69 +149,69 @@
                             {regInfo.Num_Fishing.ToString(), "Fishing", "$ " + Math.BigMul(regInfo.Num_Fishing, 25).ToString()}, 
                         };
                         var regInfoTotalPaid = regInfo.Total_Paided;
-                    }
+                    
+                        var emailBody = new StringBuilder();
 
-                    var emailBody = new StringBuilder();
-
-                    emailBody.Append("<html>");
-                    emailBody.Append("<body style='margin: 0'>");
-                    emailBody.Append("<h3>Registration/Billing Info</h3>");
-                    emailBody.Append("<table>");
-                    emailBody.Append("<tr><td>Confirmation #:</td><td>" + regInfoID + "</td></tr>");
-                    emailBody.Append("<tr><td>Name:</td><td>" + regInfoAttendee + "</td></tr>");
-                    emailBody.Append("<tr><td>Registered Address:</td><td>" + regInfoAddress + " " + regInfoCity + ", " + regInfoState + " " + regInfoZip + "</td></tr>");
-                    if (regInfoAddress != shipToStreet) {
-                        emailBody.Append("<tr><td>Billing Address:</td><td>" + billingAddress + "</td></tr>");
-                    } else {
-                        emailBody.Append("<tr><td>Billing Address:</td><td>Same as registered address</td></tr>");
-                    }
-                    if (regInfoPhoneNum != null && regInfoPhoneNum != "") {
-                        emailBody.Append("<tr><td>Phone Num:</td><td>" + regInfoPhoneNum + "</td></tr>");
-                    }
-                    emailBody.Append("<tr><td>Email:</td><td>" + regInfoEmail + "</td></tr>");
-                    if (regInfoChurch != null && regInfoChurch != "") {
-                        emailBody.Append("<tr><td>Church Attending:</td><td>" + regInfoChurch + "</td></tr>");
-                    }
-                    emailBody.Append("<tr><td>Guest:</td><td>Guest</td></tr>");
-                    emailBody.Append("</table>");
-                    emailBody.Append("<h3>Event/Activity Pricing Info</h3>");
-                    emailBody.Append("<table>");
-                    emailBody.Append("<tr><th>Qty.</th><th>Event/Activity</th><th>Price</th></tr>");
-
-                    for (int i = 0; i < regPInfo.GetLength(0); i++) {
-                       if (int.Parse(regPInfo[i,0]) > 0){
-                            emailBody.Append("<tr><td>" + regPInfo[i,0] + "</td><td>" + regPInfo[i,1] + "</td><td>" + regPInfo[i,2] + "</td></tr>");
+                        emailBody.Append("<html>");
+                        emailBody.Append("<body style='margin: 0'>");
+                        emailBody.Append("<h3>Registration/Billing Info</h3>");
+                        emailBody.Append("<table>");
+                        emailBody.Append("<tr><td>Confirmation #:</td><td>" + regInfoID + "</td></tr>");
+                        emailBody.Append("<tr><td>Name:</td><td>" + regInfoAttendee + "</td></tr>");
+                        emailBody.Append("<tr><td>Registered Address:</td><td>" + regInfoAddress + " " + regInfoCity + ", " + regInfoState + " " + regInfoZip + "</td></tr>");
+                        if (regInfoAddress != shipToStreet) {
+                            emailBody.Append("<tr><td>Billing Address:</td><td>" + billingAddress + "</td></tr>");
+                        } else {
+                            emailBody.Append("<tr><td>Billing Address:</td><td>Same as registered address</td></tr>");
                         }
-                    }
+                        if (regInfoPhoneNum != null) {
+                            emailBody.Append("<tr><td>Phone Num:</td><td>" + regInfoPhoneNum + "</td></tr>");
+                        }
+                        emailBody.Append("<tr><td>Email:</td><td>" + regInfoEmail + "</td></tr>");
+                        if (regInfoChurch != null && regInfoChurch != "") {
+                            emailBody.Append("<tr><td>Church Attending:</td><td>" + regInfoChurch + "</td></tr>");
+                        }
+                        emailBody.Append("<tr><td>Guest:</td><td>Guest</td></tr>");
+                        emailBody.Append("</table>");
+                        emailBody.Append("<h3>Event/Activity Pricing Info</h3>");
+                        emailBody.Append("<table>");
+                        emailBody.Append("<tr><th>Qty.</th><th>Event/Activity</th><th>Price</th></tr>");
 
-                    emailBody.Append("<tr><td colspan='2'>Total</td><td>" + regInfoTotalPaid + "</td></tr>");
-                    emailBody.Append("</table>");
-                    emailBody.Append("</body>");
-                    emailBody.Append("</html>");
+                        for (int i = 0; i < regPInfo.GetLength(0); i++) {
+                           if (int.Parse(regPInfo[i,0]) > 0){
+                                emailBody.Append("<tr><td>" + regPInfo[i,0] + "</td><td>" + regPInfo[i,1] + "</td><td>" + regPInfo[i,2] + "</td></tr>");
+                            }
+                        }
 
-                    // Send email
-                    WebMail.Send(
-                        to: "info@ohiomensoxroast.org",
-                        subject: "Registration Receipt",
-                        body: emailBody.ToString(),
-                        isBodyHtml: true,
-                        from: "info@ohiomensoxroast.org"
-                    );
+                        emailBody.Append("<tr><td colspan='2'>Total</td><td>" + regInfoTotalPaid + "</td></tr>");
+                        emailBody.Append("</table>");
+                        emailBody.Append("</body>");
+                        emailBody.Append("</html>");
 
-                    <p class="success-msg">Your email has been successfully sent</p> 
+                        // Send email
+                        WebMail.Send(
+                            to: "info@ohiomensoxroast.org",
+                            subject: "Registration Receipt",
+                            body: emailBody.ToString(),
+                            isBodyHtml: true,
+                            from: "info@ohiomensoxroast.org"
+                        );
+                    } 
                 } catch (Exception ex) {
                    <p class="error">Sorry, we can't send you an email copy of your receipt at this time. Your order has been confirmed by through Paypal, please print this pay as your acknowledgement of payment.</p>
                 }
 
                <p class="success">
-                    Thank you for registering for the Ox Roast. When you arrive at the Ox Roast on Septermber 6th 2013 we will veify that you have registered for the Ox Roast. 
-                    Below is a copy of your registration please print so that you have a copy for your records.You will not be required to show a copy of your registration the printing
-                    of this page is purly for your benefit, however it may not hurt to have this copy with you as prof of payment incase your registration is lost.
+                    Thank you for registering for the Ox Roast. We have sent a copy of the registration information to your email account.
+                    When you arrive at the Ox Roast on Septermber 6th 2013 we will veify that you have registered for the Ox Roast. 
+                    You will not be required to show a copy of your registration. 
+                    The registration information sent to your email account or any printing of page is purly for your benefit, 
+                    however it may not hurt to have a copy with you just incase.
                </p>
             } else {
                 <p class="error">
                     The server could not process your request. 
-                    If you see this message please contact us at info@ohiomensoxroast.org so that we can fix this issue quickly.
+                    Please contact us at info@ohiomensoxroast.org for assiatance with an issues.
                 </p>
             }
             
@@ -212,7 +219,7 @@
     } else {
         <p class="error">
             The server could not process your request. 
-            If you see this message please contact us at info@ohiomensoxroast.org so that we can fix this issue quickly.
+            Please contact us at info@ohiomensoxroast.org for assiatance with an issues.
         </p>
     }
 }
@@ -251,7 +258,7 @@
                         <span>Same as registered address</span>
                     }
                 </li>
-                @if (info.Phone_Num != null && info.Phone_Num != "") {
+                @if (info.Phone_Num != null) {
                     <li>
 				        <h4>Phone Num:</h4>
 				        <span>@info.Phone_Num</span> <!-- Ex. 740.497.2943 -->
@@ -267,15 +274,23 @@
 				        <span>@info.Church</span>
 			        </li>
                 }
-			    <!--<li>
-				    <h4>Guest</h4>
-				    <ul>
-					    <li>guest1</li>
-					    <li>guest2</li>
-					    <li>guest3</li>
-					    <li>guest4</li>
-				    </ul>
-			    </li>-->
+                  @{
+                  string strGuests = info.Guests;
+                  string[] arrGuests = strGuests.Split(";");
+
+                  if (arrGuests.Length >= 1) {
+                    <li>
+                      <h4>Guest</h4>
+                        <ul>
+                            @for (var i = 0; i < arrGuests.Length; i++) {
+                                var guestCount = i + 1;
+                                <li>Guest @guestCount: @arrGuests[i].ToString();</li>
+                            }
+                        </ul>
+                    </li>
+                  }
+                }
+              
 		    </ul>
             <h3>Event/Activity Pricing Info</h3>
 		    <ul class="pricingInfo">
@@ -300,10 +315,13 @@
 			    </li>
 		    </ul>
         }
-        <form action="" method="post">
-            <fieldset>
-                <input type="submit" class="confirm" value="Confirm Payment"/>
-            </fieldset>
-        </form>
+        
+        if (didDoExpressCheckoutPayment == false) {
+            <form action="" method="post">
+                <fieldset>
+                    <input type="submit" class="confirm" value="Confirm Payment"/>
+                </fieldset>
+            </form>
+        }
     }
 </div>
