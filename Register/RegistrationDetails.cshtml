@@ -18,12 +18,11 @@
 
     string token = Request["token"];
     string payerId = Request["PayerId"];
-    string method = "GetExpressCheckoutDetails";
 
     //build action
     var strGetExpressCheckoutDetails = new StringBuilder();
     strGetExpressCheckoutDetails.Append("METHOD=");
-    strGetExpressCheckoutDetails.Append(method);
+    strGetExpressCheckoutDetails.Append(App.GetExpressCheckoutDetailsMethod);
     strGetExpressCheckoutDetails.Append("&VERSION=");
     strGetExpressCheckoutDetails.Append(App.ExpressCheckoutVersion);
     strGetExpressCheckoutDetails.Append("&USER=");
@@ -36,7 +35,7 @@
     strGetExpressCheckoutDetails.Append(token);
     
     //Do Post
-    DoPostPayPalData doPostToForGetDetails = new DoPostPayPalData(strGetExpressCheckoutDetails.ToString(), App.SandboxPayInfoUrl);
+    DoPostPayPalData doPostToForGetDetails = new DoPostPayPalData(strGetExpressCheckoutDetails.ToString(), App.ProdPayInfoUrl);
     string getDetatailsResponse = doPostToForGetDetails.Post();
 
     NameValueCollection getDetatailsResponseObj = HttpUtility.ParseQueryString(getDetatailsResponse); //Parse server response
@@ -82,12 +81,11 @@
             App.ExpressCheckoutToken = getDetatailsResponseObj.Get("TOKEN");
   
             token = App.ExpressCheckoutToken;
-            method = "DoExpressCheckoutPayment";
             
             //build action
             var strDoExpressCheckoutPayment = new StringBuilder();
             strDoExpressCheckoutPayment.Append("METHOD=");
-            strDoExpressCheckoutPayment.Append(method);
+            strDoExpressCheckoutPayment.Append(App.DoExpressCheckoutPaymentMethod);
             strDoExpressCheckoutPayment.Append("&VERSION=");
             strDoExpressCheckoutPayment.Append(App.ExpressCheckoutVersion);
             strDoExpressCheckoutPayment.Append("&USER=");
@@ -110,7 +108,7 @@
             strDoExpressCheckoutPayment.Append(getDetatailsResponseObj.Get("PAYMENTREQUEST_0_ITEMAMT"));
 
             //Do Post
-            DoPostPayPalData doPostToComfirmPayment = new DoPostPayPalData(strDoExpressCheckoutPayment.ToString(), App.SandboxPayInfoUrl);
+            DoPostPayPalData doPostToComfirmPayment = new DoPostPayPalData(strDoExpressCheckoutPayment.ToString(), App.ProdPayInfoUrl);
             string confirmPaymentResponse = doPostToComfirmPayment.Post();
             
             NameValueCollection confirmPaymentResponseObj = HttpUtility.ParseQueryString(confirmPaymentResponse); //Parse server response
@@ -140,6 +138,7 @@
                         var regInfoPhoneNum = regInfo.Phone_Num;
                         var regInfoEmail = regInfo.Email;
                         var regInfoChurch = regInfo.Church;
+                        var regInfoGuests = regInfo.Guests;
                         string[,] regPInfo = new string[6, 3] { 
                             {regInfo.Num_Attending_Two_Days.ToString(), "Two Day", "$ " + Math.BigMul(regInfo.Num_Attending_Two_Days, 65).ToString()}, 
                             {regInfo.Num_Attending_One_Day.ToString(), "One Day", "$ " + Math.BigMul(regInfo.Num_Attending_One_Day, 35).ToString()},
@@ -165,13 +164,22 @@
                             emailBody.Append("<tr><td>Billing Address:</td><td>Same as registered address</td></tr>");
                         }
                         if (regInfoPhoneNum != null) {
-                            emailBody.Append("<tr><td>Phone Num:</td><td>" + regInfoPhoneNum + "</td></tr>");
+                            emailBody.Append("<tr><td>Phone Num:</td><td>" + String.Format("{0:###-###-####}", regInfoPhoneNum).Replace("-",".") + "</td></tr>");
                         }
                         emailBody.Append("<tr><td>Email:</td><td>" + regInfoEmail + "</td></tr>");
                         if (regInfoChurch != null && regInfoChurch != "") {
                             emailBody.Append("<tr><td>Church Attending:</td><td>" + regInfoChurch + "</td></tr>");
                         }
-                        emailBody.Append("<tr><td>Guest:</td><td>Guest</td></tr>");
+                        emailBody.Append("<tr><td>Guest:</td><td>");
+                        emailBody.Append("<table");
+                        
+                        string[] arrregInfoGuests = regInfoGuests.Split(new char[] { ';' });
+                        for (var i = 0; i < arrregInfoGuests.Length; i++) {
+                            var gc = i + 1;
+                            emailBody.Append("<tr><td>Guest " + gc + ": " + arrregInfoGuests[i].ToString() + "</td></tr>");
+                        }
+                        emailBody.Append("</table>");
+                        emailBody.Append("</td></tr>");
                         emailBody.Append("</table>");
                         emailBody.Append("<h3>Event/Activity Pricing Info</h3>");
                         emailBody.Append("<table>");
@@ -190,7 +198,7 @@
 
                         // Send email
                         WebMail.Send(
-                            to: "info@ohiomensoxroast.org",
+                            to: regInfoEmail,
                             subject: "Registration Receipt",
                             body: emailBody.ToString(),
                             isBodyHtml: true,
@@ -261,7 +269,7 @@
                 @if (info.Phone_Num != null) {
                     <li>
 				        <h4>Phone Num:</h4>
-				        <span>@info.Phone_Num</span> <!-- Ex. 740.497.2943 -->
+				        <span>@String.Format("{0:###-###-####}", info.Phone_Num).Replace("-",".")</span> <!-- Ex. 740.497.2943 -->
                     </li>
                 }
                 <li>
@@ -276,15 +284,15 @@
                 }
                   @{
                   string strGuests = info.Guests;
-                  string[] arrGuests = strGuests.Split(";");
+                  string[] arrGuests = strGuests.Split(new char[] { ';' });
 
                   if (arrGuests.Length >= 1) {
-                    <li>
+                    <li class="guests">
                       <h4>Guest</h4>
                         <ul>
                             @for (var i = 0; i < arrGuests.Length; i++) {
                                 var guestCount = i + 1;
-                                <li>Guest @guestCount: @arrGuests[i].ToString();</li>
+                                <li>Guest @guestCount: @arrGuests[i].ToString()</li>
                             }
                         </ul>
                     </li>

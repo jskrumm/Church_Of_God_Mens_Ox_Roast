@@ -108,17 +108,19 @@
                 
                 finalGuestCount += 1;
             }
+
+            postedForm.Remove("guest_firstname_" + guestNum.ToString());
+            postedForm.Remove("guest_lastname_" + guestNum.ToString());
         }
 
-        guestSB.Remove(guestSB.Length - 1, 1); // remove the last ';'
-        guestList = guestSB.ToString();
+        if (finalGuestCount >= 1) {
+            guestSB.Remove(guestSB.Length - 1, 1); // remove the last ';'
+            guestList = guestSB.ToString();
 
-        if (guestList == "") {
-            guestList = null;
+            if (guestList == "") {
+                guestList = null;
+            }
         }
-
-        postedForm.Remove("guest_firstname_" + guestCount);
-        postedForm.Remove("guest_lastname_" + guestCount);
 
         if (finalGuestCount >=1 && finalGuestCount != guestCount) {
             invalidGuestNameInputs = true;
@@ -129,10 +131,6 @@
         }
 
         if (Validation.IsValid() && !Request["PAYMENTREQUEST_0_AMT"].IsEmpty() && !Request["PAYMENTREQUEST_0_SHIPTOSTATE"].IsEmpty() && !invalidGuestNameInputs && !invalidRegistrationCount) {
-             //Post back to either sandbox or live
-            string strSandboxPayInfoUrl = App.SandboxPayInfoUrl;
-            string strSandboxPayAuthUrl = App.SandboxPayAuthUrl;
-            //string strLive = "https://www.paypal.com/cgi-bin/webscr";
 
             //Remove any unnessary fields before sending data to PayPal
             postedForm.Remove("firstname");
@@ -174,7 +172,7 @@
             formSB.Remove(formSB.Length - 1, 1); // remove the last '&'
 
             //Do Post
-            DoPostPayPalData doPostToPayPal = new DoPostPayPalData(formSB.ToString(), App.SandboxPayInfoUrl);
+            DoPostPayPalData doPostToPayPal = new DoPostPayPalData(formSB.ToString(), App.ProdPayInfoUrl);
             string response = doPostToPayPal.Post();
 
             NameValueCollection responseObj = HttpUtility.ParseQueryString(response); //Parse server response
@@ -220,10 +218,8 @@
                    db.Registration.Insert(reg);
                    db.RegistrationDetails.Insert(regDetails);
 
-                   Response.Redirect(strSandboxPayAuthUrl + "?cmd=" + expressCheckoutCmd + "&token=" + token);
+                   Response.Redirect(strProdPayAuthUrl + "?cmd=" + expressCheckoutCmd + "&token=" + token);
                 } catch (Exception ex) {
-                    @ex.Message;
-                    @ex.StackTrace;
                     <p class="error">
                         Sorry, we can not continue processing your regestration request at this time. Please contact us at info@ohiomensoxroast.org for assisatance.
                     </p>
@@ -237,21 +233,17 @@
            
             ModelState.AddFormError("You must resolve all errors before you can proceed.");
 
-            if (invalidRegistrationCount) {
-                ModelState.AddFormError("The total number of guest plus yourself must match the total counts for registring for two day registration, one day registration, or underage registration");
-            }
+            if (Request["PAYMENTREQUEST_0_SHIPTOSTATE"].IsEmpty()) {
+                ModelState.AddFormError("Please choose a state from the dropdown.");
+            } 
 
             if (invalidGuestNameInputs) {
                 ModelState.AddFormError("If you wish to register a guest please provide us with there first and last name; starting with the first guest fields you come to and adding more if needed.");
             }
 
-            if (Request["PAYMENTREQUEST_0_SHIPTOSTATE"].IsEmpty()) {
-                ModelState.AddFormError("Please choose a state from the dropdown.");
-            }
-
-            if (Request["PAYMENTREQUEST_0_AMT"].IsEmpty()) {
-                ModelState.AddFormError("Please choose at least 1 event or activity to complete registration.");
-            }   
+            if (invalidRegistrationCount) {
+                ModelState.AddFormError("The total number of guest plus yourself must match the total counts for registring for two day registration, one day registration, or underage registration");
+            }  
         }
     }
 }

@@ -1,84 +1,91 @@
-/* line 4, ../sass/registrationDetails.scss */
+/* line 2, ../sass/_registrationDetails.scss */
 .registration div.registration-details h3 {
   background-color: #104e8b;
   border-radius: 4px;
   padding: 10px;
   color: white;
 }
-/* line 10, ../sass/registrationDetails.scss */
+/* line 8, ../sass/_registrationDetails.scss */
 .registration div.registration-details h4 {
   display: inline-block;
   margin: 0;
   width: 150px;
+  vertical-align: top;
 }
-/* line 15, ../sass/registrationDetails.scss */
+/* line 14, ../sass/_registrationDetails.scss */
 .registration div.registration-details ul {
   list-style: none;
   margin: 0 34%;
   padding: 0;
 }
-/* line 20, ../sass/registrationDetails.scss */
+/* line 19, ../sass/_registrationDetails.scss */
 .registration div.registration-details ul li {
   text-align: left;
 }
-/* line 24, ../sass/registrationDetails.scss */
+/* line 22, ../sass/_registrationDetails.scss */
+.registration div.registration-details ul li.guests ul {
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+}
+/* line 29, ../sass/_registrationDetails.scss */
 .registration div.registration-details ul.pricingInfo {
   margin: 0 38% 0 34%;
 }
-/* line 28, ../sass/registrationDetails.scss */
+/* line 33, ../sass/_registrationDetails.scss */
 .registration div.registration-details ul.pricingInfo li.headings {
   margin-bottom: 10px;
 }
-/* line 31, ../sass/registrationDetails.scss */
+/* line 36, ../sass/_registrationDetails.scss */
 .registration div.registration-details ul.pricingInfo li.headings h4:first-child + h4 + h4 {
   width: auto;
 }
-/* line 36, ../sass/registrationDetails.scss */
+/* line 41, ../sass/_registrationDetails.scss */
 .registration div.registration-details ul.pricingInfo li.last {
   padding-left: 94px;
   border-top: 1px solid #ccc;
   margin-top: 10px;
 }
-/* line 41, ../sass/registrationDetails.scss */
+/* line 46, ../sass/_registrationDetails.scss */
 .registration div.registration-details ul.pricingInfo li.last h4:first-child {
   width: 150px;
 }
-/* line 45, ../sass/registrationDetails.scss */
+/* line 50, ../sass/_registrationDetails.scss */
 .registration div.registration-details ul.pricingInfo li.last span {
   width: auto;
 }
-/* line 50, ../sass/registrationDetails.scss */
+/* line 55, ../sass/_registrationDetails.scss */
 .registration div.registration-details ul.pricingInfo li h4:first-child {
   width: 90px;
 }
-/* line 54, ../sass/registrationDetails.scss */
+/* line 59, ../sass/_registrationDetails.scss */
 .registration div.registration-details ul.pricingInfo li span {
   display: inline-block;
   width: 150px;
 }
-/* line 58, ../sass/registrationDetails.scss */
+/* line 63, ../sass/_registrationDetails.scss */
 .registration div.registration-details ul.pricingInfo li span:first-child {
   width: 90px;
 }
-/* line 62, ../sass/registrationDetails.scss */
+/* line 67, ../sass/_registrationDetails.scss */
 .registration div.registration-details ul.pricingInfo li span + span + span {
   width: auto;
 }
-/* line 70, ../sass/registrationDetails.scss */
+/* line 75, ../sass/_registrationDetails.scss */
 .registration div.registration-details .confirm {
   font-weight: bold;
   height: 40px;
   margin-top: 20px;
   width: 150px;
 }
-/* line 77, ../sass/registrationDetails.scss */
+/* line 82, ../sass/_registrationDetails.scss */
 .registration div.registration-details form {
   margin: 20px 0 0;
   padding: 0;
   border-top: 1px dashed #CCCCCC;
   width: 100%;
 }
-/* line 84, ../sass/registrationDetails.scss */
+/* line 89, ../sass/_registrationDetails.scss */
 .registration div.registration-details fieldset {
   margin: 0;
   padding: 0;
@@ -170,7 +177,7 @@
   font-size: 20px;
   font-weight: bold;
   vertical-align: middle;
-  margin-right: 30px;
+  margin-right: 20px;
 }
 /* line 87, ../sass/registration.scss */
 .registration form output#total {
@@ -182,9 +189,9 @@
 /* line 95, ../sass/registration.scss */
 .registration form input[type="button"] {
   height: 40px;
-  margin-top: 20px;
   width: auto;
-  margin-bottom: 5px;
+  float: left;
+  margin: 20px 10px 5px 0;
 }
 /* line 101, ../sass/registration.scss */
 .registration form input[type="button"]:focus {
@@ -280,5 +287,9 @@
 }
 /* line 195, ../sass/registration.scss */
 .registration p.error + div.registration-details > p {
+  display: none;
+}
+/* line 201, ../sass/registration.scss */
+.registration p.success + div.registration-details > p {
   display: none;
 }
