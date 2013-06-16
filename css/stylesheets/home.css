@@ -29,14 +29,6 @@
   display: inline-block;
 }
 /* line 28, ../sass/home.scss */
-.about section div:first-child {
-  float: left;
-}
-/* line 31, ../sass/home.scss */
-.about section div:first-child img {
-  width: 50%;
-}
-/* line 36, ../sass/home.scss */
 .about section div h3 {
   color: #104e8b;
   font-weight: bold;
@@ -44,11 +36,24 @@
   text-decoration: underline;
   font-size: 20px;
 }
-/* line 44, ../sass/home.scss */
+/* line 36, ../sass/home.scss */
 .about section div span {
   display: block;
   color: #555555;
   margin-bottom: 10px;
   font-size: 16px;
   font-weight: bold;
+}
+/* line 45, ../sass/home.scss */
+.about section a {
+  color: #104e8b;
+  display: block;
+}
+/* line 49, ../sass/home.scss */
+.about section a + div {
+  float: left;
+}
+/* line 52, ../sass/home.scss */
+.about section a + div img {
+  width: 50%;
 }

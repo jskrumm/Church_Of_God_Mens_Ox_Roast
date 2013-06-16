@@ -10,6 +10,10 @@
   text-align: left;
 }
 /* line 14, ../sass/activities.scss */
+.activities h3 {
+  margin-left: 10px;
+}
+/* line 17, ../sass/activities.scss */
 .activities section {
   -moz-box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.15) ;
   -webkit-box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.15) ;
@@ -19,16 +23,16 @@
   border-radius: 4px;
   margin-top: 50px;
 }
-/* line 21, ../sass/activities.scss */
+/* line 24, ../sass/activities.scss */
 .activities section img {
   height: 200px;
   width: 50%;
 }
-/* line 25, ../sass/activities.scss */
+/* line 28, ../sass/activities.scss */
 .activities section p {
   text-align: left;
 }
-/* line 29, ../sass/activities.scss */
+/* line 32, ../sass/activities.scss */
 .activities section h2 {
   color: #555555;
 }

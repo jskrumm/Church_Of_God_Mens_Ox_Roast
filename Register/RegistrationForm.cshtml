@@ -218,7 +218,7 @@
                    db.Registration.Insert(reg);
                    db.RegistrationDetails.Insert(regDetails);
 
-                   Response.Redirect(strProdPayAuthUrl + "?cmd=" + expressCheckoutCmd + "&token=" + token);
+                   Response.Redirect(App.strProdPayAuthUrl + "?cmd=" + expressCheckoutCmd + "&token=" + token);
                 } catch (Exception ex) {
                     <p class="error">
                         Sorry, we can not continue processing your regestration request at this time. Please contact us at info@ohiomensoxroast.org for assisatance.

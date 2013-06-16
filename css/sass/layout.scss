@@ -12,6 +12,7 @@ body {
     text-align: center;
     font-size: 14px;
     line-height: 20px;
+    overflow-x: hidden;
 }
 math {
     display:none;
@@ -72,6 +73,9 @@ a.register-now {
     width: 100px;
 }
 @media (min-width: 768px) {
+    body {
+        overflow-x: scroll;
+    }
     a.register-now {
         display:none;
     }
