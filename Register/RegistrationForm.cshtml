@@ -176,7 +176,7 @@
             string response = doPostToPayPal.Post();
 
             NameValueCollection responseObj = HttpUtility.ParseQueryString(response); //Parse server response
-  
+ 
             if (responseObj.Get("ACK") == "Success") {
                 string token = responseObj.Get("TOKEN");
                 string expressCheckoutCmd = "_express-checkout";
@@ -218,7 +218,7 @@
                    db.Registration.Insert(reg);
                    db.RegistrationDetails.Insert(regDetails);
 
-                   Response.Redirect(App.strProdPayAuthUrl + "?cmd=" + expressCheckoutCmd + "&token=" + token);
+                   Response.Redirect(App.ProdPayAuthUrl + "?cmd=" + expressCheckoutCmd + "&token=" + token);
                 } catch (Exception ex) {
                     <p class="error">
                         Sorry, we can not continue processing your regestration request at this time. Please contact us at info@ohiomensoxroast.org for assisatance.
