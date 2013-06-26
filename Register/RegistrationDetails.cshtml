@@ -170,16 +170,20 @@
                         if (regInfoChurch != null && regInfoChurch != "") {
                             emailBody.Append("<tr><td>Church Attending:</td><td>" + regInfoChurch + "</td></tr>");
                         }
-                        emailBody.Append("<tr><td>Guest:</td><td>");
-                        emailBody.Append("<table");
+
+                        if (regInfoGuests != null){
+                            emailBody.Append("<tr><td>Guest:</td><td>");
+                            emailBody.Append("<table");
                         
-                        string[] arrregInfoGuests = regInfoGuests.Split(new char[] { ';' });
-                        for (var i = 0; i < arrregInfoGuests.Length; i++) {
-                            var gc = i + 1;
-                            emailBody.Append("<tr><td>Guest " + gc + ": " + arrregInfoGuests[i].ToString() + "</td></tr>");
+                            string[] arrRegInfoGuests = regInfoGuests.Split(new char[] { ';' });
+                            for (var i = 0; i < arrRegInfoGuests.Length; i++) {
+                                var gc = i + 1;
+                                emailBody.Append("<tr><td>Guest " + gc + ": " + arrRegInfoGuests[i].ToString() + "</td></tr>");
+                            }
+
+                            emailBody.Append("</table>");
+                            emailBody.Append("</td></tr>");
                         }
-                        emailBody.Append("</table>");
-                        emailBody.Append("</td></tr>");
                         emailBody.Append("</table>");
                         emailBody.Append("<h3>Event/Activity Pricing Info</h3>");
                         emailBody.Append("<table>");
@@ -237,7 +241,7 @@
     @if (gotExpressCheckoutDetails) {
         foreach (var info in registrationInfo) {
             string[,] evtPricingInfo = new string[6, 3] { 
-                {info.Num_Attending_Two_Days.ToString(), "Two Day", "$ " + Math.BigMul(info.Num_Attending_Two_Days, 65).ToString()}, 
+                {info.Num_Attending_Two_Days.ToString(), "Two Day", "$ " + Math.BigMul(info.Num_Attending_Two_Days, int.Parse(App.twoDayPrice)).ToString()}, 
                 {info.Num_Attending_One_Day.ToString(), "One Day", "$ " + Math.BigMul(info.Num_Attending_One_Day, 35).ToString()},
                 {info.Num_12andYounger_Attending.ToString(), "12 and under", "$ " + Math.BigMul(info.Num_12andYounger_Attending, 25).ToString()}, 
                 {info.Num_Golfing.ToString(), "Golfing", "$ " + Math.BigMul(info.Num_Golfing, 45).ToString()}, 
@@ -283,20 +287,22 @@
 				        <span>@info.Church</span>
 			        </li>
                 }
-                  @{
+                @{
                   string strGuests = info.Guests;
-                  string[] arrGuests = strGuests.Split(new char[] { ';' });
+                  if (strGuests != null) {
+                    string[] arrGuests = strGuests.Split(new char[] { ';' });
 
-                  if (arrGuests.Length >= 1) {
-                    <li class="guests">
-                      <h4>Guest</h4>
-                        <ul>
-                            @for (var i = 0; i < arrGuests.Length; i++) {
-                                var guestCount = i + 1;
-                                <li>Guest @guestCount: @arrGuests[i].ToString()</li>
-                            }
-                        </ul>
-                    </li>
+                      if (arrGuests.Length >= 1) {
+                        <li class="guests">
+                          <h4>Guest</h4>
+                            <ul>
+                                @for (var i = 0; i < arrGuests.Length; i++) {
+                                    var guestCount = i + 1;
+                                    <li>Guest @guestCount: @arrGuests[i].ToString()</li>
+                                }
+                            </ul>
+                        </li>
+                      }
                   }
                 }
               

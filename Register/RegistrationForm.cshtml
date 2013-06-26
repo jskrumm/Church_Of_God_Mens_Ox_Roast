@@ -63,13 +63,7 @@
         );
 
     int guestCount = 1;
-    string monthDay = DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString();
-    string twoDayPrice = "65";
-
-    if (int.Parse(monthDay) <= 815) {
-        twoDayPrice = "55";
-    }
-
+    
     if (IsPost) {
         var guestSB = new StringBuilder();
         var guestFirstName = "";
@@ -320,8 +314,8 @@
             @Html.Label("Number attending Friday/Saturday", "num-att-two-day")
             @Html.TextBox("num-att-two-day",Request["num-att-two-day"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numAttTwoDaysQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}, {"data-initalVal", Request["num-att-two-day"]}, {"min", "0"}})            
 
-            <input id="num-att-two-day-price" type="hidden" name="num-att-two-day-price" value="@twoDayPrice" data-bind='value: $data.numAttTwoDaysPrice'/>
-            <span>X $@twoDayPrice =</span><output name="num-att-two-day-output" data-bind="text: $data.numAttTwoDaysTotalFormated">@Request["num-att-two-day-output"]</output>
+            <input id="num-att-two-day-price" type="hidden" name="num-att-two-day-price" value="@App.twoDayPrice" data-bind='value: $data.numAttTwoDaysPrice'/>
+            <span>X $@App.twoDayPrice =</span><output name="num-att-two-day-output" data-bind="text: $data.numAttTwoDaysTotalFormated">@Request["num-att-two-day-output"]</output>
             @Html.ValidationMessage("num-att-two-day")
         </div>
         <div>

@@ -15,8 +15,8 @@
     App.ExpressCheckoutVersion = "98";
     App.ExpressCheckoutPaymentAction = "SALE";
     App.ExpressCheckoutCurrencyCode = "USD";
-    App.ExpressCheckoutReturnUrl = "http://localhost:44736/RegistrationConfirmationPage";
-    App.ExpressCheckoutCancelUrl = "http://localhost:44736/RegistrationErrorPage";
+    App.ExpressCheckoutReturnUrl = "http://www.ohiomensoxroast.org/RegistrationConfirmationPage";
+    App.ExpressCheckoutCancelUrl = "http://www.ohiomensoxroast.org/RegistrationErrorPage";
 
     App.GetExpressCheckoutDetailsMethod = "GetExpressCheckoutDetails";
     App.DoExpressCheckoutPaymentMethod = "DoExpressCheckoutPayment";
@@ -49,4 +49,11 @@
     WebMail.From = "info@ohiomensoxroast.org";
 
     // To learn how to optimize scripts and stylesheets in your site go to http://go.microsoft.com/fwlink/?LinkID=248973
+
+    string monthDay = DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString();
+    if (int.Parse(monthDay) <= 815) {
+        App.twoDayPrice = "55";
+    } else {
+        App.twoDayPrice = "65";
+    }
 }
