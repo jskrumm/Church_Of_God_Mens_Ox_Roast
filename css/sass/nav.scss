@@ -18,24 +18,34 @@ nav {
         padding: 0;
 
         li {
-            background-color: $or-blue-02;
             line-height: 50px;
             margin-bottom: 1px;
-            padding-left: 25%;
 
             a {
                 color: $or-white-01;
+                text-decoration: none;
 
                 &:hover {
                     color: $or-white-01;
                 }
+
+                &:before {
+                    font-size: 35px;
+                    position: relative;
+                    left: -4px;
+                    top: 2px;
+                }
+            }
+
+            &:nth-child(even) {
+                background-color: $or-blue-02;
             }
         }
     }
 }
 
 /* Portrait tablet to landscape and desktop */
-@media (min-width: 768px) {
+@media (min-width: 603px) {
     nav {
         
         @include boxShadow($hShadow: 0, $vShadow: 1px, $blur: 4px, $color: rgba(0,0,0,0.065));
@@ -43,54 +53,50 @@ nav {
         padding: 0;
         position: static;
         height: 0;
-
         background-color: $or-black-01;
-        border: 1px solid $or-grey-02;
         -webkit-border-radius: 4px;
         -moz-border-radius: 4px;
         border-radius: 4px;
-
         min-height: 40px;
         width: 100%;
-        font-size: inherit;
-    }
 
-    nav ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-        nav ul li{
+        ul li{
             float: left;
             width: 20%;
             background: none;
             line-height: inherit;
             margin: 0;
             padding: 0;
-        }
-        nav ul li a {
-            border-left: 1px solid rgba(0, 0, 0, 0.75);
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-            font-weight: bold;
-            text-align: center;
-            float: none;
-            padding: 10px 15px 10px;
-            color: $or-blue-02;
-            text-decoration: none;
-            text-shadow: 0 1px 0 #000;
-            display: block;
-            font-family: script mt bold, script, cursive;
-            font-size: 18px;
-        }
-            nav ul li a:hover {
-                color: $or-blue-02;
+            background-color: inheirt;
+
+            &:first-child a {
+                border-left: 0 none;
+                border-radius: 3px 0 0 3px;
             }
-        nav ul li:first-child a {
-            border-left: 0 none;
-            border-radius: 3px 0 0 3px;
+
+            &:last-child a {
+                border-radius: 0 3px 3px 0;
+                border-right: 0 none;
+            }
+
+            &:nth-child(even) {
+                background: none;
+            }
+
+            a {
+                border-left: 1px solid rgba(0, 0, 0, 0.75);
+                border-right: 1px solid rgba(255, 255, 255, 0.1);
+                padding: 10px 15px 10px;
+                color: $or-blue-02;
+                text-decoration: none;
+                text-shadow: 0 1px 0 $or-black-03;
+                display: block;
+                font-family: script mt bold, script, cursive;
+
+                &:hover {
+                    color: $or-blue-02;
+                }
+            }
         }
-        nav ul li:last-child a {
-            border-radius: 0 3px 3px 0;
-            border-right: 0 none;
-        }
+    }
 }

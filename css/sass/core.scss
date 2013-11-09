@@ -1,11 +1,6 @@
-$or-blue-01: #0A325A;
-$or-blue-02: #104E8B;
-$or-gold-01: #FDD017;
-$or-white-01: #ffffff;
-$or-grey-01: #F2F2F2;
-$or-grey-02: #D4D4D4;
-$or-black-01: #101010;
-$or-black-02: #202020;
+@import "variables";
+@import "fonts";
+@import "icons";
 
 @mixin boxShadow($hShadow, $vShadow, $blur: "", $spread: "", $color: "", $inset: ""){
 	-moz-box-shadow: $hShadow $vShadow #{$blur} #{$spread} #{$color} #{$inset};
