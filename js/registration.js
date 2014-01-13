@@ -87,6 +87,5 @@ RegistrationVM = function () {
         return formatCurrency(self.numFishingTotal() + self.numPaintballingTotal() + self.numGolfingTotal() + self.numAttUnderageTotal() + self.numAttOneDayTotal() + self.numAttTwoDaysTotal());
     });
 };
-$(document).ready(function () {
-    ko.applyBindings(new RegistrationVM(), document.getElementById('eventInfo')); 
-});
+
+ko.applyBindings(new RegistrationVM(), $('#eventInfo')[0]); 

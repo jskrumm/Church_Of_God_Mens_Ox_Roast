@@ -28,4 +28,4 @@ ko.bindingHandlers.appendGuestInputs = {
     }
 };
 
-ko.applyBindings(appendGuestInputsVM);
+ko.applyBindings(appendGuestInputsVM,$(".")[0]);

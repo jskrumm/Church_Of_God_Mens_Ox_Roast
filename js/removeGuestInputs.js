@@ -1,4 +1,4 @@
-var appendGuestInputsVM = {
+var removeGuestInputsVM = {
 	removeField: ko.observable(0)
 };
 
@@ -20,4 +20,4 @@ ko.bindingHandlers.removeGuestInputs = {
     }
 };
 
-ko.applyBindings(appendGuestInputsVM);
+ko.applyBindings(removeGuestInputsVM, $("#guests")[0]);
