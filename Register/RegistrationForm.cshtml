@@ -286,23 +286,26 @@
         @Html.Label("Church You Attend", "church-atteding")@Html.ValidationMessage("church-atteding")
         @Html.TextBox("church-atteding",Request["church-atteding"],new {placeholder="Please enter the name of the church you attend"})
     </fieldset>
-    <fieldset id="guests" data-bind='appendGuestInputs: $data.addField, removeGuestInputs: $data.removeField'>
+    <fieldset id="guests">
         <h3>Guests</h3>
-        @for (var j=1; j<=guestCount; j++)
-        {
-            <div class="first-last-name-fields">
-                <label for="guest_firstname_@j">First Name</label>
-                <input id="guest_firstname_@j" type="text" name="guest_firstname_@j" value="@Request["guest_firstname_" + j]"/>
-                <label for="guest_lastname_@j">Last Name</label>
-                <input id="guest_lastname_@j" type="text" name="guest_lastname_@j" value="@Request["guest_lastname_" + j]"/>
-            </div>
-        }
-        <input id="guest-count" name="guest-count" type="hidden" value="@guestCount" data-initalVal="@guestCount" data-bind="value: $data.guestCount"/>
-        <input type="button" value="Add Another Guest" class="add-guest" data-bind="click: $data.addField, disable: $data.hasClickedTooManyTimes"/>
-        <input type="button" value="Remove A Guest" class="remove-guest" data-bind="click: $data.removeField, enable: $data.hasMoreThanOneGuest"/>
-        <div data-bind="visible: $data.hasClickedTooManyTimes">
-            You have reached the max number of guests you are allowed to register!
+        <div>
+            <h4>Guest Added</h4>
+            <ul data-bind="foreach: guest">
+                <li>
+                    Name at position <span data-bind="text: $index"> </span>:
+                    First Name: <span data-bind="text: $data.firstName"></span>
+                    Last Name: <span data-bind="text: $data.lastName"></span>
+                    <input type="button" value="Remove" class="remove-guest" data-bind="click: $parent.removeGuest"/>
+                </li>
+            </ul>
         </div>
+        <div class="first-last-name-fields">
+            <label for="guest_firstname">First Name</label>
+            <input id="guest_firstname" type="text" name="guest_firstname"/>
+            <label for="guest_lastname">Last Name</label>
+            <input id="guest_lastname" type="text" name="guest_lastname"/>
+        </div>
+        <input type="button" value="Add Another Guest" class="add-guest" data-bind="click: $data.addGuest"/>
     </fieldset>
     <fieldset id="eventInfo">
         <p>
