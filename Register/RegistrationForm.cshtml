@@ -89,7 +89,7 @@
        
         for(int i=0; i<guestCount; i++)
         {
-            var guestNum = i + 1;
+            /*var guestNum = i + 1;
 
             guestFirstName = Request["guest_firstname_" + guestNum.ToString()].Trim();
             guestLastName = Request["guest_lastname_" + guestNum.ToString()].Trim();
@@ -104,7 +104,9 @@
             }
 
             postedForm.Remove("guest_firstname_" + guestNum.ToString());
-            postedForm.Remove("guest_lastname_" + guestNum.ToString());
+            postedForm.Remove("guest_lastname_" + guestNum.ToString());*/
+
+            @Html.
         }
 
         if (finalGuestCount >= 1) {
@@ -290,9 +292,9 @@
         <h3>Guests</h3>
         <div>
             <h4>Guest Added</h4>
-            <ul data-bind="foreach: guest">
+            <ul id='guestList' data-bind="foreach: guest">
                 <li>
-                    Name at position <span data-bind="text: $index"> </span>:
+                    <span data-bind="text: $index"> </span>
                     First Name: <span data-bind="text: $data.firstName"></span>
                     Last Name: <span data-bind="text: $data.lastName"></span>
                     <input type="button" value="Remove" class="remove-guest" data-bind="click: $parent.removeGuest"/>
@@ -305,7 +307,11 @@
             <label for="guest_lastname">Last Name</label>
             <input id="guest_lastname" type="text" name="guest_lastname"/>
         </div>
-        <input type="button" value="Add Another Guest" class="add-guest" data-bind="click: $data.addGuest"/>
+        <input type="button" value="Add Another Guest" class="add-guest" data-bind="click: $data.addGuest, disable: $data.hasClickedTooManyTimes"/>
+        <input id="guest-count" name="guest-count" type="hidden" value="@guestCount" data-initalVal="@guestCount" data-bind="value: $data.guestCount"/>
+        <p data-bind="visible: $data.hasClickedTooManyTimes">
+            You have reached the max number of guests you are allowed to register!
+        </p>
     </fieldset>
     <fieldset id="eventInfo">
         <p>

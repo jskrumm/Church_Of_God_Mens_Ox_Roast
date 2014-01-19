@@ -119,12 +119,26 @@
             }
         }
 
-        #guests h3{
-            border-top: 1px dashed #CCCCCC;
-            color: #555555;
-            margin-left: 5px;
-            margin-top: 0;
-            padding-top: 20px;
+        #guests {
+            h3 {
+                border-top: 1px dashed #CCCCCC;
+                color: #555555;
+                margin-left: 5px;
+                margin-top: 0;
+                padding-top: 20px;
+            }
+            ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            ul li input[type="button"]{
+                margin: 0;
+                display: inline;
+                clear: both;
+                float: none;
+            }
         }
 
         #eventInfo {
