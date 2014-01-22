@@ -3,7 +3,7 @@ function Guest(firstName, lastName) {
     this.lastName = lastName;
 }
 
-function guestVM() {
+var guestVM = function() {
     var self = this;
 
     self.guest = ko.observableArray([]);
