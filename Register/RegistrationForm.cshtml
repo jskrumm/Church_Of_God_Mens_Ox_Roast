@@ -106,7 +106,7 @@
             postedForm.Remove("guest_firstname_" + guestNum.ToString());
             postedForm.Remove("guest_lastname_" + guestNum.ToString());*/
 
-            @Html.
+            
         }
 
         if (finalGuestCount >= 1) {
@@ -288,11 +288,12 @@
         @Html.Label("Church You Attend", "church-atteding")@Html.ValidationMessage("church-atteding")
         @Html.TextBox("church-atteding",Request["church-atteding"],new {placeholder="Please enter the name of the church you attend"})
     </fieldset>
+    <!-- ko stopBinding: true -->
     <fieldset id="guests">
         <h3>Guests</h3>
         <div>
             <h4>Guest Added</h4>
-            <ul id='guestList' data-bind="foreach: guest">
+            <ul data-bind="foreach: guest">
                 <li>
                     <span data-bind="text: $index"> </span>
                     First Name: <span data-bind="text: $data.firstName"></span>
@@ -313,6 +314,7 @@
             You have reached the max number of guests you are allowed to register!
         </p>
     </fieldset>
+    <!-- /ko -->
     <fieldset id="eventInfo">
         <p>
             *** You must have your guest and yourself registered for either two days, one day. 
