@@ -19,12 +19,17 @@
             background-color: $or-white-01;
             padding: 20px;
             border-radius: 4px; 
-            margin-top: 50px;
+            margin-top: 20px;
             
         img {
             height: 200px;
             width: 50%;
         }
+
+        &#golf img, &#cornhole img {
+            height: 300px;
+        }
+
         p {
             text-align:left;
         }

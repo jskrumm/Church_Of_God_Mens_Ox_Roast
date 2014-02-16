@@ -15,15 +15,27 @@
         text-decoration: none;
     }
 
+    iframe {
+        display: inline-block;
+    }
+
     section {
         width: 100%;
         margin: 25px 0;
         border-top: 1px dashed #ccc;
-        padding-top: 25px;
+
+        img {
+            height: 200px;
+        }
 
         div {
             width: 45%;
             display: inline-block;
+            margin-right: 10px;
+
+            + div {
+                margin: 0;
+            }
 
             h3 {
                 color: $or-blue-02;
