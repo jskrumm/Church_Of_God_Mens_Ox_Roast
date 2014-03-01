@@ -25,7 +25,7 @@
         border-top: 1px dashed #ccc;
 
         img {
-            height: 200px;
+            height: 100px;
         }
 
         div {
@@ -49,7 +49,7 @@
                 display:block;
                 color: #555555;
                 margin-bottom: 10px;
-                font-size: 16px;
+                font-size: 15px;
                 font-weight: bold;
             }
         }
@@ -66,5 +66,10 @@
                 }
             }
         }
+    }
+}
+@media (min-width: 603px) {
+    .about section img {
+        height: 200px;
     }
 }

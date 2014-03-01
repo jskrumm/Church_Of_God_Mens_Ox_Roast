@@ -42,8 +42,12 @@ ko.unapplyBindings = function ($node, remove) {
 
 ko.applyBindings(new MenuButtonVM(), $(".menu-bar mobile span")[0]);
 
-$(window).resize(function () { 
+$(window).resize(function () {
     if ($(this).width() >= '768') {
-        ko.unapplyBindings(".menu-bar mobile span",true);
-    }    
+        var mMenuBarSpan = $(".menu-bar mobile span")[0] || null;
+
+        if (mMenuBarSpan !== null) {
+            ko.unapplyBindings(mMenuBarSpan, true);
+        }
+    }
 });
