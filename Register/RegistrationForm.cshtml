@@ -251,41 +251,37 @@
     </p>
     <fieldset id="generalInfo">
         <div class="name-fields">
-            @Html.Label("Your First Name*", "firstname")@Html.ValidationMessage("firstname")
+            @Html.Label("Your First Name* ", "firstname")@Html.ValidationMessage("firstname")
             @Html.TextBox("firstname",Request["firstname"],new {required="required", placeholder="Please enter your first name"})
             
-            @Html.Label("Your Last Name*", "lastname")@Html.ValidationMessage("lastname")
+            @Html.Label("Your Last Name* ", "lastname")@Html.ValidationMessage("lastname")
             @Html.TextBox("lastname",Request["lastname"],new {required="required", placeholder="Please enter your lastname name"})
         </div>
-        @Html.Label("Address*", "PAYMENTREQUEST_0_SHIPTOSTREET")@Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOSTREET")
+        @Html.Label("Address* ", "PAYMENTREQUEST_0_SHIPTOSTREET")@Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOSTREET")
         @Html.TextBox("PAYMENTREQUEST_0_SHIPTOSTREET",Request["PAYMENTREQUEST_0_SHIPTOSTREET"],new {required="required", placeholder="Please enter your address"})
-        <div class="csz-fields">
-            @Html.Label("City*", "PAYMENTREQUEST_0_SHIPTOCITY")
-            @Html.TextBox("PAYMENTREQUEST_0_SHIPTOCITY",Request["PAYMENTREQUEST_0_SHIPTOCITY"],new {required="required", placeholder="Please enter your city"})
-            <label for="PAYMENTREQUEST_0_SHIPTOSTATE">State*</label>@Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOSTATE")
-            
-            <select id="PAYMENTREQUEST_0_SHIPTOSTATE" name="PAYMENTREQUEST_0_SHIPTOSTATE">
-                <option value="">Please Select...</option>
+
+        @Html.Label("City* ", "PAYMENTREQUEST_0_SHIPTOCITY")@Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOCITY")
+        @Html.TextBox("PAYMENTREQUEST_0_SHIPTOCITY",Request["PAYMENTREQUEST_0_SHIPTOCITY"],new {required="required", placeholder="Please enter your city"})
+        
+        <label for="PAYMENTREQUEST_0_SHIPTOSTATE">State* </label>@Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOSTATE")
+        <select id="PAYMENTREQUEST_0_SHIPTOSTATE" name="PAYMENTREQUEST_0_SHIPTOSTATE">
+            <option value="">Please Select...</option>
                 @foreach (var state in GetStateDropdown.GetStates())
                 {
                     <option value="@state.Key" @(Request["PAYMENTREQUEST_0_SHIPTOSTATE"] == state.Key ? " selected" : "")>@state.Value</option>
                 }
-            </select>
-            @Html.Label("Zip*", "PAYMENTREQUEST_0_SHIPTOZIP")
-            @Html.TextBox("PAYMENTREQUEST_0_SHIPTOZIP",Request["PAYMENTREQUEST_0_SHIPTOZIP"],new {required="required", placeholder="Please enter your zip code"})
+        </select>
+        
+        @Html.Label("Zip* ", "PAYMENTREQUEST_0_SHIPTOZIP")@Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOZIP")
+        @Html.TextBox("PAYMENTREQUEST_0_SHIPTOZIP",Request["PAYMENTREQUEST_0_SHIPTOZIP"],new {required="required", placeholder="Please enter your zip code"})
 
-            <div class="csz-field-errors">
-                @Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOCITY")
-                @Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOZIP")
-            </div>
-        </div>
-        @Html.Label("Phone Number", "PAYMENTREQUEST_0_SHIPTOPHONENUM")@Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOPHONENUM")
+        @Html.Label("Phone Number ", "PAYMENTREQUEST_0_SHIPTOPHONENUM")@Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOPHONENUM")
         @Html.TextBox("PAYMENTREQUEST_0_SHIPTOPHONENUM",Request["PAYMENTREQUEST_0_SHIPTOPHONENUM"],new {placeholder="Please enter your phone number"})
         
-        @Html.Label("Email*", "EMAIL")@Html.ValidationMessage("EMAIL")
+        @Html.Label("Email* ", "EMAIL")@Html.ValidationMessage("EMAIL")
         @Html.TextBox("EMAIL",Request["EMAIL"],new {placeholder="Please enter an email address", type="email"})
 
-        @Html.Label("Church You Attend", "church-atteding")@Html.ValidationMessage("church-atteding")
+        @Html.Label("Church You Attend ", "church-atteding")@Html.ValidationMessage("church-atteding")
         @Html.TextBox("church-atteding",Request["church-atteding"],new {placeholder="Please enter the name of the church you attend"})
     </fieldset>
     <!-- ko stopBinding: true -->

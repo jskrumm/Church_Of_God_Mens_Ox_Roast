@@ -9,9 +9,7 @@
         margin-top: 50px;
 
     form {
-        margin-left: 5%;
         text-align: left;
-        width: 90%;
 
         p {
             margin-left: 15px;
@@ -75,6 +73,8 @@
             line-height: 30px;
             padding: 6px;
             vertical-align: middle;
+            width: 100%;
+            margin-bottom: 20px;
         }
 
         output {
@@ -101,21 +101,6 @@
             &:focus {
                 border: none;
                 box-shadow: none;
-            }
-        }
-        div.csz-fields {
-            input, label {
-                display:inline;
-                width: auto;
-            }
-
-            input, select {
-                margin-right: 25px;
-                width: 25%;
-            }
-
-            label {
-                margin: 0 0 5px 5px;
             }
         }
 
@@ -152,25 +137,24 @@
             }
 
             label {
-                width: 30%;
+                width: 300px;
             }
 
             input{
                 display:inline;
-                width: auto;
+                width: 30px;
+                margin-bottom: 10px;
 
                 + span {
                     font-weight: bold;
                     color: #555555;
-                    margin: 0 30px;
+                    margin: 0 10px;
                 } 
             }
             
             .totalLabel {
                 font-size: 25px;
-                margin-left: 32%;
                 margin-top: 20px;
-                width: 26%;
             }
         }
     }

@@ -87,5 +87,5 @@ RegistrationVM = function () {
         return formatCurrency(self.numFishingTotal() + self.numPaintballingTotal() + self.numGolfingTotal() + self.numAttUnderageTotal() + self.numAttOneDayTotal() + self.numAttTwoDaysTotal());
     });
 };
-
+ko.cleanNode($('#eventInfo')[0]); //This sucks
 ko.applyBindings(new RegistrationVM(), $('#eventInfo')[0]); 

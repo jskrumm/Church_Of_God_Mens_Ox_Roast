@@ -7,10 +7,13 @@
     <link href="css/stylesheets/menu-bar.min.css" rel="stylesheet" type="text/css" />
     <link href="css/stylesheets/nav.min.css" rel="stylesheet" type="text/css" />
     <link href="css/stylesheets/home.min.css" rel="stylesheet" type="text/css" />
+    <link href="css/stylesheets/flexslider.min.css" rel="stylesheet" type="text/css"/>
 }
 
 @section js {
     <script src="js/menubar.js"></script>
+    <script src="js/base/jquery.flexslider-min.js"></script>
+    <script src="js/slide.min.js"></script>
 }
 
 <div class="about">
@@ -34,13 +37,52 @@
         numbers of men and boys to serve the Lord. An executive council meets four times a year under President Rick Dennis to plan the annual retreat and
         help keep this ministry group as one of the most successful in the country.
     </p>
-    <iframe width="100%" height="200px" src="http://www.youtube.com/embed/j-vBp5pwJr0" seamless allowfullscreen></iframe>
+    <div class="flexslider carousel">
+      <ul class="slides">
+        <li>
+          <img src="img/slide_show/DSC_9589.jpg" />
+        </li>
+        <li>
+          <img src="img/slide_show/DAVE AND LANCE DSC_9582.jpg" />
+        </li>
+        <li>
+          <img src="img/slide_show/DSC_9489.jpg" />
+        </li>
+        <li>
+          <img src="img/slide_show/DSC_9503.jpg" />
+        </li>
+        <li>
+          <img src="img/slide_show/DSC_9505.jpg" />
+        </li>
+        <li>
+          <img src="img/slide_show/DSC_9585.jpg" />
+        </li>
+        <li>
+          <img src="img/slide_show/DSC_9405.jpg" />
+        </li>
+        <li>
+          <img src="img/slide_show/BEGINNING DSC_9153.jpg" />
+        </li>
+        <li>
+          <img src="img/slide_show/BALL AND HOLE DSC_9240.jpg" />
+        </li>
+        <li>
+          <img src="img/slide_show/ALLEN PUTT DSC_9262.jpg" />
+        </li>
+        <li>
+          <img src="img/slide_show/allen doug.jpg" />
+        </li>
+        <li>
+          <img src="img/slide_show/FIRE PIT DSC_9452.jpg" />
+        </li>
+      </ul>
+    </div>
     <section>
         <div>
             <a href="@Href("~/Speakers")">
                 <h3>Speaker</h3>
                 <span>Ken Johnson (Indianapolis Colts Chaplain)</span>
-                <img src="img/placeholder-person.png" alt="Speaker Unknown" class="speaker-img"/>
+                <img src="img/speakers/2014/ken_johnson.jpg" alt="Ken Johnson" class="speaker-img"/>
             </a>
         </div>
         <div>
