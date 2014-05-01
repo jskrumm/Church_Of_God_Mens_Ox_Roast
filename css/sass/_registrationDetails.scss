@@ -13,9 +13,10 @@
     }
     ul {
         list-style: none;
-        margin: 0 34%;;
+        margin: 0 auto;
         padding: 0;
-        
+        width: 34%;
+
         li {
             text-align: left;
 
@@ -27,8 +28,6 @@
         }
 
         &.pricingInfo {
-            margin: 0 38% 0 34%;
-
             li {
                 &.headings {
                     margin-bottom: 10px;
@@ -39,34 +38,20 @@
                 }
 
                 &.last {
-                    padding-left: 94px;
+                    padding-left: 154px;
                     border-top: 1px solid #ccc;
                     margin-top: 10px;
-
-                    h4:first-child {
-                        width: 150px;
-                    }
 
                     span {
                         width: auto;
                     }
                 }
                 h4 {
-                    &:first-child {
-                        width: 90px;
-                    }
+                    width: 150px;
                 }
                 span {
                     display: inline-block;
                     width: 150px;
-
-                    &:first-child {
-                        width: 90px;
-                    }
-
-                    + span + span {
-                        width: auto;
-                    }
                 }
             }
         }
@@ -89,5 +74,11 @@
    fieldset {
         margin: 0;
         padding: 0;
+   }
+    
+   @media (max-width: 768px) {
+    ul {
+        width: 90%;
+    }
    }
 }
