@@ -65,11 +65,13 @@
     int guestCount = 1;
     
     if (IsPost) {
-        var guestSB = new StringBuilder();
-        var guestFirstName = "";
-        var guestLastName = "";
-        string guestFullName = "";
-        string guestList = null;
+        //var guestSB = new StringBuilder();
+        //var guestFirstName = "";
+        //var guestLastName = "";
+        //string guestFullName = "";
+        string guestList = Request["guestList"];
+        string[] guestListArray = guestList.Split(new string[] { ";" }, StringSplitOptions.None);
+        object[] guestObjArray;
         int finalGuestCount = 0;
         bool invalidGuestNameInputs = false;
         int twoDayCount = Request["num-att-two-day"].IsEmpty() ? 0 : int.Parse(Request["num-att-two-day"]);
@@ -84,12 +86,21 @@
         bool invalidRegistrationCount = false;
 
         NameValueCollection postedForm = new NameValueCollection(Request.Form); //Create new name/value collection from form data
-
+        @Request.Form
         guestCount = Request["guest-count"].IsEmpty() ? 1 : int.Parse(Request["guest-count"]);
-       
-        for(int i=0; i<guestCount; i++)
+     
+        for(int i=0; i<guestListArray.Length; i++) {
+            string lastName = guestListArray[i].Substring(0, guestListArray[i].IndexOf(","));
+            @guestListArray[i].IndexOf(",");
+            @guestListArray[i].Length;
+            //string firstName = guestListArray[i].Substring(guestListArray[i].IndexOf(","), guestListArray[i].Length -1);
+            //@firstName
+
+            //guestObjArray[i] = {guestListArray[i].Split(",")}
+        }
+        /*for(int i=0; i<guestCount; i++)
         {
-            /*var guestNum = i + 1;
+            var guestNum = i + 1;
 
             guestFirstName = Request["guest_firstname_" + guestNum.ToString()].Trim();
             guestLastName = Request["guest_lastname_" + guestNum.ToString()].Trim();
@@ -104,19 +115,19 @@
             }
 
             postedForm.Remove("guest_firstname_" + guestNum.ToString());
-            postedForm.Remove("guest_lastname_" + guestNum.ToString());*/
+            postedForm.Remove("guest_lastname_" + guestNum.ToString());
 
             
-        }
+        }*/
 
-        if (finalGuestCount >= 1) {
+        /*if (finalGuestCount >= 1) {
             guestSB.Remove(guestSB.Length - 1, 1); // remove the last ';'
             guestList = guestSB.ToString();
 
             if (guestList == "") {
                 guestList = null;
             }
-        }
+        }*/
 
         if (finalGuestCount >=1 && finalGuestCount != guestCount) {
             invalidGuestNameInputs = true;
@@ -291,13 +302,13 @@
             <h4>Guest Added</h4>
             <ul data-bind="foreach: guest">
                 <li>
-                    <span data-bind="text: $index"> </span>
-                    First Name: <span data-bind="text: $data.firstName"></span>
-                    Last Name: <span data-bind="text: $data.lastName"></span>
+                    First Name: <span data-bind="text: $data.firstName" class="firstName"></span>
+                    Last Name: <span data-bind="text: $data.lastName" class="lastName"></span>
                     <input type="button" value="Remove" class="remove-guest" data-bind="click: $parent.removeGuest"/>
                 </li>
             </ul>
         </div>
+        <input type="hidden" value="" id="guestList" name="guestList"/>
         <div class="first-last-name-fields">
             <label for="guest_firstname">First Name</label>
             <input id="guest_firstname" type="text" name="guest_firstname"/>
