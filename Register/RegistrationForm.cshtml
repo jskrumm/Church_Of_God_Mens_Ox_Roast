@@ -63,15 +63,9 @@
         );
 
     int guestCount = 1;
-    
+    string guestList = "";
+
     if (IsPost) {
-        //var guestSB = new StringBuilder();
-        //var guestFirstName = "";
-        //var guestLastName = "";
-        //string guestFullName = "";
-        string guestList = Request["guestList"];
-        string[] guestListArray = guestList.Split(new string[] { ";" }, StringSplitOptions.None);
-        object[] guestObjArray;
         int finalGuestCount = 0;
         bool invalidGuestNameInputs = false;
         int twoDayCount = Request["num-att-two-day"].IsEmpty() ? 0 : int.Parse(Request["num-att-two-day"]);
@@ -86,50 +80,16 @@
         bool invalidRegistrationCount = false;
 
         NameValueCollection postedForm = new NameValueCollection(Request.Form); //Create new name/value collection from form data
-        @Request.Form
+
         guestCount = Request["guest-count"].IsEmpty() ? 1 : int.Parse(Request["guest-count"]);
-     
-        for(int i=0; i<guestListArray.Length; i++) {
-            string lastName = guestListArray[i].Substring(0, guestListArray[i].IndexOf(","));
-            @guestListArray[i].IndexOf(",");
-            @guestListArray[i].Length;
-            //string firstName = guestListArray[i].Substring(guestListArray[i].IndexOf(","), guestListArray[i].Length -1);
-            //@firstName
+        
+        guestList = Request["guestList"];
+        
+        finalGuestCount = guestList.Split(new string[] { ";" }, StringSplitOptions.None).Length;
 
-            //guestObjArray[i] = {guestListArray[i].Split(",")}
-        }
-        /*for(int i=0; i<guestCount; i++)
-        {
-            var guestNum = i + 1;
-
-            guestFirstName = Request["guest_firstname_" + guestNum.ToString()].Trim();
-            guestLastName = Request["guest_lastname_" + guestNum.ToString()].Trim();
-
-            if (!guestFirstName.IsEmpty() && !guestLastName.IsEmpty()) {
-          
-                guestFullName = guestLastName + ", " + guestFirstName + ";";
-
-                guestSB.Append(guestFullName);
-                
-                finalGuestCount += 1;
-            }
-
-            postedForm.Remove("guest_firstname_" + guestNum.ToString());
-            postedForm.Remove("guest_lastname_" + guestNum.ToString());
-
-            
-        }*/
-
-        /*if (finalGuestCount >= 1) {
-            guestSB.Remove(guestSB.Length - 1, 1); // remove the last ';'
-            guestList = guestSB.ToString();
-
-            if (guestList == "") {
-                guestList = null;
-            }
-        }*/
-
-        if (finalGuestCount >=1 && finalGuestCount != guestCount) {
+        @finalGuestCount
+        @guestCount
+        if (finalGuestCount >=1 && finalGuestCount != guestCount - 1) {
             invalidGuestNameInputs = true;
         } else {
             if ((finalGuestCount + 1) != totalMarkedForRegistration) {
@@ -156,6 +116,9 @@
             postedForm.Remove("num-paintballing-price");
             postedForm.Remove("num-fishing");
             postedForm.Remove("num-fishing-price");
+            postedForm.Remove("guestList");
+            postedForm.Remove("guest_firstname");
+            postedForm.Remove("guest_lastname");
        
             //Add required data sensitive fields before sending data to PayPal
             postedForm.Set("USER", App.PayPalUser);
@@ -308,7 +271,7 @@
                 </li>
             </ul>
         </div>
-        <input type="hidden" value="" id="guestList" name="guestList"/>
+        <input type="hidden" value="@guestList" id="guestList" name="guestList"/>
         <div class="first-last-name-fields">
             <label for="guest_firstname">First Name</label>
             <input id="guest_firstname" type="text" name="guest_firstname"/>

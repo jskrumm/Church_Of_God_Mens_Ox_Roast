@@ -20,16 +20,16 @@ var insertHiddenGuestList = function (guestList) {
 var guestVM = function () {
     var self = this;
     var guestAlreadyAdded = [];
+    var guestHiddenFieldValue = $("#guestList").val();
+    var tempGuestArray = guestHiddenFieldValue.split(";");
 
-    $("#guests ul li").each(function () {
-        console.log(this);
-
-        if ($(".firstName", this).text() !== "") {
-            console.log("shouldn't be here");
-            guestAlreadyAdded.push = new Guest($(".firstName", this).text(), $(".lastName", this).text());
-            insertHiddenGuestList(guestAlreadyAdded);
-        }
-    });
+    if (guestHiddenFieldValue !== "") {
+        for (var i = 0; i < tempGuestArray.length; i++) {
+            var lastName = tempGuestArray[i].substring(0, tempGuestArray[i].indexOf(","));
+            var firstName = tempGuestArray[i].substring(tempGuestArray[i].indexOf(",") + 2, tempGuestArray[i].length);
+            guestAlreadyAdded.push({ "firstName": firstName, "lastName": lastName });
+        };
+    }
 
     self.guest = ko.observableArray(guestAlreadyAdded);
     self.guestCount = ko.observable(parseInt($("#guest-count").attr("data-initalVal")));
