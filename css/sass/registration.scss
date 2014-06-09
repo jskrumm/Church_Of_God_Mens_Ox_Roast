@@ -29,7 +29,8 @@
             border: 1px solid #CCCCCC;
             border-radius: 4px;
             box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
-            padding: 4px 6px;
+            padding: 0 10px;
+            font-size: 16px;
 
             &:focus {
                 border-color: rgba(16, 78, 139,0.8);
@@ -38,7 +39,7 @@
         }
 
         input {
-            height: 20px;
+            height: 40px;
             margin-bottom: 20px;
             -webkit-appearance: none;
             -moz-appearance: none;
@@ -72,9 +73,9 @@
 
         select {
             color: #555555;
-            height: 30px;
-            line-height: 30px;
-            padding: 6px;
+            height: 44px;
+            line-height: 44px;
+            padding: 0 10px;
             vertical-align: middle;
             width: 100%;
             margin-bottom: 20px;
@@ -142,7 +143,6 @@
             p:first-child {
                 border-top: 1px dashed #CCCCCC;
                 color: #555555;
-                font-size: 14px;
                 font-style: italic;
                 margin-bottom: 25px;
                 padding-top: 20px;

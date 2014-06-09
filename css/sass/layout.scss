@@ -5,13 +5,19 @@ html, body {
     padding: 0;
     margin: 0;
     font-family: sans, sans-serif, serif, MS sans, MS serif;
-    font-size: 100%;
     overflow-x: hidden;
     background-color: $or-grey-01;
     text-align: center;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 20px;
 }
+
+h1 { font-size: 30px;}
+h2 { font-size: 28px;}
+h3 { font-size: 24px;}
+h4 { font-size: 22px;}
+h5 { font-size: 18px;}
+h6 { font-size: 16px;}
 
 math {
     display:none;
@@ -22,10 +28,6 @@ img {
 ul, ol {
     margin: 0 0 10px 25px;
     padding: 0;
-
-    li {
-        font-size: 100%;
-    }
 }
 
 article, aside, details, figcaption, figure, footer, header, hgroup, nav, section {
@@ -41,10 +43,6 @@ article, aside, details, figcaption, figure, footer, header, hgroup, nav, sectio
 }
 header {
     color: $or-blue-02;
-    h1 {
-        font-size: 1.6em;
-        margin:0;
-    }
 }
 img.logo {
     margin: auto auto 25px;
@@ -52,8 +50,9 @@ img.logo {
 }
 .scripture {
     color: $or-black-02;
-    font-family: script mt bold, script, cursive;
+    font-family: 'Great Vibes',script mt bold, script, cursive;
     margin-top: 25px;
+    font-size: 20px;
 }
 
 @media (min-width: 603px) {

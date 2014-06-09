@@ -53,18 +53,18 @@ nav {
         padding: 0;
         position: static;
         height: 0;
-        background-color: $or-black-01;
+        background-color: $or-black-04;
         -webkit-border-radius: 4px;
         -moz-border-radius: 4px;
         border-radius: 4px;
-        min-height: 40px;
+        min-height: 44px;
         width: 100%;
 
         ul li{
             float: left;
             width: 16.666%;
             background: none;
-            line-height: inherit;
+            line-height: 20px;
             margin: 0;
             padding: 0;
             background-color: inheirt;
@@ -86,12 +86,14 @@ nav {
             a {
                 border-left: 1px solid rgba(0, 0, 0, 0.75);
                 border-right: 1px solid rgba(255, 255, 255, 0.1);
-                padding: 10px 0 10px;
+                padding: 12px 0 12px;
                 color: $or-blue-02;
                 text-decoration: none;
                 text-shadow: 0 1px 0 $or-black-03;
                 display: block;
-                font-family: script mt bold, script, cursive;
+                font-family: 'Great Vibes',script mt bold, script, cursive;
+                font-size: 20px;
+                font-weight: bold;
 
                 &:hover {
                     color: $or-blue-02;
