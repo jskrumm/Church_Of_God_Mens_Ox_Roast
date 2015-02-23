@@ -19,7 +19,6 @@ ko.bindingHandlers.slideNavVisiable = {
         var valueUnwrapped = ko.utils.unwrapObservable(value),
             menuBtn = $(element).parents(".page").find(".menu-bar.mobile span");
         // Now manipulate the DOM element
-        console.log("hit");
         $(element).animate({ "right": parseInt($(element).css("right"), 10) >= 0 ? "-=250px" : "+=250px" }, "slow");
         menuBtn.animate({ "margin-right": parseInt($(element).css("right"), 10) >= 0 ? "0" : "+=200px" }, "slow");
     }

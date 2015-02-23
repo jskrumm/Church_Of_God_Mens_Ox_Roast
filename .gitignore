@@ -1,7 +1,8 @@
 /_AppStart.cshtml
-/css/stylesheets
+/css
 /jasmine
 /App_Data
 /App_Data/Admin
-
+/node_modules
 /App_Data/packages
+/.sass-cache

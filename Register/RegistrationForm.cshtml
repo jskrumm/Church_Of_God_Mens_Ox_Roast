@@ -62,7 +62,7 @@
         Validator.Range(0,21, "You can not purchase more than 20 at a time.")
         );
 
-    int guestCount = 1;
+    int guestCount = 0;
     string guestList = "";
 
     if (IsPost) {
@@ -81,15 +81,17 @@
 
         NameValueCollection postedForm = new NameValueCollection(Request.Form); //Create new name/value collection from form data
 
-        guestCount = Request["guest-count"].IsEmpty() ? 1 : int.Parse(Request["guest-count"]);
+        guestCount = Request["guest-count"].IsEmpty() ? 0 : int.Parse(Request["guest-count"]);
         
         guestList = Request["guestList"];
         
-        finalGuestCount = guestList.Split(new string[] { ";" }, StringSplitOptions.None).Length;
+        if (guestList != "") {
+            finalGuestCount = guestList.Split(new string[] { ";" }, StringSplitOptions.None).Length;
+        }
 
         @finalGuestCount
         @guestCount
-        if (finalGuestCount >=1 && finalGuestCount != guestCount - 1) {
+        if (finalGuestCount >=1 && finalGuestCount != guestCount) {
             invalidGuestNameInputs = true;
         } else {
             if ((finalGuestCount + 1) != totalMarkedForRegistration) {
@@ -220,49 +222,50 @@
 
 <form action="" method="post">
     @Html.ValidationSummary(true)
-    <p>
-        * = Required
-    </p>
     <fieldset id="generalInfo">
         <div class="name-fields">
-            @Html.Label("Your First Name* ", "firstname")@Html.ValidationMessage("firstname")
-            @Html.TextBox("firstname",Request["firstname"],new {required="required", placeholder="Please enter your first name"})
+            @Html.ValidationMessage("firstname")
+            @Html.TextBox("firstname",Request["firstname"],new {required="required", placeholder="First Name"})
             
-            @Html.Label("Your Last Name* ", "lastname")@Html.ValidationMessage("lastname")
-            @Html.TextBox("lastname",Request["lastname"],new {required="required", placeholder="Please enter your lastname name"})
+            @Html.ValidationMessage("lastname")
+            @Html.TextBox("lastname",Request["lastname"],new {required="required", placeholder="Last Name"})
         </div>
-        @Html.Label("Address* ", "PAYMENTREQUEST_0_SHIPTOSTREET")@Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOSTREET")
-        @Html.TextBox("PAYMENTREQUEST_0_SHIPTOSTREET",Request["PAYMENTREQUEST_0_SHIPTOSTREET"],new {required="required", placeholder="Please enter your address"})
+        @Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOSTREET")
+        @Html.TextBox("PAYMENTREQUEST_0_SHIPTOSTREET",Request["PAYMENTREQUEST_0_SHIPTOSTREET"],new {required="required", placeholder="Address"})
 
-        @Html.Label("City* ", "PAYMENTREQUEST_0_SHIPTOCITY")@Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOCITY")
-        @Html.TextBox("PAYMENTREQUEST_0_SHIPTOCITY",Request["PAYMENTREQUEST_0_SHIPTOCITY"],new {required="required", placeholder="Please enter your city"})
+        @Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOCITY")
+        @Html.TextBox("PAYMENTREQUEST_0_SHIPTOCITY",Request["PAYMENTREQUEST_0_SHIPTOCITY"],new {required="required", placeholder="City"})
         
-        <label for="PAYMENTREQUEST_0_SHIPTOSTATE">State* </label>@Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOSTATE")
+        @Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOSTATE")
         <select id="PAYMENTREQUEST_0_SHIPTOSTATE" name="PAYMENTREQUEST_0_SHIPTOSTATE">
-            <option value="">Please Select...</option>
+            <option value="">State</option>
                 @foreach (var state in GetStateDropdown.GetStates())
                 {
                     <option value="@state.Key" @(Request["PAYMENTREQUEST_0_SHIPTOSTATE"] == state.Key ? " selected" : "")>@state.Value</option>
                 }
         </select>
         
-        @Html.Label("Zip* ", "PAYMENTREQUEST_0_SHIPTOZIP")@Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOZIP")
-        @Html.TextBox("PAYMENTREQUEST_0_SHIPTOZIP",Request["PAYMENTREQUEST_0_SHIPTOZIP"],new {required="required", placeholder="Please enter your zip code"})
+        @Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOZIP")
+        @Html.TextBox("PAYMENTREQUEST_0_SHIPTOZIP",Request["PAYMENTREQUEST_0_SHIPTOZIP"],new {required="required", placeholder="Zip"})
 
-        @Html.Label("Phone Number ", "PAYMENTREQUEST_0_SHIPTOPHONENUM")@Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOPHONENUM")
-        @Html.TextBox("PAYMENTREQUEST_0_SHIPTOPHONENUM",Request["PAYMENTREQUEST_0_SHIPTOPHONENUM"],new {placeholder="Please enter your phone number"})
+        @Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOPHONENUM")
+        @Html.TextBox("PAYMENTREQUEST_0_SHIPTOPHONENUM",Request["PAYMENTREQUEST_0_SHIPTOPHONENUM"],new {placeholder="Phone Number"})
         
-        @Html.Label("Email* ", "EMAIL")@Html.ValidationMessage("EMAIL")
-        @Html.TextBox("EMAIL",Request["EMAIL"],new {placeholder="Please enter an email address", type="email"})
+        
+        @Html.TextBox("EMAIL",Request["EMAIL"],new {placeholder="Email", type="email"})
 
-        @Html.Label("Church You Attend ", "church-atteding")@Html.ValidationMessage("church-atteding")
-        @Html.TextBox("church-atteding",Request["church-atteding"],new {placeholder="Please enter the name of the church you attend"})
+        @Html.ValidationMessage("church-atteding")
+        @Html.TextBox("church-atteding",Request["church-atteding"],new {placeholder="Church (Optional)"})
     </fieldset>
     <!-- ko stopBinding: true -->
     <fieldset id="guests">
         <h3>Guests</h3>
         <div>
-            <h4>Guest Added</h4>
+            @if(guestCount < 1) {
+                <h4 style="display: none">Guest Added</h4>
+            } else {
+                 <h4>Guest Added</h4>
+            }
             <ul data-bind="foreach: guest">
                 <li>
                     First Name: <span data-bind="text: $data.firstName" class="firstName"></span>
@@ -278,7 +281,7 @@
             <label for="guest_lastname">Last Name</label>
             <input id="guest_lastname" type="text" name="guest_lastname"/>
         </div>
-        <input type="button" value="Add Another Guest" class="add-guest" data-bind="click: $data.addGuest, disable: $data.hasClickedTooManyTimes"/>
+        <input type="button" value="Add Guest" class="add-guest" data-bind="click: $data.addGuest, disable: $data.hasClickedTooManyTimes"/>
         <input id="guest-count" name="guest-count" type="hidden" value="@guestCount" data-initalVal="@guestCount" data-bind="value: $data.guestCount"/>
         <p data-bind="visible: $data.hasClickedTooManyTimes">
             You have reached the max number of guests you are allowed to register!

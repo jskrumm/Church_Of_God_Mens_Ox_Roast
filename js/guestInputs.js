@@ -35,15 +35,26 @@ var guestVM = function () {
     self.guestCount = ko.observable(parseInt($("#guest-count").attr("data-initalVal")));
 
     self.addGuest = function () {
-        self.guest.push(new Guest($("#guest_firstname").val(), $("#guest_lastname").val()));
-        self.guestCount(self.guestCount() + 1);
-        insertHiddenGuestList(self.guest());
+        var firstName = $("#guest_firstname").val(),
+            lastName = $("#guest_lastname").val();
+
+        if (firstName !== "" && lastName !== "") {
+            self.guest.push(new Guest(firstName, lastName));
+            self.guestCount(self.guestCount() + 1);
+            insertHiddenGuestList(self.guest());
+
+            $("#guests h4").show();
+        }
     };
 
     self.removeGuest = function () {
         self.guest.remove(this);
         self.guestCount(self.guestCount() - 1);
         insertHiddenGuestList(self.guest());
+
+        if (self.guestCount() < 1) {
+            $("#guests h4").hide();
+        }
     };
 
     self.hasClickedTooManyTimes = ko.computed(function () {

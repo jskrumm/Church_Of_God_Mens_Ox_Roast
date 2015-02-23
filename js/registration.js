@@ -25,7 +25,7 @@ RegistrationVM = function () {
         monthDay = month.toString() + day.toString(),
         twoDayPrice = 65;
 
-    if (monthDay <= 815) {
+    if (monthDay <= 820) {
         twoDayPrice = 55;
     }
 
