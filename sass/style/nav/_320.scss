@@ -1,0 +1,25 @@
+@media (min-width: 320px) {
+	background-color: $or-red-01;
+	color: $or-white-01;
+	text-align: left;
+
+	ul li {
+		border-bottom: 1px solid $or-white-01;
+
+		&:last-child {
+			border-bottom: none;
+		}
+	}
+
+	a {
+		color: $or-white-01;
+		text-decoration: none;
+		text-transform: capitalize;
+
+		&:before {
+			font-size: 32px;
+			line-height: 47px;
+			font-family: sans, sans-serif, serif, MS sans, MS serif;
+		}
+	}
+}

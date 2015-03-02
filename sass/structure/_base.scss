@@ -1,9 +1,15 @@
-@import "../variables";
-@import "../fonts";
-@import "../icons";
-@import "../mixins/boxShadow";
 @import "320";
 
-.menu {
+.menu-bar.mobile {
 	@import "menu/320";
+}
+
+nav {
+	@import "nav/320";
+}
+
+.section {
+	width: 100%;
+	padding: 10px;
+	box-sizing: border-box;
 }

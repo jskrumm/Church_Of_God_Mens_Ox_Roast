@@ -1,5 +1,6 @@
+@import "variables";
+@import "fonts";
+@import "icons";
+@import "mixins/boxShadow";
 @import "structure/base";
-
-.menu {
-	@import "style/menu/320";
-}
+@import "style/base";

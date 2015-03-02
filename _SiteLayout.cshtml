@@ -14,14 +14,14 @@
             @RenderPage("~/_MenuBar.cshtml")
             <div class="header-content-wrap">
             	 @RenderPage("~/_Header.cshtml")
-                <div class="body">
-                	@RenderBody()
-                	<p class="scripture">
-                        "I have fought the good fight, I have finished the race, I have kept the faith."<br/>
-                        ~ 2 Timothy 4:7
-                    </p>
-                </div>
             </div>
+            <div class="page">
+            	@RenderBody()
+            </div>
+            <p class="scripture">
+                "I have fought the good fight, I have finished the race, I have kept the faith."<br/>
+                ~ 2 Timothy 4:7
+            </p>
         <!-- </div> -->
         <!--[if lt IE 9]>
             <script src="js/base/modernizr-2.5.3.min.js"></script>

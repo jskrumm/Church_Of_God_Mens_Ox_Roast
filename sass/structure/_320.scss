@@ -1,24 +1,20 @@
 @media (min-width: 320px) {
 
 	html, body {
+		position: relative;
 	    height: auto;
 	    padding: 0;
 	    margin: 0;
-	    font-family: sans, sans-serif, serif, MS sans, MS serif;
 	    overflow-x: hidden;
-	    background-color: $or-grey-01;
-	    text-align: center;
-	    font-size: 16px;
-	    line-height: 24px;
 	}
 
-	h1 { font-size: 32px; line-height: 47px; margin: 0;}
-	h2 { font-size: 28px; line-height: 40px; margin: 0;}
-	h3 { font-size: 24px; line-height: 36px; margin: 0;}
-	h4 { font-size: 17px; line-height: 32px; margin: 0;}
-	h5 { font-size: 17px; line-height: 28px; margin: 0;}
-	h6 { font-size: 16px; line-height: 28px; margin: 0;}
+	body {
+		position: relative;
+	    height: 100%;
+	}
 
+	h1 ,h2, h3 ,h4, h5, h6 { margin: 0;}
+	
 	math {
 	    display:none;
 	}
@@ -31,17 +27,20 @@
 	article, aside, details, figcaption, figure, footer, header, hgroup, nav, section {
 	    display: block;
 	}
+
+
+	.header-content-wrap {
+	    margin: 20px auto 0 auto;
+		padding: 0 16px;
+	}
+
 	.page {
 	    position: relative;
 	    height: 100%;
+	    margin: 10px auto 0 auto;
+	    padding: 0 16px;
 	}
-	.header-content-wrap {
-	    margin: 10px auto;
-		padding: 0 16px;
-	}
-	header {
-	    color: rgba(0, 0, 0, 0.87);
-	}
+
 	img {
 		max-width: 100%;
 
@@ -50,11 +49,9 @@
 	    	margin: 0 auto;
 		}
 	}
+
 	.scripture {
-	    color: rgba(0, 0, 0, 0.87);
-	    font-family: 'Great Vibes',script mt bold, script, cursive;
 	    margin-top: 20px;
-	    font-size: 20px;
-	    line-height: 30px;
+	    padding: 0 16px;
 	}
 }
