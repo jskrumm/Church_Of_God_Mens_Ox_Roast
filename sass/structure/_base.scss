@@ -2,14 +2,10 @@
 
 .menu-bar.mobile {
 	@import "menu/320";
+	@import "menu/800";
 }
 
 nav {
 	@import "nav/320";
-}
-
-.section {
-	width: 100%;
-	padding: 10px;
-	box-sizing: border-box;
+	@import "nav/800";
 }

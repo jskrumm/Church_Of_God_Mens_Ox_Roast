@@ -6,10 +6,5 @@
 
 nav {
 	@import "nav/320";
-}
-
-.section {
-	background-color: $or-white-01;
-	border-radius: 4px;
-	@include boxShadow(0, 0, 6px, 1px, rgba(0,0,0,0.26));
+	@import "nav/800";
 }

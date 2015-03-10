@@ -1,0 +1,13 @@
+@media (min-width: 800px) {
+	@include boxShadow($hShadow: 0, $vShadow: 1px, $blur: 4px, $color: rgba(0,0,0,0.065));
+	border-radius: 4px;
+
+	ul li {
+		border-bottom: none;
+		border-left: 1px solid rgba(178, 18, 0, 0.75);
+
+		&:first-child {
+			border-left: none;
+		}
+	}
+}
