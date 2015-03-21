@@ -1,0 +1,22 @@
+@media (min-width: 320px) {
+	fieldset {
+		border: none;
+	}
+
+	input, textarea {
+		border: none;
+		border-bottom: 1px solid $or-grey-02;
+		font-size: 16px;
+		text-transform: capitalize;
+
+		&:focus {
+			outline: none;
+			border-bottom: 2px solid #2899F2;
+		}
+	}
+
+	input[type='submit'] {
+		text-transform: uppercase;
+		background-color: #dfdfdf; 
+	}
+}

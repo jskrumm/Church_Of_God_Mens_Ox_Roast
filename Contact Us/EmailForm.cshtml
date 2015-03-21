@@ -63,18 +63,15 @@
 
 <form action="" method="post">
     @Html.ValidationSummary()
-    <p>
-        ** You can use the form below to contact us with any questions you may have about the Ox Roast. **
-    </p>
     <fieldset>
-        @Html.Label("Your Name", "name")
-        @Html.TextBox("name",Request["name"],new {required="required", placeholder="Please enter your name"})
+        @Html.Label("Name", "name")
+        @Html.TextBox("name",Request["name"],new {required="required", placeholder="Name"})
 
         @Html.Label("Email Address", "email")
-        @Html.TextBox("email",Request["email"],new {required="required", placeholder="Please enter your email address"})
+        @Html.TextBox("email",Request["email"],new {required="required", placeholder="Email Address"})
 
         @Html.Label("Question?", "message")
-        @Html.TextArea("message",Request["message"],new {required="required", placeholder="Please tell us what you would like to know about the Ox Roast", spellcheck="spellcheck"})
+        @Html.TextArea("message",Request["message"],new {required="required", placeholder="Question?", spellcheck="spellcheck"})
 
         @ReCaptcha.GetHtml(ReCaptcha.PublicKey, theme: "white")
 

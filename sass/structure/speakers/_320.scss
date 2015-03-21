@@ -1,10 +1,11 @@
 @media (min-width: 320px) {
 	h2 {
-		margin-bottom: 20px;
+		margin-bottom: 15px;
 	}
 
 	h3 {
 		text-align: left;
+		margin-left: 8px;
 	}
 
 	img {
@@ -12,5 +13,18 @@
 		float: left;
 		margin-right: 10px;
 		margin-top: 5px;
+	}
+
+	div {
+		display: inline-block;
+		width: 100%;
+
+		&:first-child {
+			margin-bottom: 15px;
+		}
+	}
+
+	ul {
+		text-align: left;
 	}
 }

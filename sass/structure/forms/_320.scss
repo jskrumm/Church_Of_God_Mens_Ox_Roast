@@ -1,0 +1,32 @@
+@media (min-width: 320px) {
+	fieldset {
+		margin: 0;
+		padding: 0;
+	}
+
+	label {
+		display: none;
+	}
+
+	input, textarea {
+		box-sizing: border-box;
+		width: 100%;
+		min-height: 44px;
+		padding: 16px 0 0 2px;
+	}
+
+	textarea {
+		min-height: 88px;
+		resize: none;
+	}
+
+	input[type='submit'] {
+		border: none;
+		border-radius: 2px;
+		padding: 0;
+	}
+
+	#recaptcha_widget_div {
+		display: none;
+	}
+}
