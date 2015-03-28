@@ -1,0 +1,11 @@
+@media (min-width: 800px) {
+	fieldset {
+		> input[type='submit'] {
+			cursor: pointer;
+
+			&:hover {
+				background-color: rgba(153, 153, 153, 0.2);
+			}
+		}
+	}
+}

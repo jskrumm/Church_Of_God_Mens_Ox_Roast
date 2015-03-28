@@ -15,7 +15,7 @@
 	h5 { font-size: 17px; line-height: 28px;}
 	h6 { font-size: 16px; line-height: 28px;}
 
-	
+
 	header {
 	    color: rgba(0, 0, 0, 0.87);
 	}
@@ -24,6 +24,15 @@
 		background-color: $or-white-01;
 		border-radius: 4px;
 		@include boxShadow(0, 0, 6px, 1px, rgba(0,0,0,0.26));
+
+		h2 {
+			color: #FFAB40;
+		}
+
+		h3 {
+			color: $or-grey-02;
+			text-decoration: underline;
+		}
 	}
 	.scripture {
 	    color: rgba(0, 0, 0, 0.87);

@@ -1,22 +1,92 @@
 @media (min-width: 320px) {
 	fieldset {
 		border: none;
-	}
 
-	input, textarea {
-		border: none;
-		border-bottom: 1px solid $or-grey-02;
-		font-size: 16px;
-		text-transform: capitalize;
+		> input, > textarea {
+			border: none;
+			border-bottom: 1px solid $or-grey-02;
+			font-size: 16px;
+			font-family: sans, sans-serif, serif, MS sans, MS serif;
 
-		&:focus {
-			outline: none;
-			border-bottom: 2px solid #2899F2;
+			&:focus {
+				outline: none;
+				border-bottom: 2px solid #2899F2;
+			}
+
+			&.input-validation-error {
+				border-bottom: 2px solid #F3493D;
+			}
+		}
+
+		> input[type='submit'] {
+			border: none;
+			text-transform: uppercase;
+			background-color: $or-white-01;
+		  	color: #4CAF50; //Green: 4CAF50; Yellow: FFAB40
+		  	font-family: sans-serif;
+		  	font-weight: bold;
+		  	border-radius: 2px;
+
+		  	&:focus {
+		  		border: none;
+		  		background-color: rgba(153, 153, 153, 0.2);
+			}
+			&:active {
+				background-color: rgba(153, 153, 153, 0.4);
+			}
+
+			&:disabled {
+				color: rgba(0, 0, 0, 0.26);
+			}
 		}
 	}
 
-	input[type='submit'] {
-		text-transform: uppercase;
-		background-color: #dfdfdf; 
+	.success-msg {
+        color: #468847;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 16px;
+        text-align: center;
+    }
+
+	.captcha-wrapper {
+		border-bottom: 1px solid $or-grey-02;
+	}
+
+	#recaptcha_widget_div {
+		.recaptchatable .recaptcha_r1_c1, 
+		.recaptchatable .recaptcha_r3_c1, 
+		.recaptchatable .recaptcha_r3_c2, 
+		.recaptchatable .recaptcha_r7_c1, 
+		.recaptchatable .recaptcha_r8_c1, 
+		.recaptchatable .recaptcha_r3_c3, 
+		.recaptchatable .recaptcha_r2_c1, 
+		.recaptchatable .recaptcha_r4_c1, 
+		.recaptchatable .recaptcha_r4_c2, 
+		.recaptchatable .recaptcha_r4_c4,
+		.recaptchatable .recaptcha_r2_c2,
+		.recaptchatable .recaptcha_image_cell {
+			background: none !important;
+		}
+
+		#recaptcha_response_field {
+			border: none !important;
+			border-bottom: 1px solid $or-grey-02 !important;
+			font-size: 16px !important;
+			font-family: sans, sans-serif, serif, MS sans, MS serif !important;
+
+			&:focus {
+				outline: none !important;
+				border-bottom: 2px solid #2899F2 !important;
+			}
+		}
+
+		#recaptcha_privacy a {
+			font-size: 12px !important;
+		}
+	}
+	.field-validation-error {
+		color: #F3493D;
+		font-size: 12px;
 	}
 }

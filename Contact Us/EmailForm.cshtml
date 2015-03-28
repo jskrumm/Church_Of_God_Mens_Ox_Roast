@@ -3,20 +3,22 @@
 @using System.Web.Helpers;
 @using Microsoft.Web.Helpers;
 @{
+    var resultMessage = "";
+
     Validation.Add("name", 
-        Validator.Required("Please provide use with your name") 
+        Validator.Required("Name is required.") 
         );
     Validation.Add("email", 
-        Validator.Required("Please provide us with a valid email address"),
-        Validator.Regex(@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$", "Invalid format for an email address.")
+        Validator.Required("Email is required."),
+        Validator.Regex(@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$", "Valid email is required.")
         );
     Validation.Add("message", 
-        Validator.Required("Please provide us with your question.") 
+        Validator.Required("Question is required.") 
         );
     if (IsPost)
     {
         if (!ReCaptcha.Validate(ReCaptcha.PrivateKey)) {
-            ModelState.AddError("ReCaptcha","The code entered doesn't match the image.");
+            ModelState.AddError("ReCaptcha","Code entered doesn't match the image below.");
         }
 
         if (ModelState.IsValid) {
@@ -26,54 +28,44 @@
                     // Send email
                     WebMail.Send(
                         to: "info@ohiomensoxroast.org",
-                        subject: Request["Subject"],
-                        body: Request["Message"],
-                        from: Request["Email"]
+                        subject: "Ox Roast Question From " + Request["name"],
+                        body: Request["message"],
+                        from: Request["email"]
                     );
 
-                    <p class="success-msg">Your email has been successfully sent</p> 
+                    resultMessage = "<p class='success-msg'>Your question has been successfully sent!</p>";
                 } catch {
-                   ModelState.AddFormError("Sorry, we are unable to send any emails at this time for assitance please contact us at info@ohiomensoxroast.org"); 
+                    ModelState.AddFormError("Sorry, we are unable to send any emails at this time. If you need immedidate assitance please contact us at info@ohiomensoxroast.org"); 
                 }
-                
-               /* var email = Request["Email"];       
-                var subject = Request["Subject"];       
-                var message = Request["Message"];       
-                using (var client = new SmtpClient())
-                {
-            
-                     var msg = new MailMessage();
-                     msg.From = new MailAddress(email);
-                     msg.To.Add("info@ohiomensoxroast.org");
-                     msg.Subject = subject;
-                     msg.Body = message;
-
-                     client.EnableSsl = false;
-                     ServicePointManager.ServerCertificateValidationCallback = delegate(object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
-
-                     client.Send(msg);
-                     <p class="success-msg">Your email has been successfully sent</p>
-                 }*/
              } else {
-                 ModelState.AddFormError("You must resolve the following errors:");
+                ModelState.AddFormError("You must resolve any errors before submitting.");
              }
          }
      }
 }
 
 <form action="" method="post">
-    @Html.ValidationSummary()
+    <h2>Contact Us</h2>
+    @Html.Raw(resultMessage)
+    @Html.ValidationSummary(true)
     <fieldset>
-        @Html.Label("Name", "name")
-        @Html.TextBox("name",Request["name"],new {required="required", placeholder="Name"})
+        <label for="name">Name</label>
+        <input id="name" name="name" type="text" class="@Validation.ClassFor("name")" required="required" placeholder="Name"/>
+        @Html.ValidationMessage("name")
 
-        @Html.Label("Email Address", "email")
-        @Html.TextBox("email",Request["email"],new {required="required", placeholder="Email Address"})
+        <label for="email">Email</label>
+        <input id="email" name="email" type="text" class="@Validation.ClassFor("email")" required="required" placeholder="Email"/>
+        @Html.ValidationMessage("email")
 
-        @Html.Label("Question?", "message")
-        @Html.TextArea("message",Request["message"],new {required="required", placeholder="Question?", spellcheck="spellcheck"})
 
-        @ReCaptcha.GetHtml(ReCaptcha.PublicKey, theme: "white")
+        <label for="message">Question?</label>
+        <textarea id="message" name="message" required="required" placeholder="Question?" spellcheck="spellcheck" class="@Validation.ClassFor("message")"></textarea>
+        @Html.ValidationMessage("message")
+
+        <div class="captcha-wrapper">
+            @ReCaptcha.GetHtml(ReCaptcha.PublicKey, theme: "white")
+            @Html.ValidationMessage("ReCaptcha")
+        </div>
 
         <input type="submit" value="Send" class="submit" />
     </fieldset> 

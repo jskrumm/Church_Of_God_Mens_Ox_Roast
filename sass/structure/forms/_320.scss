@@ -2,31 +2,76 @@
 	fieldset {
 		margin: 0;
 		padding: 0;
+
+		> label {
+			position: absolute !important;
+			clip: rect(1px, 1px, 1px, 1px);
+			height: 0px;
+			width: 0px;
+			overflow: hidden;
+			visibility: hidden;
+		}
+
+		> input, > textarea {
+			box-sizing: border-box;
+			width: 100%;
+			min-height: 44px;
+			padding: 16px 0 0 2px;
+		}
+
+		> textarea {
+			min-height: 88px;
+			resize: none;
+		}
+
+		> input[type='submit'] {
+			padding: 0 10px;
+			float: left;
+			width: auto;
+			margin-top: 10px;
+		}
 	}
 
-	label {
-		display: none;
-	}
-
-	input, textarea {
-		box-sizing: border-box;
+	.captcha-wrapper {
 		width: 100%;
-		min-height: 44px;
-		padding: 16px 0 0 2px;
-	}
-
-	textarea {
-		min-height: 88px;
-		resize: none;
-	}
-
-	input[type='submit'] {
-		border: none;
-		border-radius: 2px;
-		padding: 0;
+		padding-bottom: 10px;
 	}
 
 	#recaptcha_widget_div {
-		display: none;
+		 zoom: .85;
+
+		.recaptchatable #recaptcha_image {
+			margin: 0 !important;
+		}
+		.recaptchatable .recaptcha_r1_c1, 
+		.recaptchatable .recaptcha_r3_c1, 
+		.recaptchatable .recaptcha_r3_c2, 
+		.recaptchatable .recaptcha_r7_c1, 
+		.recaptchatable .recaptcha_r8_c1, 
+		.recaptchatable .recaptcha_r3_c3, 
+		.recaptchatable .recaptcha_r2_c1, 
+		.recaptchatable .recaptcha_r4_c1, 
+		.recaptchatable .recaptcha_r4_c2, 
+		.recaptchatable .recaptcha_r4_c4,
+		.recaptchatable .recaptcha_r2_c2,
+		.recaptchatable .recaptcha_image_cell {
+			background: none !important;
+		}
+
+		.recaptchatable .recaptcha_input_area {
+			margin-left: 0 !important;
+		}
+
+		#recaptcha_response_field {
+			min-height: 44px !important;
+		}
+	}
+
+
+
+	.field-validation-error {
+		text-align: left;
+		padding-left: 2px;
+		display: block;	
 	}
 }
