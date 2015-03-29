@@ -3,6 +3,12 @@
 		margin: 0;
 		padding: 0;
 
+		legend {
+			padding: 0;
+			margin: 0;
+			text-align: left;
+		}
+
 		> label {
 			position: absolute !important;
 			clip: rect(1px, 1px, 1px, 1px);

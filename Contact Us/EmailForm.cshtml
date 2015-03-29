@@ -50,16 +50,16 @@
     @Html.ValidationSummary(true)
     <fieldset>
         <label for="name">Name</label>
-        <input id="name" name="name" type="text" class="@Validation.ClassFor("name")" required="required" placeholder="Name"/>
+        <input id="name" name="name" type="text" class="@Validation.ClassFor("name")" required="required" placeholder="Name" @Validation.For("name")/>
         @Html.ValidationMessage("name")
 
         <label for="email">Email</label>
-        <input id="email" name="email" type="text" class="@Validation.ClassFor("email")" required="required" placeholder="Email"/>
+        <input id="email" name="email" type="email" class="@Validation.ClassFor("email")" required="required" placeholder="Email" @Validation.For("email")/>
         @Html.ValidationMessage("email")
 
 
         <label for="message">Question?</label>
-        <textarea id="message" name="message" required="required" placeholder="Question?" spellcheck="spellcheck" class="@Validation.ClassFor("message")"></textarea>
+        <textarea id="message" name="message" required="required" placeholder="Question?" spellcheck="spellcheck" class="@Validation.ClassFor("message")" @Validation.For("message")></textarea>
         @Html.ValidationMessage("message")
 
         <div class="captcha-wrapper">

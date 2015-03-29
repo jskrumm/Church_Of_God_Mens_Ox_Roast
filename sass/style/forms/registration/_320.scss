@@ -1,0 +1,29 @@
+@media (min-width: 320px) {
+	.first-last-name-fields {
+		input {
+			border: none;
+			border-bottom: 1px solid $or-grey-02;
+			font-size: 16px;
+			font-family: sans, sans-serif, serif, MS sans, MS serif;
+
+			&:focus {
+				outline: none;
+				border-bottom: 2px solid #2899F2;
+			}
+
+			&.input-validation-error {
+				border-bottom: 2px solid #F3493D;
+			}
+		}
+	}
+
+	input.submit {
+		background: url("https://www.paypalobjects.com/en_US/i/btn/btn_xpressCheckout.gif") no-repeat scroll 0 0 transparent;
+		border:none;
+		cursor: pointer;
+
+		&:focus {
+            outline: none;
+        }
+	}
+}

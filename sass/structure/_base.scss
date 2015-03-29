@@ -23,3 +23,7 @@ form {
 	@import "forms/320";
 	@import "forms/800";
 }
+
+.registration form {
+	@import "forms/registration/320";
+}

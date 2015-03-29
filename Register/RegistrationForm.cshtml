@@ -224,43 +224,30 @@
     <h2>Registration</h2>
     @Html.ValidationSummary(true)
     <fieldset id="generalInfo">
-        <div class="name-fields">
-            @Html.ValidationMessage("firstname")
-            @Html.TextBox("firstname",Request["firstname"],new {required="required", placeholder="First Name"})
-            
-            @Html.ValidationMessage("lastname")
-            @Html.TextBox("lastname",Request["lastname"],new {required="required", placeholder="Last Name"})
-        </div>
-        @Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOSTREET")
-        @Html.TextBox("PAYMENTREQUEST_0_SHIPTOSTREET",Request["PAYMENTREQUEST_0_SHIPTOSTREET"],new {required="required", placeholder="Address"})
-
-        @Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOCITY")
-        @Html.TextBox("PAYMENTREQUEST_0_SHIPTOCITY",Request["PAYMENTREQUEST_0_SHIPTOCITY"],new {required="required", placeholder="City"})
+        <legend>Your Information</legend>
+        <label for="firstname">First Name</label>
+        <input id="firstname" name="firstname" type="text" class="@Validation.ClassFor("firstname")" required="required" placeholder="First Name" value="@Request["firstname"]" @Validation.For("firstname")/>
+        @Html.ValidationMessage("firstname")
         
-        @Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOSTATE")
-        <select id="PAYMENTREQUEST_0_SHIPTOSTATE" name="PAYMENTREQUEST_0_SHIPTOSTATE">
-            <option value="">State</option>
-                @foreach (var state in GetStateDropdown.GetStates())
-                {
-                    <option value="@state.Key" @(Request["PAYMENTREQUEST_0_SHIPTOSTATE"] == state.Key ? " selected" : "")>@state.Value</option>
-                }
-        </select>
-        
-        @Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOZIP")
-        @Html.TextBox("PAYMENTREQUEST_0_SHIPTOZIP",Request["PAYMENTREQUEST_0_SHIPTOZIP"],new {required="required", placeholder="Zip"})
+        <label for="lastname">Last Name</label>
+        <input id="lastname" name="lastname" type="text" class="@Validation.ClassFor("lastname")" required="required" placeholder="Last Name" value="@Request["lastname"]" @Validation.For("lastname")/>
+        @Html.ValidationMessage("lastname")
 
+        <label for="PAYMENTREQUEST_0_SHIPTOPHONENUM">Phone Number</label>
+        <input id="PAYMENTREQUEST_0_SHIPTOPHONENUM" name="PAYMENTREQUEST_0_SHIPTOPHONENUM" type="text" class="@Validation.ClassFor("PAYMENTREQUEST_0_SHIPTOPHONENUM")" required="required" placeholder="Phone Number" value="@Request["PAYMENTREQUEST_0_SHIPTOPHONENUM"]" @Validation.For("PAYMENTREQUEST_0_SHIPTOPHONENUM")/>
         @Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOPHONENUM")
-        @Html.TextBox("PAYMENTREQUEST_0_SHIPTOPHONENUM",Request["PAYMENTREQUEST_0_SHIPTOPHONENUM"],new {placeholder="Phone Number"})
         
-        
-        @Html.TextBox("EMAIL",Request["EMAIL"],new {placeholder="Email", type="email"})
+        <label for="EMAIL">Email</label>
+        <input id="EMAIL" name="EMAIL" type="email" class="@Validation.ClassFor("EMAIL")" required="required" placeholder="Email" value="@Request["EMAIL"]" @Validation.For("EMAIL")/>
+        @Html.ValidationMessage("EMAIL")
 
+        <label for="church-atteding">Church (Optional)</label>
+        <input id="church-atteding" name="church-atteding" type="email" class="@Validation.ClassFor("church-atteding")" placeholder="Church (Optional)" value="@Request["church-atteding"]" @Validation.For("church-atteding")/>
         @Html.ValidationMessage("church-atteding")
-        @Html.TextBox("church-atteding",Request["church-atteding"],new {placeholder="Church (Optional)"})
     </fieldset>
     <!-- ko stopBinding: true -->
     <fieldset id="guests">
-        <h3>Guests</h3>
+        <legend>Guest(s) Information</legend>
         <div>
             @if(guestCount < 1) {
                 <h4 style="display: none">Guest Added</h4>
@@ -278,9 +265,9 @@
         <input type="hidden" value="@guestList" id="guestList" name="guestList"/>
         <div class="first-last-name-fields">
             <label for="guest_firstname">First Name</label>
-            <input id="guest_firstname" type="text" name="guest_firstname"/>
+            <input id="guest_firstname" type="text" name="guest_firstname" placeholder="First Name"/>
             <label for="guest_lastname">Last Name</label>
-            <input id="guest_lastname" type="text" name="guest_lastname"/>
+            <input id="guest_lastname" type="text" name="guest_lastname" placeholder="Last Name"/>
         </div>
         <input type="button" value="Add Guest" class="add-guest" data-bind="click: $data.addGuest, disable: $data.hasClickedTooManyTimes"/>
         <input id="guest-count" name="guest-count" type="hidden" value="@guestCount" data-initalVal="@guestCount" data-bind="value: $data.guestCount"/>

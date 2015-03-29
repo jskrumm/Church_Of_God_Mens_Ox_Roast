@@ -1,0 +1,28 @@
+@media (min-width: 320px) {
+	fieldset {
+		margin-bottom: 15px;
+	}
+
+	.first-last-name-fields {
+		label {
+			position: absolute !important;
+			clip: rect(1px, 1px, 1px, 1px);
+			height: 0px;
+			width: 0px;
+			overflow: hidden;
+			visibility: hidden;
+		}
+
+		input {
+			box-sizing: border-box;
+			width: 100%;
+			min-height: 44px;
+			padding: 16px 0 0 2px;
+		}
+	}
+
+	input.submit {
+		height: 50px;
+        width: 150px;
+	}
+}
