@@ -1,15 +1,16 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
     <head>
         <meta charset="utf-8" />
-        <meta name=description content="The Church of God Men's Ox Roast is a two day event, in which Christian men, ages 12 and up, can gather in fellowship
+        <meta name=description content="The Ohio Men's Ox Roast and Retreat is a two day event, in which Christian men, ages 12 and up, can gather in fellowship
         with one another.">
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <title>Ohio Men's Ox Roast</title>
+        <script src="js/base/modernizr-2.8.3.min.js"></script>
+        <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon" />
         @RenderSection("css", required: true)
     </head>
     <body>
-        <!-- <div class="page"> -->
             @RenderPage("~/_MenuBar.cshtml")
             <div class="header-content-wrap">
             	 @RenderPage("~/_Header.cshtml")
@@ -21,13 +22,16 @@
                 "I have fought the good fight, I have finished the race, I have kept the faith."<br/>
                 ~ 2 Timothy 4:7
             </p>
-        <!-- </div> -->
-        <!--[if lt IE 9]>
-            <script src="js/base/modernizr-2.5.3.min.js"></script>
-        <![endif]-->
+
         <script src="js/base/jquery-1.10.2.min.js"></script>
         <script src="js/base/knockout-3.1.0.js"></script>
-        
+
+         <!--[if lte IE 9]>
+            <script type="text/javascript" src="js/base/polyfills/placeholder.js"></script>
+        <![endif]-->
+        <!--[if lt IE 9]>
+            <script type="text/javascript" src="js/base/polyfills/Respond.js"></script>
+        <![endif]-->
         @RenderSection("js", required: true)
     </body>
 </html>

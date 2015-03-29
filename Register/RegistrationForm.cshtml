@@ -12,36 +12,24 @@
 @{
 
     Validation.Add("firstname", 
-        Validator.Required("Please provide a first name"), 
-        Validator.StringLength(100, 0, "Your first name can't be more than 100 characters long.")
+        Validator.Required("First name is required."), 
+        Validator.StringLength(100, 0, "Must be 100 characters or less.")
         );
     Validation.Add("lastname", 
-        Validator.Required("Please provide a last name"), 
-        Validator.StringLength(100, 0, "Your last name can't be more than 100 characters long.")
-        );
-    Validation.Add("PAYMENTREQUEST_0_SHIPTOSTREET", 
-        Validator.Required("Please provide a street address"), 
-        Validator.StringLength(200, 0, "Your street address can't be more than 200 characters long.")
-        );
-    Validation.Add("PAYMENTREQUEST_0_SHIPTOCITY", 
-        Validator.Required("Please provide a city"), 
-        Validator.StringLength(200, 0, "Your city can't be more than 200 characters long.")
-        );
-    Validation.Add("PAYMENTREQUEST_0_SHIPTOZIP", 
-        Validator.Required("Please provide a zip code."),
-        Validator.StringLength(10, 0, "Your zip can't be more than 10 characters long."),
-        Validator.Regex(@"^\d{5}(-\d{4})?$", "Invalid zip code format (e.g., 99999-9999 or 99999)") 
+        Validator.Required("Last name is required."), 
+        Validator.StringLength(100, 0, "Must be 100 characters or less.")
         );
     Validation.Add("PAYMENTREQUEST_0_SHIPTOPHONENUM",
-        Validator.StringLength(15, 0, "Your zip can't be more than 15 characters long."),
+        Validator.Required("Phone number is required."), 
+        Validator.StringLength(15, 0, "Can't be more than 15 characters long."),
         Validator.Regex(@"^(1?)(-| ?)(\()?([0-9]{3})(\)|-| |\)-|\) )?([0-9]{3})(-| )?([0-9]{4}|[0-9]{4})$", "Invalid phone number format (e.g., 14165551212, 4165551212, (416)5551212, 416 555 1212, 416-555-1212, (416)-555-1212, (416) 555 1212, or 1-900-888-1212)") 
         );
    Validation.Add("EMAIL", 
-        Validator.Required("Please provide us with a valid email address"),
-        Validator.Regex(@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$", "Invalid format for an email address.")
+        Validator.Required("Email is required."),
+        Validator.Regex(@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$", "Invalid email format.")
         );
     Validation.Add("church-atteding",
-        Validator.StringLength(4000, 0, "Your zip can't be more than 4000 characters long.")
+        Validator.StringLength(4000, 0, "Must be 4000 characters or less.")
         );
     Validation.Add("num-att-two-day", 
         Validator.Range(0,21, "You can not purchase more than 20 at a time.")
@@ -276,12 +264,7 @@
         </p>
     </fieldset>
     <!-- /ko -->
-    <fieldset id="eventInfo">
-        <p>
-            *** You must have your guest and yourself registered for either two days, one day. 
-            If your guest is under age please register them using the underage section and not in the two day or one day. 
-            All ages under 12 will attend the same amount of days as their guardian. ***
-        </p>
+    @*<fieldset id="eventInfo">
         <div>
             @Html.Label("Number attending Friday/Saturday", "num-att-two-day")
             @Html.TextBox("num-att-two-day",Request["num-att-two-day"],new Dictionary<string, object>(){{ "class", "qty" },{"data-bind", "value: $data.numAttTwoDaysQty, valueUpdate: 'afterkeydown'"}, {"type", "number"}, {"data-initalVal", Request["num-att-two-day"]}, {"min", "0"}})            
@@ -333,6 +316,6 @@
         <label for="PAYMENTREQUEST_0_AMT" class="totalLabel">Total</label>
         <input id="PAYMENTREQUEST_0_AMT" type="hidden" name="PAYMENTREQUEST_0_AMT" data-bind="value: $data.grandTotal"/>
         <output id="total" name="total" data-bind="text: $data.grandTotal">@Request["total"]</output>
-    </fieldset>
+    </fieldset>*@
     <input type=submit class="submit" value=""/>
 </form>

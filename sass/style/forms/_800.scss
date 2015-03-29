@@ -1,6 +1,6 @@
 @media (min-width: 800px) {
 	fieldset {
-		> input[type='submit'] {
+		> input[type='submit'], > input[type='button'] {
 			cursor: pointer;
 
 			&:hover {

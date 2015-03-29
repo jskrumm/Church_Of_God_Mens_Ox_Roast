@@ -27,3 +27,8 @@ form {
 .registration form {
 	@import "forms/registration/320";
 }
+
+.speaker-quickview {
+	@import "speakers/quick-view/320";
+	@import "speakers/quick-view/800";
+}

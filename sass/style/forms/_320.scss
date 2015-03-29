@@ -4,7 +4,7 @@
 
 		legend {
 			font-family: sans, sans-serif, serif, MS sans, MS serif;
-			color: $or-grey-02;
+			color: #555555;
 			text-decoration: underline;
 			font-size: 24px; 
 			line-height: 36px;
@@ -15,6 +15,9 @@
 			border-bottom: 1px solid $or-grey-02;
 			font-size: 16px;
 			font-family: sans, sans-serif, serif, MS sans, MS serif;
+			-webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
 
 			&:focus {
 				outline: none;
@@ -26,7 +29,7 @@
 			}
 		}
 
-		> input[type='submit'] {
+		> input[type='submit'], > input[type='button'] {
 			border: none;
 			text-transform: uppercase;
 			background-color: $or-white-01;
@@ -82,6 +85,9 @@
 			border-bottom: 1px solid $or-grey-02 !important;
 			font-size: 16px !important;
 			font-family: sans, sans-serif, serif, MS sans, MS serif !important;
+			-webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
 
 			&:focus {
 				outline: none !important;

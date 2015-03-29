@@ -10,7 +10,7 @@
         );
     Validation.Add("email", 
         Validator.Required("Email is required."),
-        Validator.Regex(@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$", "Valid email is required.")
+        Validator.Regex(@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$", "Invaild email format.")
         );
     Validation.Add("message", 
         Validator.Required("Question is required.") 

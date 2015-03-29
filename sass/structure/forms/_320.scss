@@ -30,7 +30,7 @@
 			resize: none;
 		}
 
-		> input[type='submit'] {
+		> input[type='submit'], > input[type='button'] {
 			padding: 0 10px;
 			float: left;
 			width: auto;
