@@ -36,7 +36,52 @@
 			width: auto;
 			margin-top: 10px;
 		}
+
+		input[type='radio'], input[type=checkbox] {
+			position: absolute !important;
+			clip: rect(1px, 1px, 1px, 1px);
+			overflow: hidden;
+			visibility: hidden;
+
+			&+ label {
+			    display: inline-block;
+			    position: relative;
+				padding: 10px 5px 10px 30px;
+			}
+
+			&+ label:before {
+			    content: "";
+			    display: inline-block;
+			    width: 16px;
+			    height: 16px;
+			    margin-right: 10px;
+			    position: absolute;
+			    left: 5px;
+			    top: 11px;
+			}
+		}
+
+		input[type='radio'] {
+			&:checked + label:before {
+			    content: "\2022";
+			    text-align: center;
+			}
+		}
+
+		input[type=checkbox] {
+		    display: none;
+
+		    &:checked + label:before {
+			    content: "\2713";
+			    text-align: center;
+			}
+		}
+
 	}
+
+	.success-msg {
+        text-align: center;
+    }
 
 	.captcha-wrapper {
 		width: 100%;

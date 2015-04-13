@@ -9,5 +9,9 @@
 		&:first-child {
 			border-left: none;
 		}
+
+		a:before {
+			line-height: initial;
+		}
 	}
 }

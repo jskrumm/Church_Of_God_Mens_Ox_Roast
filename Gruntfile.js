@@ -41,6 +41,6 @@ module.exports = function (grunt) {
     grunt.registerTask('compileCSS', ['clean', 'compass', 'cssmin']);
     grunt.registerTask('compileJS', ['concat']);
     // Default task
-    grunt.registerTask('default', ['compass']);
+    grunt.registerTask('default', ['compileCSS']);
 
 };
