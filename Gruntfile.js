@@ -28,7 +28,15 @@ module.exports = function (grunt) {
             }
         },
 
-        clean: ["css/*.css", "css/min/*.css"]
+        clean: ["css/*.css", "css/min/*.css"],
+
+        karma: {
+            all: {
+                options: {
+                    configFile: 'karma.conf.js'
+                }
+            }
+        }
     });
 
     // These plugins provide necessary tasks.
@@ -37,6 +45,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-karma');
+    grunt.loadNpmTasks('grunt-contrib-requirejs');
 
     grunt.registerTask('compileCSS', ['clean', 'compass', 'cssmin']);
     grunt.registerTask('compileJS', ['concat']);
