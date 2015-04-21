@@ -64,6 +64,10 @@ define(['module/registerGuest'], function (registerGuest) {
 						it('using jQuery removeClass function', function() {
 							expect($.fn.removeClass).toHaveBeenCalled();
 						});
+
+						it('using jQuery removeClass function with a string of hidden', function() {
+							expect($.fn.removeClass).toHaveBeenCalledWith("hidden");
+						});
 					});
 				});
 			});
@@ -97,6 +101,11 @@ define(['module/registerGuest'], function (registerGuest) {
 
 						it('using jQuery addClass function', function() {
 							expect($.fn.addClass).toHaveBeenCalled();
+						});
+
+
+						it('using jQuery addClass function with a string of hidden', function() {
+							expect($.fn.addClass).toHaveBeenCalledWith("hidden");
 						});
 					});
 				});

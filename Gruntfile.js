@@ -36,6 +36,29 @@ module.exports = function (grunt) {
                     configFile: 'karma.conf.js'
                 }
             }
+        },
+
+        requirejs: {
+            registrationBuild: {
+                options: {
+                    mainConfigFile: "js/base/require.conf.js",
+                    optimize: "uglify",
+                    name: "js/registration",
+                    out: "js/site/registration.min.js",
+                    exclude: ['jQuery', 'lodash'],
+                    include: ['requireLib']
+                }
+            },
+            registrationDeploy: {
+                options: {
+                    mainConfigFile: "js/base/require.conf.js",
+                    optimize: "none",
+                    name: "js/registration",
+                    out: "js/site/registration.js",
+                    exclude: ['jQuery', 'lodash'],
+                    include: ['requireLib']
+                }
+            },
         }
     });
 

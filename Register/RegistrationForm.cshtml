@@ -224,11 +224,11 @@
             @Html.ValidationMessage("eventPass")
             <ul>  
                 <li>
-                    <input type="radio" id="twoDayPass" name="eventPass" value="2" class="@Validation.ClassFor("eventPass")" required="required" @Validation.For("eventPass")/>
+                    <input type="radio" id="twoDayPass" name="eventPass" value="2" class="@Validation.ClassFor("eventPass")" required="required" @Validation.For("eventPass") data-price="@App.twoDayPrice" />
                     <label for="twoDayPass">2 Day Pass - $@App.twoDayPrice</label>
                 </li>
                 <li>
-                    <input type="radio" id="oneDayPass" name="eventPass" value="1" class="@Validation.ClassFor("eventPass")" required="required" @Validation.For("eventPass")/>
+                    <input type="radio" id="oneDayPass" name="eventPass" value="1" class="@Validation.ClassFor("eventPass")" required="required" @Validation.For("eventPass") data-price="35"/>
                     <label for="oneDayPass">1 Day Pass - $35</label>
                 </li>
             </ul>
@@ -237,23 +237,30 @@
             <h4>Activity Passes (optional)</h4>
             <ul>
                 <li>
-                    <input type="checkbox" id="golfPass" name="golfPass" value="G" />
+                    <input type="checkbox" id="golfPass" name="golfPass" value="G" data-price="45"/>
                     <label for="golfPass">Golf Pass - $45</label>
                 </li>
                 <li>
-                    <input type="checkbox" id="fishingPass" name="fishingPass" value="F" />
+                    <input type="checkbox" id="fishingPass" name="fishingPass" value="F" data-price="25"/>
                     <label for="fishingPass">Fishing Pass - $25</label>
                 </li>
                 <li>
-                    <input type="checkbox" id="paintballPass" name="paintballPass" value="P" />
+                    <input type="checkbox" id="paintballPass" name="paintballPass" value="P" data-price="5"/>
                     <label for="paintballPass">Paintball Pass - $5</label>
                 </li>
             </ul>
         </div>
+
+        <div class="hasGuests">
+            <p>Do you have any guest?</p>
+            <button type="button" class="yes">Yes</button>
+            <button type="button" class="no">No</button>
+            <input id="hasGuests" type="hidden" value="false"/>
+        </div>
     </fieldset>
 
     <!-- ko stopBinding: true -->
-    <fieldset id="guests">
+    <fieldset id="guests" class="hidden">
         <legend>Guest(s) Information (optional)</legend>
         <div>
             @if(guestCount < 1) {
@@ -282,15 +289,15 @@
             <h4>Event Passes</h4>
             <ul>  
                 <li>
-                    <input type="radio" id="twoDayGuestPass" name="eventGuestPass" value="2" />
+                    <input type="radio" id="twoDayGuestPass" name="eventGuestPass" value="2" data-price="@App.twoDayPrice" />
                     <label for="twoDayGuestPass">2 Day Pass - $@App.twoDayPrice</label>
                 </li>
                 <li>
-                    <input type="radio" id="oneDayGuestPass" name="eventGuestPass" value="1" />
+                    <input type="radio" id="oneDayGuestPass" name="eventGuestPass" value="1" data-price="35" />
                     <label for="oneDayGuestPass">1 Day Pass - $35</label>
                 </li>
                 <li>
-                    <input type="radio" id="twelveAndUnder" name="eventGuestPass" value="0" />
+                    <input type="radio" id="twelveAndUnder" name="eventGuestPass" value="0" data-price="25"/>
                     <label for="twelveAndUnder">12 and under - $25</label>
                     <span>(Must be accompanied by an adult)</span>
                 </li>
@@ -301,15 +308,15 @@
             <h4>Activity Passes (optional)</h4>
             <ul>
                 <li>
-                    <input type="checkbox" id="golfGuestPass" name="golfGuestPass" value="G" />
+                    <input type="checkbox" id="golfGuestPass" name="golfGuestPass" value="G" data-price="45"/>
                     <label for="golfGuestPass">Golf Pass - $45</label>
                 </li>
                 <li>
-                    <input type="checkbox" id="fishingGuestPass" name="fishingGuestPass" value="F" />
+                    <input type="checkbox" id="fishingGuestPass" name="fishingGuestPass" value="F" data-price="25"/>
                     <label for="fishingGuestPass">Fishing Pass - $25</label>
                 </li>
                 <li>
-                    <input type="checkbox" id="paintballGuestPass" name="paintballGuestPass" value="P" />
+                    <input type="checkbox" id="paintballGuestPass" name="paintballGuestPass" value="P" data-price="5"/>
                     <label for="paintballGuestPass">Paintball Pass - $5</label>
                 </li>
             </ul>
