@@ -1,7 +1,7 @@
 define(['service/register'], function  (service) {
 	var returnVal = null,
-		firstParam = null;
-		secondParam = null;
+		initalTotal = null;
+		passPrice = null;
 
 	describe('Regiser Service', function() {
 		afterEach(function() {
@@ -36,77 +36,83 @@ define(['service/register'], function  (service) {
 					});
 
 					describe('returns 0 when', function() {
-						it('passed an empty string for the first param', function() {
+						it('passed an empty string for the inital total', function() {
 							returnVal = service.total("");
 
 							expect(returnVal).toBe(0);
 						});
 
-						it('passed an empty string for the first and second param', function() {
+						it('passed an empty string for the inital total and pass price', function() {
 							returnVal = service.total("", "");
 
 							expect(returnVal).toBe(0);
 						});
 
-						it('passed undefined for the first param', function() {
+						it('passed undefined for the inital total', function() {
 							returnVal = service.total(undefined);
 
 							expect(returnVal).toBe(0);
 						});
 
-						it('passed undefined for the first param and second param', function() {
+						it('passed undefined for the inital total and pass price', function() {
 							returnVal = service.total(undefined, undefined);
 
 							expect(returnVal).toBe(0);
 						});
 
-						it('passed null for the first param', function() {
+						it('passed null for the inital total', function() {
 							returnVal = service.total(null);
 
 							expect(returnVal).toBe(0);
 						});
 
-						it('passed null for the first and second param', function() {
+						it('passed null for the inital total and pass price', function() {
 							returnVal = service.total(null, null);
 
 							expect(returnVal).toBe(0);
 						});
 					});
 
-					describe('returns first param when', function() {
+					describe('returns inital total when', function() {
 						beforeEach(function() {
-							firstParam = "55";
+							initalTotal = "55";
 						});
 
-						it('second param is empty', function() {
-							returnVal = service.total(firstParam);
+						it('pass price is empty', function() {
+							returnVal = service.total(initalTotal);
 
-							expect(returnVal).toBe(parseInt(firstParam));
+							expect(returnVal).toBe(parseInt(initalTotal));
 						});
 
-						it('second param is undefined', function() {
-							returnVal = service.total(firstParam, undefined);
+						it('pass price is undefined', function() {
+							returnVal = service.total(initalTotal, undefined);
 
-							expect(returnVal).toBe(parseInt(firstParam));
+							expect(returnVal).toBe(parseInt(initalTotal));
 						});
 
-						it('second param is null', function() {
-							returnVal = service.total(firstParam, null);
+						it('pass price is null', function() {
+							returnVal = service.total(initalTotal, null);
 
-							expect(returnVal).toBe(parseInt(firstParam));
+							expect(returnVal).toBe(parseInt(initalTotal));
+						});
+
+						it('operand is undefined', function() {
+							returnVal = service.total(initalTotal, "55", undefined);
+
+							expect(returnVal).toBe(parseInt(initalTotal));
 						});
 					});
 
-					describe('returns the combinded total of the first param and the second param when', function() {
+					describe('returns the correct total of the inital total and the pass price when', function() {
 						beforeEach(function() {
-							firstParam = "55";
-							secondParam = "55";
+							initalTotal = "55";
+							passPrice = "55";
 						});
 
-						it('both have been provided', function() {
-							returnVal = service.total(firstParam, secondParam);
+						it('everything has been provided', function() {
+							returnVal = service.total(initalTotal, passPrice, "add");
 
-							expect(returnVal).toBe(parseInt(firstParam) + parseInt(secondParam));
+							expect(returnVal).toBe(parseInt(initalTotal) + parseInt(passPrice));
 						});
 					});
 				});

@@ -4,14 +4,15 @@ define(function () {
 	};
 
 	return {
-		"total": function (initalTotal, passPrice) {
+		"total": function (initalTotal, passPrice, operand) {
 			var total = 0,
 				validInitialTotal = (typeof initalTotal !== "undefined" && initalTotal !== null && initalTotal !== "") ? true : false,
-				validPassPrice = (typeof passPrice !== "undefined" && passPrice !== null && passPrice !== "") ? true : false;
-
-			if (validInitialTotal === true && validPassPrice === false) {
+				validPassPrice = (typeof passPrice !== "undefined" && passPrice !== null && passPrice !== "") ? true : false,
+				validOperand = (typeof operand !== "undefined") ? true : false;
+				
+			if ((validInitialTotal === true && validOperand === false) || (validInitialTotal === true && validPassPrice === false)) {
 				total = parseInt(initalTotal);
-			} else if (validInitialTotal === true && validPassPrice === true) {
+			} else if (validInitialTotal === true && validPassPrice === true && validOperand === true) {
 				total = parseInt(initalTotal) + parseInt(passPrice); 
 			};
 
