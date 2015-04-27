@@ -41,24 +41,32 @@ module.exports = function (grunt) {
         requirejs: {
             registrationBuild: {
                 options: {
-                    mainConfigFile: "js/base/require.conf.js",
+                    mainConfigFile: "js/common/require.conf.js",
                     optimize: "uglify",
                     name: "js/registration",
                     out: "js/site/registration.min.js",
-                    exclude: ['jQuery', 'lodash'],
+                    exclude: ['jQuery'],
                     include: ['requireLib']
                 }
             },
             registrationDeploy: {
                 options: {
-                    mainConfigFile: "js/base/require.conf.js",
+                    mainConfigFile: "js/common/require.conf.js",
                     optimize: "none",
                     name: "js/registration",
                     out: "js/site/registration.js",
-                    exclude: ['jQuery', 'lodash'],
+                    exclude: ['jQuery'],
                     include: ['requireLib']
                 }
             },
+        },
+
+        handlebars: {
+            compile: {
+                files: {
+                    "js/common/compiledTemplates/registration.js": "templates/registration/*.html"
+                }
+            }
         }
     });
 
@@ -70,6 +78,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
+    grunt.loadNpmTasks('grunt-contrib-handlebars');
 
     grunt.registerTask('compileCSS', ['clean', 'compass', 'cssmin']);
     grunt.registerTask('compileJS', ['concat']);

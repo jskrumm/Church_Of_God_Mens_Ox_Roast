@@ -6,7 +6,7 @@
         with one another.">
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <title>Ohio Men's Ox Roast</title>
-        <script src="js/base/lib/modernizr-2.8.3.min.js"></script>
+        <script src="js/common/lib/modernizr-2.8.3.min.js"></script>
         <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon" />
         @RenderSection("css", required: true)
     </head>
@@ -23,14 +23,14 @@
                 ~ 2 Timothy 4:7
             </p>
 
-        <script src="js/base/lib/jquery-1.10.2.min.js"></script>
-        <script src="js/base/lib/knockout-3.1.0.js"></script>
+        <script src="js/common/lib/jquery-1.10.2.min.js"></script>
+        <script src="js/common/lib/knockout-3.1.0.js"></script>
 
          <!--[if lte IE 9]>
-            <script type="text/javascript" src="js/base/polyfills/placeholder.js"></script>
+            <script type="text/javascript" src="js/common/polyfills/placeholder.js"></script>
         <![endif]-->
         <!--[if lt IE 9]>
-            <script type="text/javascript" src="js/base/polyfills/Respond.js"></script>
+            <script type="text/javascript" src="js/common/polyfills/Respond.js"></script>
         <![endif]-->
         @RenderSection("js", required: true)
     </body>

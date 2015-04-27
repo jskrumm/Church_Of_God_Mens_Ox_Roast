@@ -16,7 +16,8 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
         'tests/test-main.js',
-        'js/base/lib/jquery-1.10.2.min.js',
+        'js/common/lib/jquery-1.10.2.min.js',
+        {pattern: 'js/common/lib/lodash.min.js', included: false},
         {pattern: 'js/page/*.js', included: false},
         {pattern: 'js/section/*.js', included: false},
         {pattern: 'js/module/*.js', included: false},

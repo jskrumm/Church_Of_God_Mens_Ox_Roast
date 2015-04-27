@@ -1,8 +1,9 @@
-define(["module/passes", "service/register"], function (module, registerService) {
+define(["lodash", "module/passes", "service/register"], function (_, module, registerService) {
 	var moduleSettings = {
 		"scope": "#generalInfo"
 	},
-	fakeJQueryObject = $('<input type="radio" id="test" name="test" value="2" data-price="55" />');
+	fakeJQueryObject = $('<input type="radio" id="test" name="test" value="2" data-price="55" />'),
+	returnVal = null;
 
 	describe('Event and Activity Pass Module', function() {
 		it('is defined', function() {
@@ -30,7 +31,7 @@ define(["module/passes", "service/register"], function (module, registerService)
 					});
 
 					it('ues jQuery on function to bind a change event for event pass types', function() {
-						expect($.fn.on).toHaveBeenCalledWith("change", "event-pass-types input[type='radio']", {"target": jasmine.any(Object)}, module.setTotal);
+						expect($.fn.on).toHaveBeenCalledWith("change", ".event-pass-types input[type='radio']", module.setTotal);
 					});
 
 					it('uses jQuery on a total of two times', function() {
@@ -38,130 +39,117 @@ define(["module/passes", "service/register"], function (module, registerService)
 					});
 
 					it('using jQuery on function to bind a change event for activity pass types', function() {
-						expect($.fn.on).toHaveBeenCalledWith("change", "activity-pass-type input[type'checkbox']", {"target": jasmine.any(Object)}, module.setTotal);
+						expect($.fn.on).toHaveBeenCalledWith("change", ".activity-pass-types input[type='checkbox']", module.setTotal);
 					});
 				});
 			});
 
-			describe('called setTotal', function() {
-				it('is defined', function() {
-					expect(module.setTotal).toBeDefined();
+			describe('called getPriceFromDataAttr', function() {
+				it('that is defined', function() {
+					expect(module.getPriceFromDataAttr).toBeDefined();
 				});
 
 				describe('that when called', function() {
-					describe('gets the inital total', function() {
+					describe('checks for an attribute data-price is on the element passed to the function', function() {
 						beforeEach(function() {
-							spyOn($.fn, "text");
 							spyOn($.fn, "attr");
-							spyOn($.fn, "is");
-							spyOn(registerService, "total");
-
-							module.setTotal(fakeJQueryObject);
-						});
-
-						it('using jQuery text function', function() {
-							expect($.fn.text).toHaveBeenCalled();
-						});
-					});
-
-					describe('gets the pass price from the target', function() {
-						beforeEach(function() {
-							spyOn($.fn, "text");
-							spyOn($.fn, "attr");
-							spyOn($.fn, "is");
-							spyOn(registerService, "total");
-
-							module.setTotal(fakeJQueryObject);
+							module.getPriceFromDataAttr(fakeJQueryObject);
 						});
 
 						it('using jQuery attr function', function() {
 							expect($.fn.attr).toHaveBeenCalled();
 						});
 
-						it('using jQuery attr function with "data-price"', function() {
+						it('using jQuery attr function with the data attrbute of data-price', function() {
 							expect($.fn.attr).toHaveBeenCalledWith("data-price");
 						});
 					});
 
-					describe('test the state of the target element', function() {
+					it('returns the data attribute value if one exits for data-price', function() {
+						returnVal = module.getPriceFromDataAttr(fakeJQueryObject);
+
+						expect(returnVal).toEqual("55");
+					});
+
+					it('returns undefined if the data attribute data-price does not exit', function() {
+						returnVal = module.getPriceFromDataAttr($('<input type="radio" id="test" name="test" value="2"/>'));
+
+						expect(returnVal).toEqual(undefined);
+					});
+				});
+			});
+
+			describe('called setTotal', function() {
+				it('that is defined', function() {
+					expect(module.setTotal).toBeDefined();
+				});
+
+				describe('that when called', function() {
+					describe('creates an array of prices based on events and activities selected by the user', function() {
 						beforeEach(function() {
-							spyOn($.fn, "text");
-							spyOn($.fn, "attr");
-							spyOn($.fn, "is");
+							spyOn(_, "map");
 							spyOn(registerService, "total");
-						
-							module.setTotal(fakeJQueryObject);
+							spyOn($.fn, "text");
+
+							module.setTotal();
 						});
 
-						it('using jQuery is function', function() {
-							expect($.fn.is).toHaveBeenCalled();
+						it('using lodash map function', function() {
+							expect(_.map).toHaveBeenCalled();
 						});
 
-						it('using jQuery is function with the ":checked" modifier', function() {
-							expect($.fn.is).toHaveBeenCalledWith(":checked");
+						it('using lodash map function with some jquery objects and the public function getPriceFromDataAttr', function() {
+							expect(_.map).toHaveBeenCalledWith(jasmine.any(Object), module.getPriceFromDataAttr);
 						});
 					});
 
-					describe('if the state of the target element is checked', function() {
+					describe('gets the current total', function() {
 						beforeEach(function() {
+							spyOn(_, "map");
+							spyOn(registerService, "total");
+							spyOn($.fn, "text");
+
+							module.setTotal();	
+						});
+
+						it('using the jQuery text function', function() {
+							expect($.fn.text).toHaveBeenCalled();		
+						});	
+					});
+
+					describe('calculates the total of the array of prices', function() {
+						beforeEach(function() {
+							spyOn(_, "map").and.returnValue(["55", "25", "5"]);
+							spyOn(registerService, "total");
 							spyOn($.fn, "text").and.returnValue("0");
-							spyOn($.fn, "attr").and.returnValue("65");
-							spyOn($.fn, "is").and.returnValue(true);
-							spyOn(registerService, "total").and.returnValue(65);
-						
-							module.setTotal(fakeJQueryObject);
+
+							module.setTotal();
 						});
 
-						describe('we call a service to get the calculate total for the ox roast', function() {
-							it('using our register service', function() {
-								expect(registerService.total).toHaveBeenCalled();
-							});
-
-							it('using our register service by passing it the inital total, pass cost, and operand to use', function() {
-								expect(registerService.total).toHaveBeenCalledWith("0", "65", "add");
-							});
+						it('using the register service total function', function() {
+							expect(registerService.total).toHaveBeenCalled();
 						});
 
-						describe('and we have the total, then we insert it into the DOM', function() {
-							it('using jQuery text function a second time', function() {
-								expect($.fn.text.calls.count()).toEqual(2);
-							});
-
-							it('using jQuery text function a second time with the new total value', function() {
-								expect($.fn.text.calls.argsFor(1)).toEqual([65]);
-							});
+						it('using the register service total function with the array of prices selected and the current total', function() {
+							expect(registerService.total).toHaveBeenCalledWith(["55", "25", "5"], "0");	
 						});
 					});
 
-					describe('if teh state of the target element is not checked', function() {
+					describe('inserts the new total into the DOM', function() {
 						beforeEach(function() {
-							spyOn($.fn, "text").and.returnValue("65");
-							spyOn($.fn, "attr").and.returnValue("65");
-							spyOn($.fn, "is").and.returnValue(false);
-							spyOn(registerService, "total").and.returnValue(0);
-						
-							module.setTotal(fakeJQueryObject);
+							spyOn(_, "map");
+							spyOn(registerService, "total").and.returnValue(85);
+							spyOn($.fn, "text");
+
+							module.setTotal();
 						});
 
-
-						describe('we call a service to get the calculate total for the ox roast', function() {
-							it('using our register service', function() {
-								expect(registerService.total).toHaveBeenCalled();
-							});
-
-							it('using our register service by passing it the inital total, pass cost, and operand to use', function() {
-								expect(registerService.total).toHaveBeenCalledWith("65", "65", "subtract");
-							});
+						it('by using the jQuery text function a second time', function() {
+							expect($.fn.text.calls.count()).toEqual(2);
 						});
 
-						describe('and we have the total, then we insert it into the DOM', function() {
-							it('using jQuery text function a second time', function() {
-								expect($.fn.text.calls.count()).toEqual(2);
-							});
-
-							it('using jQuery text function a second time with the new total value', function() {
-								expect($.fn.text.calls.argsFor(1)).toEqual([0]);
-							});
+						it('by using the jQuery text function a second time with the new total', function() {
+							expect($.fn.text.calls.argsFor(1)).toEqual([85]);
 						});
 					});
 				});

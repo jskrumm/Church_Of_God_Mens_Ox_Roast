@@ -42,6 +42,7 @@
     if (IsPost) {
         int finalGuestCount = 0;
         bool invalidGuestNameInputs = false;
+
         int twoDayCount = Request["num-att-two-day"].IsEmpty() ? 0 : int.Parse(Request["num-att-two-day"]);
         int oneDayCount = Request["num-att-one-day"].IsEmpty() ? 0 : int.Parse(Request["num-att-one-day"]);
         int underageCount = Request["num-att-underage"].IsEmpty() ? 0 : int.Parse(Request["num-att-underage"]);
@@ -260,7 +261,7 @@
     </fieldset>
 
     <!-- ko stopBinding: true -->
-    <fieldset id="guests" class="hidden">
+    <fieldset id="guests">
         <legend>Guest(s) Information (optional)</legend>
         <div>
             @if(guestCount < 1) {
@@ -268,13 +269,6 @@
             } else {
                  <h4>Guest Added</h4>
             }
-            <ul data-bind="foreach: guest">
-                <li>
-                    First Name: <span data-bind="text: $data.firstName" class="firstName"></span>
-                    Last Name: <span data-bind="text: $data.lastName" class="lastName"></span>
-                    <input type="button" value="Remove" class="remove-guest" data-bind="click: $parent.removeGuest"/>
-                </li>
-            </ul>
         </div>
         <input type="hidden" value="@guestList" id="guestList" name="guestList"/>
         <div class="first-last-name-fields">
@@ -331,8 +325,8 @@
     <!-- /ko -->
 
     <label for="PAYMENTREQUEST_0_AMT" class="totalLabel">Total</label>
-    <input id="PAYMENTREQUEST_0_AMT" type="hidden" name="PAYMENTREQUEST_0_AMT" data-bind="value: $data.grandTotal"/>
-    <output id="total" name="total" data-bind="text: $data.grandTotal">@Request["total"]</output>
+    <input id="PAYMENTREQUEST_0_AMT" type="hidden" name="PAYMENTREQUEST_0_AMT" value="@(Request["total"].IsEmpty() ? 0 : int.Parse(Request["total"]))"/>
+    $<output id="total" name="total">@(Request["total"].IsEmpty() ? 0 : int.Parse(Request["total"]))</output>
 
     <input type=submit class="submit" value=""/>
 </form>

@@ -69,8 +69,6 @@
 		}
 
 		input[type=checkbox] {
-		    display: none;
-
 		    &:checked + label:before {
 			    content: "\2713";
 			    text-align: center;

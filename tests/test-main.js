@@ -16,8 +16,10 @@ require.config({
   // Karma serves files under /base, which is the basePath from your config file
   baseUrl: '/base',
   paths: {
-    'jQuery': 'js/lib/jquery-1.10.2.min',
-    'lodash': 'js/lib/lodash.min',
+    'jQuery': 'js/common/lib/jquery-1.10.2.min',
+    'lodash': 'js/common/lib/lodash.min',
+    'handelbars': 'js/common/lib/handlebars.runtime-v3.0.1',
+    'templates': 'js/common/compiledTemplates',
     'page': 'js/page',
     'section': 'js/section',
     'module': 'js/module',
@@ -27,8 +29,11 @@ require.config({
     'jQuery': {
       exports: '$'
     },
-    'underscore': {
+    'lodash' : {
       exports: '_'
+    },
+    'handlebars': {
+      exports: 'Handlebars'
     }
   },
   // dynamically load all test files

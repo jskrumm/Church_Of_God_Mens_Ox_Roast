@@ -1,4 +1,4 @@
-define(['section/userInfo'], function (userInfo) {
+define(['section/userInfo', 'section/guestInfo'], function (userInfo, guestInfo) {
 	"use strict";
 
 	var publicMembers = {
@@ -7,11 +7,17 @@ define(['section/userInfo'], function (userInfo) {
 		},
 		"startSections": function () {
 			var userInfoSection = userInfo({
-				"scope": "#generalInfo"
-			});
+					"scope": "#generalInfo"
+				}),
+				guestInfoSection = guestInfo({
+					"scope": "#guests"
+				});
 
 			userInfoSection.init();
 			userInfoSection.subscribe();
+
+			guestInfoSection.init();
+			guestInfoSection.subscribe();
 		}
 	};
 
