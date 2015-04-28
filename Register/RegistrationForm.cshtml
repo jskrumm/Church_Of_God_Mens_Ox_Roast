@@ -37,7 +37,7 @@
         );
 
     int guestCount = 0;
-    string guestList = "";
+    string guestList = "{[]}";
 
     if (IsPost) {
         int finalGuestCount = 0;
@@ -316,11 +316,8 @@
             </ul>
         </div>
 
-        <input type="button" value="Add Guest" class="add-guest" data-bind="click: $data.addGuest, disable: $data.hasClickedTooManyTimes"/>
+        <input type="button" value="Add Guest" class="add-guest"/>
         <input id="guest-count" name="guest-count" type="hidden" value="@guestCount" data-initalVal="@guestCount" data-bind="value: $data.guestCount"/>
-        <p data-bind="visible: $data.hasClickedTooManyTimes">
-            You have reached the max number of guests you are allowed to register!
-        </p>
     </fieldset>
     <!-- /ko -->
 
