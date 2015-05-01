@@ -18,19 +18,39 @@ define(function () {
 			"foo": function (event) {
 
 			},
-			"bar": function (element) {
+			"getValue": function (element) {
 				var value = $(element).val(),
-					passTypeName = _.find(privateMembers.allPassTypes, "type", value);
+					passTypeObject = _.find(privateMembers.allPassTypes, "type", value),
+					isPassTypeObjectUndefined = _.isUndefined(passTypeObject),
+					isPasstypeObjectAnObject = _.isObject(passTypeObject);
 
-				
-				/*
-					return {
-						"firstname": $("#guest_firstname").val(),
-						"lastname": $("#guest_lastname").val(),
-						"eventPassType" _.map($(".event-pass-types input[type='radio']:checked"), function(element){return //pass type logic})
-						"activities": _.map($(".activity-pass-types input[type='checkbox']:checked"), function(element){return //activity type logic})
-					}
-				*/
+				if (isPassTypeObjectUndefined === false && isPasstypeObjectAnObject === true) {
+					value = _.result(passTypeObject, "name");
+				}
+
+				return value;
+			},
+			"buildNewGuestObject": function () {
+				var firstname = publicMembers.getValue("#guest_firstname"),
+					lastname = publicMembers.getValue("#guest_lastname"),
+					eventPassType = _.map($(".event-pass-types input[type='radio']:checked"), publicMembers.getValue).join(", "),
+					activities = _.map($(".activity-pass-types input[type='checkbox']:checked"), publicMembers.getValue).join(", ");
+
+				return {
+					"firstname": firstname,
+					"lastname": lastname,
+					"eventPassType": eventPassType,
+					"activities": activities
+				};
+			},
+			"bar": function (guestObject) {
+				var guestList = JSON.stringify($("#guestList").val());
+
+				//Then we take the value and do JSON.stringify() and then JSON.parse
+
+				//Then add the new guestObject to the guestList by doing obj.guests.push(guestObject)
+
+				//Then insert the new guest list back into the DOM and also returns the new guest list (should call a function to do this).
 			}
 		};
 
