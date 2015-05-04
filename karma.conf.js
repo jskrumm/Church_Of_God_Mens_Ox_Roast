@@ -18,6 +18,8 @@ module.exports = function(config) {
         'tests/test-main.js',
         'js/common/lib/jquery-1.10.2.min.js',
         {pattern: 'js/common/lib/lodash.min.js', included: false},
+        {pattern: 'js/common/lib/handlebars.runtime-v3.0.1.js', included: false},
+        {pattern: 'js/common/compiledTemplates/*.js', included: false},
         {pattern: 'js/page/*.js', included: false},
         {pattern: 'js/section/*.js', included: false},
         {pattern: 'js/module/*.js', included: false},

@@ -44,6 +44,35 @@ define(["lodash", "module/passes", "service/register"], function (_, module, reg
 				});
 			});
 
+			describe('called listen', function() {
+				it('is defined', function() {
+					expect(module.listen).toBeDefined();
+				});
+
+				describe('that when called', function() {
+					beforeEach(function() {
+						spyOn($.fn, "on");
+						module.listen();
+					});
+
+					it('uses jQuery on function to add a listeners', function() {
+						expect($.fn.on).toHaveBeenCalled();
+					});
+
+					it('uses jQuery on a total of two times', function() {
+						expect($.fn.on.calls.count()).toEqual(2);
+					});
+
+					it('ues jQuery on function to add a listener for when a guest gets added', function() {
+						expect($.fn.on).toHaveBeenCalledWith("guest:added", module.setTotal);
+					});
+
+					it('ues jQuery on function to add a listener for when a guest gets removed', function() {
+						expect($.fn.on).toHaveBeenCalledWith("guest:removed", module.deductAmount);
+					});
+				});
+			});
+
 			describe('called getPriceFromDataAttr', function() {
 				it('that is defined', function() {
 					expect(module.getPriceFromDataAttr).toBeDefined();
@@ -89,7 +118,7 @@ define(["lodash", "module/passes", "service/register"], function (_, module, reg
 						beforeEach(function() {
 							spyOn(_, "map");
 							spyOn(registerService, "total");
-							spyOn($.fn, "text");
+							spyOn(sessionStorage, "getItem");
 
 							module.setTotal();
 						});
@@ -103,35 +132,76 @@ define(["lodash", "module/passes", "service/register"], function (_, module, reg
 						});
 					});
 
-					describe('gets the current total', function() {
+					describe('tries to get the current total from sessionStorage', function() {
 						beforeEach(function() {
 							spyOn(_, "map");
 							spyOn(registerService, "total");
-							spyOn($.fn, "text");
+							spyOn(sessionStorage, "getItem");
 
 							module.setTotal();	
 						});
 
-						it('using the jQuery text function', function() {
-							expect($.fn.text).toHaveBeenCalled();		
-						});	
+						it('using the sessionStorage getItem function', function() {
+							expect(sessionStorage.getItem).toHaveBeenCalled();		
+						});
+
+						it('using the sessionStorage getItem function with the key currentTotal', function() {
+							expect(sessionStorage.getItem).toHaveBeenCalledWith("currentTotal");
+						});
 					});
 
 					describe('calculates the total of the array of prices', function() {
+						describe('if sessionStorage does not have a key of "currentTotal"', function() {
+							beforeEach(function() {
+								spyOn(_, "map").and.returnValue(["55", "25", "5"]);
+								spyOn(registerService, "total");
+								spyOn(sessionStorage, "getItem").and.returnValue(null);
+								module.setTotal();
+							});
+
+							it('then we use the register service total function to calculate the total', function() {
+								expect(registerService.total).toHaveBeenCalled();
+							});
+
+							it('and we use the register service total function with the array of prices selected and a current toal of 0', function() {
+								expect(registerService.total).toHaveBeenCalledWith(["55", "25", "5"], 0);	
+							});
+						});
+
+						describe('if sessionStorage has a key of "currentTotal"', function() {
+							beforeEach(function() {
+								spyOn(_, "map").and.returnValue(["55", "25", "5"]);
+								spyOn(registerService, "total");
+								spyOn(sessionStorage, "getItem").and.returnValue("5");
+
+								module.setTotal();
+							});
+
+							it('then we use the register service total function to calculate the total', function() {
+								expect(registerService.total).toHaveBeenCalled();
+							});
+
+							it('and we use the register service total function with the array of prices selected and the current total from sessionStorage', function() {
+								expect(registerService.total).toHaveBeenCalledWith(["55", "25", "5"], "5");	
+							});
+						});
+					});
+
+					describe('sets the new total in sessionStorage', function() {
 						beforeEach(function() {
-							spyOn(_, "map").and.returnValue(["55", "25", "5"]);
-							spyOn(registerService, "total");
-							spyOn($.fn, "text").and.returnValue("0");
+							spyOn(_, "map");
+							spyOn(registerService, "total").and.returnValue(85);
+							spyOn(sessionStorage, "setItem");
 
 							module.setTotal();
 						});
 
-						it('using the register service total function', function() {
-							expect(registerService.total).toHaveBeenCalled();
+						it('using the sessionStorage setItem function', function() {
+							expect(sessionStorage.setItem).toHaveBeenCalled();
 						});
 
-						it('using the register service total function with the array of prices selected and the current total', function() {
-							expect(registerService.total).toHaveBeenCalledWith(["55", "25", "5"], "0");	
+						it('using the sessionStorage setItem function with the key of currentTotal and new total value', function() {
+							expect(sessionStorage.setItem).toHaveBeenCalledWith("currentTotal", 85);
 						});
 					});
 
@@ -144,13 +214,69 @@ define(["lodash", "module/passes", "service/register"], function (_, module, reg
 							module.setTotal();
 						});
 
-						it('by using the jQuery text function a second time', function() {
-							expect($.fn.text.calls.count()).toEqual(2);
+						it('by using the jQuery text function', function() {
+							expect($.fn.text).toHaveBeenCalled();
 						});
 
-						it('by using the jQuery text function a second time with the new total', function() {
-							expect($.fn.text.calls.argsFor(1)).toEqual([85]);
+						it('by using the jQuery text function with the new total', function() {
+							expect($.fn.text).toHaveBeenCalledWith(85);
 						});
+					});
+				});
+			});
+
+			describe('called deductAmount', function() {
+				it('that is defined', function() {
+					expect(module.deductAmount).toBeDefined();
+				});
+
+				describe('gets the current total from sessionStorage', function() {
+					beforeEach(function() {
+						sessionStorage.setItem("currentTotal", 100);
+						spyOn(sessionStorage, "getItem");
+
+						module.deductAmount("50");	
+					});
+
+					it('using the sessionStorage getItem function', function() {
+						expect(sessionStorage.getItem).toHaveBeenCalled();		
+					});
+
+					it('using the sessionStorage getItem function with the key currentTotal', function() {
+						expect(sessionStorage.getItem).toHaveBeenCalledWith("currentTotal");
+					});
+				});
+
+				describe('sets the new current total in sessionStorage', function() {
+					beforeEach(function() {
+						sessionStorage.setItem("currentTotal", 100);
+						spyOn(sessionStorage, "setItem");
+
+						module.deductAmount("50");	
+					});
+
+					it('using the sessionStorage setItem function', function() {
+						expect(sessionStorage.setItem).toHaveBeenCalled();
+					});
+
+					it('using the sessionStorage setItem function with the key of currentTotal and new total value', function() {
+						expect(sessionStorage.setItem).toHaveBeenCalledWith("currentTotal", 50);
+					});
+				});
+
+				describe('inserts the new total into the DOM', function() {
+					beforeEach(function() {
+						sessionStorage.setItem("currentTotal", 100);
+						spyOn($.fn, "text");
+						module.deductAmount("50");
+					});
+
+					it('by using the jQuery text function', function() {
+						expect($.fn.text).toHaveBeenCalled();
+					});
+
+					it('by using the jQuery text function with the new total', function() {
+						expect($.fn.text).toHaveBeenCalledWith(50);
 					});
 				});
 			});

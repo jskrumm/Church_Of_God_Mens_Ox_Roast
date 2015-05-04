@@ -1,8 +1,11 @@
+<h4>Guest Added</h4>
 <ul>
-	{{#each .}}
+	{{#each guest}}
 	    <li>
-	        First Name: <span class="firstName">{{firstName}}</span>
-	        Last Name: <span class="lastName">{{lastName}}</span>
+	        First Name: <span class="firstName">{{firstname}}</span>
+	        Last Name: <span class="lastName">{{lastname}}</span>
+	        Pass Type: <span class="eventPassType">{{eventPassType}}</span>
+	        Activities: <span class="eventPassType">{{activities}}</span>
 	        <input type="button" value="Remove" class="remove-guest"/>
 	    </li>
 	{{/each}}

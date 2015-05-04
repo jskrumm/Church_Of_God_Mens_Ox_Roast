@@ -1,4 +1,4 @@
-define(['section/guestInfo', 'module/passes'], function (guestInfo, passes) {
+define(['section/guestInfo', 'module/passes', 'module/guest'], function (guestInfo, passes, guest) {
 	"use strict";
 
 	var section = guestInfo,
@@ -39,7 +39,8 @@ define(['section/guestInfo', 'module/passes'], function (guestInfo, passes) {
 
 		describe('when the init function is called', function() {
 			beforeEach(function() {
-				spyOn(passes, "bindEvents");
+				spyOn(passes, "listen");
+				spyOn(guest, "bindEvents");
 
 				calledSection = section({
 					"scope": "#guests"
@@ -48,12 +49,16 @@ define(['section/guestInfo', 'module/passes'], function (guestInfo, passes) {
 				calledSection.init();
 			});
 
-			it('we bindEvents for the passes module', function() {
-				expect(passes.bindEvents).toHaveBeenCalled();
+			it('we bindEvents for the guest module', function() {
+				expect(guest.bindEvents).toHaveBeenCalled();
 			});
 
-			it('we bindEvents for the passes module and give it the correct settings', function() {
-				expect(passes.bindEvents).toHaveBeenCalledWith({"scope": "#guests"});
+			it('we bindEvents for the guest module and give it the correct settings', function() {
+				expect(guest.bindEvents).toHaveBeenCalledWith({"scope": "#guests"});
+			});
+
+			it('we add a listener for the passes module', function() {
+				expect(passes.listen).toHaveBeenCalled();
 			});
 		});
 	});

@@ -63,6 +63,12 @@ module.exports = function (grunt) {
 
         handlebars: {
             compile: {
+                options: {
+                  amd: true,
+                    processName: function(filePath) {
+                        return filePath.split("/").pop().replace(".html", "");
+                    }
+                },
                 files: {
                     "js/common/compiledTemplates/registration.js": "templates/registration/*.html"
                 }
@@ -81,7 +87,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-handlebars');
 
     grunt.registerTask('compileCSS', ['clean', 'compass', 'cssmin']);
-    grunt.registerTask('compileJS', ['concat']);
+    grunt.registerTask('compileJS', ['handlebars', 'requirejs']);
     // Default task
     grunt.registerTask('default', ['compileCSS']);
 

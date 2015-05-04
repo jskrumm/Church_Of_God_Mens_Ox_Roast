@@ -1,4 +1,4 @@
-define(['module/passes'], function(passes) {
+define(['module/passes', 'module/guest'], function(passes, guest) {
 	"use strict";
 
 	var privateMembers = {
@@ -15,9 +15,10 @@ define(['module/passes'], function(passes) {
 				};
 				
 				//calls bindEvents for all modules
-				passes.bindEvents(settings);
+				guest.bindEvents(settings);
 				
 				//addes listeners for all modules
+				passes.listen();
 			},
 			"loadContent": function () {
 				//ajax content

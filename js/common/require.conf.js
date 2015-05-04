@@ -7,7 +7,7 @@ requirejs.config({
         'jQuery': 'js/common/lib/jquery-1.10.2.min',
         'requireLib': 'js/common/lib/require.min',
         'lodash': 'js/common/lib/lodash.min',
-        'handelbars': 'js/common/lib/handlebars.runtime-v3.0.1',
+        'handlebars': 'js/common/lib/handlebars.runtime-v3.0.1',
         'templates': 'js/common/compiledTemplates',
         'page': 'js/page',
         'section': 'js/section',
