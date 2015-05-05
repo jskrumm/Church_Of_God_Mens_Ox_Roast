@@ -1,6 +1,6 @@
 define(['lodash', 'service/register'], function  (_, service) {
 	var returnVal = null,
-		initalTotal = null;
+		initalTotal = null,
 		passPrice = null,
 		priceArray = ["65", "55", "45", "35", "25", "5"],
 		validPriceArray = ["55", "25", "5"],
@@ -9,6 +9,8 @@ define(['lodash', 'service/register'], function  (_, service) {
 	describe('Regiser Service', function() {
 		afterEach(function() {
 			returnVal = null;
+			initalTotal = null;
+			passPrice = null;
 		});
 
 		it('is defined', function() {
@@ -31,7 +33,7 @@ define(['lodash', 'service/register'], function  (_, service) {
 							spyOn(service, "isAllPricingValid");
 							spyOn(service, "sum");
 
-							service.total(validPriceArray, "55");
+							service.total(validPriceArray);
 						});
 
 						it('using the services isAllPricingValid function', function() {
@@ -43,58 +45,60 @@ define(['lodash', 'service/register'], function  (_, service) {
 						});
 					});
 
-					describe('if all pricing is valid then we sum all of the values', function() {
+					describe('when all pricing is valid', function() {
 						beforeEach(function() {
 							spyOn(service, "isAllPricingValid").and.returnValue(true);
-							spyOn(service, "sum").and.callThrough();
-
-							returnVal = service.total(validPriceArray, "55");
 						});
 
-						it('using the services sum function', function() {
-							expect(service.sum).toHaveBeenCalled();
+						describe('then we sum all of the pass values', function() {
+							beforeEach(function() {
+								spyOn(service, "sum").and.callThrough();
+
+								service.total(validPriceArray, "55");
+							});
+
+							it('using the services sum function', function() {
+								expect(service.sum).toHaveBeenCalled();
+							});
+
+							it('using the services sum function with the valid pricing array', function() {
+								expect(service.sum).toHaveBeenCalledWith(validPriceArray);
+							});
 						});
 
-						it('using the services sum function with the valid pricing array', function() {
-							expect(service.sum).toHaveBeenCalledWith(validPriceArray);
-						});
+						describe('and we add the sum of the pass values to the current total', function() {
+							beforeEach(function() {
+								spyOn(service, "sum").and.callThrough();
+								spyOn(service, "add").and.callThrough();
 
-						it('and return the total of the pricing array', function() {
-							expect(returnVal).toEqual(85);
+								service.total(validPriceArray, "55");
+							});
+
+							it('using the services add function', function() {
+								expect(service.add).toHaveBeenCalled();
+							});
+
+							it('using the services add function with the current total and the sum of the pass values', function() {
+								expect(service.add).toHaveBeenCalledWith("55", 85);
+							});
 						});
 					});
 
-					describe('if all pricing is not valid and we have been provide an inital total value', function() {
+					describe('when all pricing is not valid', function() {
 						beforeEach(function() {
 							spyOn(service, "isAllPricingValid").and.returnValue(false);
-							spyOn(service, "sum");
+							spyOn(service, "sum"),
+							spyOn(service, "add");
 
-							returnVal = service.total(invalidPriceArray, "55");
+							service.total(invalidPriceArray, "55");
 						});
 
 						it('then we do not call the sum function', function() {
 							expect(service.sum).not.toHaveBeenCalled();
 						});
 
-						it('and we return the inital total value', function() {
-							expect(returnVal).toEqual("55");
-						});
-					});
-
-					describe('if all pricing is not valid and we are not provided with an inital total value', function() {
-						beforeEach(function() {
-							spyOn(service, "isAllPricingValid").and.returnValue(false);
-							spyOn(service, "sum");
-
-							returnVal = service.total(invalidPriceArray);
-						});
-
-						it('then we do not call the sum function', function() {
-							expect(service.sum).not.toHaveBeenCalled();
-						});
-
-						it('and we return 0', function() {
-							expect(returnVal).toEqual(0);
+						it('then we do not call the add function', function() {
+							expect(service.add).not.toHaveBeenCalled();
 						});
 					});
 				});
@@ -133,12 +137,13 @@ define(['lodash', 'service/register'], function  (_, service) {
 				describe('and when called', function() {
 					describe('checks if a value is defined', function() {
 						beforeEach(function() {
-							spyOn(_, "isUndefined");
+							spyOn(_, "isUndefined").and.returnValue(true);
 							spyOn(_, "isNull").and.returnValue(false);
 							spyOn(_, "isEmpty").and.returnValue(false);
+
 							initalTotal = undefined;
 
-							returnVal = service.isValueValid(initalTotal);
+							service.isValueValid(initalTotal);
 						});
 
 						it('using the lodash function isUndefined', function() {
@@ -153,12 +158,12 @@ define(['lodash', 'service/register'], function  (_, service) {
 					describe('checks if a value is null', function() {
 						beforeEach(function() {
 							spyOn(_, "isUndefined").and.returnValue(false);
-							spyOn(_, "isNull");
+							spyOn(_, "isNull").and.returnValue(true);
 							spyOn(_, "isEmpty").and.returnValue(false);
 
 							initalTotal = null;
 
-							returnVal = service.isValueValid(initalTotal);
+							service.isValueValid(initalTotal);
 						});
 
 
@@ -175,11 +180,11 @@ define(['lodash', 'service/register'], function  (_, service) {
 						beforeEach(function() {
 							spyOn(_, "isUndefined").and.returnValue(false);
 							spyOn(_, "isNull").and.returnValue(false);
-							spyOn(_, "isEmpty");
+							spyOn(_, "isEmpty").and.returnValue(true);
 
-							initalTotal = null;
+							initalTotal = "";
 
-							returnVal = service.isValueValid(initalTotal);
+							service.isValueValid(initalTotal);
 						});
 
 
@@ -192,39 +197,39 @@ define(['lodash', 'service/register'], function  (_, service) {
 						});
 					});
 
-					describe('returns false when', function() {
-						it('value is undefined', function() {
-							initalTotal = undefined;
+					// describe('returns false when', function() {
+					// 	it('value is undefined', function() {
+					// 		initalTotal = undefined;
 
-							returnVal = service.isValueValid(initalTotal);
+					// 		returnVal = service.isValueValid(initalTotal);
 
-							expect(returnVal).toBe(false);
-						});
+					// 		expect(returnVal).toBe(false);
+					// 	});
 
-						it('value is null', function() {
-							initalTotal = null;
+					// 	it('value is null', function() {
+					// 		initalTotal = null;
 
-							returnVal = service.isValueValid(initalTotal);
+					// 		returnVal = service.isValueValid(initalTotal);
 
-							expect(returnVal).toBe(false);
-						});
+					// 		expect(returnVal).toBe(false);
+					// 	});
 
-						it('value is empty', function() {
-							initalTotal = "";
+					// 	it('value is empty', function() {
+					// 		initalTotal = "";
 
-							returnVal = service.isValueValid(initalTotal);
+					// 		returnVal = service.isValueValid(initalTotal);
 
-							expect(returnVal).toBe(false);
-						});
-					});
+					// 		expect(returnVal).toBe(false);
+					// 	});
+					// });
 
-					it('returns true when a value is defined, is not null, and is not empty', function() {
-						initalTotal = "55";
+					// it('returns true when a value is defined, is not null, and is not empty', function() {
+					// 	initalTotal = "55";
 
-						returnVal = service.isValueValid(initalTotal);
+					// 	returnVal = service.isValueValid(initalTotal);
 
-						expect(returnVal).toBe(true);
-					});
+					// 	expect(returnVal).toBe(true);
+					// });
 				});
 			});
 
@@ -270,30 +275,30 @@ define(['lodash', 'service/register'], function  (_, service) {
 						});
 					});
 
-					describe('returns false', function() {
-						it('when the value passed is not valid', function() {
-							passPrice = undefined;
-							returnVal = service.isPassPriceValid(passPrice);
+					// describe('returns false', function() {
+					// 	it('when the value passed is not valid', function() {
+					// 		passPrice = undefined;
+					// 		returnVal = service.isPassPriceValid(passPrice);
 
-							expect(returnVal).toBe(false);
-						});
+					// 		expect(returnVal).toBe(false);
+					// 	});
 
-						it('when the value passed is valid but not in the price array', function() {
-							passPrice = "4";
-							returnVal = service.isPassPriceValid(passPrice);
+					// 	it('when the value passed is valid but not in the price array', function() {
+					// 		passPrice = "4";
+					// 		returnVal = service.isPassPriceValid(passPrice);
 							
-							expect(returnVal).toBe(false);
-						});
-					});
+					// 		expect(returnVal).toBe(false);
+					// 	});
+					// });
 
-					describe('returns true', function() {
-						it('when the value is valid and the value is in the price array', function() {
-							passPrice = "45";
-							returnVal = service.isPassPriceValid(passPrice);
+					// describe('returns true', function() {
+					// 	it('when the value is valid and the value is in the price array', function() {
+					// 		passPrice = "45";
+					// 		returnVal = service.isPassPriceValid(passPrice);
 							
-							expect(returnVal).toBe(true);
-						});
-					});
+					// 		expect(returnVal).toBe(true);
+					// 	});
+					// });
 				});
 			});
 
@@ -325,16 +330,16 @@ define(['lodash', 'service/register'], function  (_, service) {
 						});
 					});
 
-					describe('if the pricing value is not valid on one of the items in the array', function() {
-						it('should return false', function() {
+					describe('when the pricing value is valid', function() {
+						it('the we return false', function() {
 							returnVal = service.isAllPricingValid(invalidPriceArray);
 
 							expect(returnVal).toBe(false);
 						});
 					});
 
-					describe('if the pricing value is valid on all of the items in the array', function() {
-						it('should return true', function() {
+					describe('when the pricing value is not valid', function() {
+						it('then we return true', function() {
 							returnVal = service.isAllPricingValid(validPriceArray);
 
 							expect(returnVal).toBe(true);
@@ -353,7 +358,7 @@ define(['lodash', 'service/register'], function  (_, service) {
 					beforeEach(function() {
 						spyOn(_, "sum");
 
-						returnVal = service.sum(validPriceArray);
+						service.sum(validPriceArray);
 					});
 
 					it('calls the lodash function sum', function() {

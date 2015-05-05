@@ -197,6 +197,8 @@ Un[X]=Un[H]=Un[Q]=Un[nn]=Un[tn]=Un[rn]=Un[en]=Un[un]=Un[on]=true,Un[z]=Un[M]=Un[
 
 typeof define=="function"&&typeof define.amd=="object"&&define.amd?(Yn._=Zn, define('lodash',[],function(){return Zn})):Dn&&Pn?Vn?(Pn.exports=Zn)._=Zn:Dn._=Zn:Yn._=Zn}).call(this);
 define('service/register',['lodash'], function (_) {
+	"use strict";
+	
 	var privateMember = {
 		"priceArray": ["65", "55", "45", "35", "25", "5"]
 	};
@@ -205,10 +207,12 @@ define('service/register',['lodash'], function (_) {
 		"total": function (passes, currentTotal) {
 			var self = this,
 				total = currentTotal || 0,
-				pricingIsValid = self.isAllPricingValid(passes);
+				pricingIsValid = self.isAllPricingValid(passes),
+				passTotal = 0;
 
 			if (pricingIsValid === true) {
-				total = self.sum(passes);
+				passTotal = self.sum(passes);
+				total = self.add(total, passTotal);
 			}
 
 			return total;
@@ -247,23 +251,23 @@ define('service/register',['lodash'], function (_) {
 	}
 });
 define('module/passes',["lodash", "service/register"], function (_, registerService) {
-	var publiMembers = {
+	"use strict";
+
+	var publicMembers = {
 		"bindEvents": function (settings) {
-			$(settings.scope).on("change", ".event-pass-types input[type='radio']", publiMembers.setTotal);
-			$(settings.scope).on("change", ".activity-pass-types input[type='checkbox']", publiMembers.setTotal);
+			$(settings.scope).on("change", ".event-pass-types input[type='radio'], .activity-pass-types input[type='checkbox']", {"scope": settings.scope}, publicMembers.triggerSetTotalEvent);
+			$(settings.scope).on("setTotal", publicMembers.setTotal);
 		},
 		"listen": function () {
-			$(document).on("guest:added", publiMembers.setTotal);
-			$(document).on("guest:removed", publiMembers.deductAmount);
+			$(document).on("guest:added", publicMembers.setTotal);
+			$(document).on("guest:removed", publicMembers.deductAmount);
 		},
-		"setTotal": function () {
-			var selectedEventPasses = $(".event-pass-types input[type='radio']:checked, .activity-pass-types input[type='checkbox']:checked"),
+		"setTotal": function (event, target) {
+			var selectedEventPasses = $(".event-pass-types input[type='radio']:checked, .activity-pass-types input[type='checkbox']:checked", target),
 				cachedTotalTarget = $("#total"),
-				selectedEventPassPrices = _.map(selectedEventPasses, publiMembers.getPriceFromDataAttr),
-				currentTotal = sessionStorage.getItem("currentTotal") || 0,
+				selectedEventPassPrices = _.map(selectedEventPasses, publicMembers.getPriceFromDataAttr),
+				currentTotal = cachedTotalTarget.text() || 0,
 				grandTotal = registerService.total(selectedEventPassPrices, currentTotal);
-
-			sessionStorage.setItem("currentTotal", grandTotal);
 
 			cachedTotalTarget.text(grandTotal);
 		},
@@ -271,17 +275,18 @@ define('module/passes',["lodash", "service/register"], function (_, registerServ
 			return $(element).attr("data-price");
 		},
 		"deductAmount": function (amount) {
-			var currentTotal = sessionStorage.getItem("currentTotal"),
-				grandTotal = currentTotal - amount,
-				cachedTotalTarget = $("#total");
-
-			sessionStorage.setItem("currentTotal", grandTotal);
+			var cachedTotalTarget = $("#total"),
+				currentTotal = cachedTotalTarget.text(),
+				grandTotal = parseInt(currentTotal) - amount;
 
 			cachedTotalTarget.text(grandTotal);
+		},
+		"triggerSetTotalEvent": function (event) {
+			$(event.data.scope).trigger("setTotal", [event.data.scope]);
 		}
 	};
 
-	return publiMembers;
+	return publicMembers;
 });
 define('section/userInfo',['module/registerGuest', 'module/passes'], function(registerGuest, passes) {
 	"use strict";
@@ -1070,7 +1075,7 @@ this["JST"]["guestList"] = Handlebars.template({"1":function(depth0,helpers,part
 return this["JST"];
 
 });
-define('module/guest',["lodash", "templates/registration"], function (_, registrationTemplates) {
+define('module/guest',["lodash", "templates/registration", "service/register"], function (_, registrationTemplates, registerService) {
 	"use strict";
 
 	var privateMembers = {
@@ -1104,13 +1109,15 @@ define('module/guest',["lodash", "templates/registration"], function (_, registr
 				var firstname = publicMembers.getValue("#guest_firstname"),
 					lastname = publicMembers.getValue("#guest_lastname"),
 					eventPassType = _.map($(".event-pass-types input[type='radio']:checked", "#guests"), publicMembers.getValue).join(", "),
-					activities = _.map($(".activity-pass-types input[type='checkbox']:checked", "#guests"), publicMembers.getValue).join(", ");
+					activities = _.map($(".activity-pass-types input[type='checkbox']:checked", "#guests"), publicMembers.getValue).join(", "),
+					totalCost = publicMembers.getTotalForGuestPassesSelect();
 
 				return {
 					"firstname": firstname,
 					"lastname": lastname,
 					"eventPassType": eventPassType,
-					"activities": activities
+					"activities": activities,
+					"totalCost": totalCost
 				};
 			},
 			"addGuest": function (event) {
@@ -1121,7 +1128,7 @@ define('module/guest',["lodash", "templates/registration"], function (_, registr
 
 				publicMembers.insetGuestListIntoDOM(guestList);
 
-				$(document).trigger("guest:added");
+				$(document).trigger("guest:added", ["#guests"]);
 
 			},
 			"insetGuestListIntoDOM": function (guestList) {
@@ -1134,13 +1141,24 @@ define('module/guest',["lodash", "templates/registration"], function (_, registr
 			"removeGuest": function (event) {
 				var guestList = JSON.parse($("#guestList").val()),
 					listItemToRemove = $(event.target).parent(),
-					indexOfItemToRemove = listItemToRemove.index();
+					indexOfItemToRemove = listItemToRemove.index(),
+					totalCostToSubtract = guestList.guest[indexOfItemToRemove].totalCost;
 
 				guestList.guest.splice(indexOfItemToRemove, 1); //Can't spyOn(Array.prototype, "push"). Need to create a mediator
 
 				publicMembers.insetGuestListIntoDOM(guestList);
 
-				//TODO: get the total amount to remove from total and broadcast a message containing that total amount
+				$(document).trigger("guest:removed", [totalCostToSubtract]);
+			},
+			"getTotalForGuestPassesSelect": function () {
+				var selectedEventPasses = $(".event-pass-types input[type='radio']:checked, .activity-pass-types input[type='checkbox']:checked", "#guests"),
+					selectedEventPassPrices = _.map(selectedEventPasses, publicMembers.getPriceFromDataAttr),
+					selectedEventPassPricesTotal = registerService.total(selectedEventPassPrices);
+
+				return selectedEventPassPricesTotal;
+			},
+			"getPriceFromDataAttr": function (element) {
+				return $(element).attr("data-price");
 			}
 		};
 

@@ -349,8 +349,8 @@ define(['lodash', 'templates/registration', 'module/guest'], function (_, regist
 							expect($.fn.trigger).toHaveBeenCalled();
 						});
 
-						it('using jQuey trigger function with the state message', function() {
-							expect($.fn.trigger).toHaveBeenCalledWith("guest:added");
+						it('using jQuey trigger function with the state message and a target of "#guests"', function() {
+							expect($.fn.trigger).toHaveBeenCalledWith("guest:added", ["#guests"]);
 						});
 					});
 				});
@@ -433,8 +433,8 @@ define(['lodash', 'templates/registration', 'module/guest'], function (_, regist
 				});
 			});
 
-			describe('removeGuest', function() {
-				var guestList = "{\"guest\":[{\"firstname\":\"test\",\"lastname\":\"set\",\"eventPassType\":\"2 Day Pass\",\"activities\":\"Golfing\"},{\"firstname\":\"test2\",\"lastname\":\"set2\",\"eventPassType\":\"2 Day Pass\",\"activities\":\"Golfing, Fishing\"}]}";
+			xdescribe('removeGuest', function() {
+				var guestList = "{\"guest\":[{\"firstname\":\"test\",\"lastname\":\"set\",\"eventPassType\":\"2 Day Pass\",\"activities\":\"Golfing\", \"totalCost\": 100},{\"firstname\":\"test2\",\"lastname\":\"set2\",\"eventPassType\":\"2 Day Pass\",\"activities\":\"Golfing, Fishing\", \"totalCost\": 125}]}";
 				var fakeEvent = {"target": "fake"};
 				var parsedGuestList = null;
 

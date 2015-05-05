@@ -1,4 +1,4 @@
-define(["lodash", "templates/registration"], function (_, registrationTemplates) {
+define(["lodash", "templates/registration", "service/register"], function (_, registrationTemplates, registerService) {
 	"use strict";
 
 	var privateMembers = {
@@ -32,13 +32,15 @@ define(["lodash", "templates/registration"], function (_, registrationTemplates)
 				var firstname = publicMembers.getValue("#guest_firstname"),
 					lastname = publicMembers.getValue("#guest_lastname"),
 					eventPassType = _.map($(".event-pass-types input[type='radio']:checked", "#guests"), publicMembers.getValue).join(", "),
-					activities = _.map($(".activity-pass-types input[type='checkbox']:checked", "#guests"), publicMembers.getValue).join(", ");
+					activities = _.map($(".activity-pass-types input[type='checkbox']:checked", "#guests"), publicMembers.getValue).join(", "),
+					totalCost = publicMembers.getTotalForGuestPassesSelect();
 
 				return {
 					"firstname": firstname,
 					"lastname": lastname,
 					"eventPassType": eventPassType,
-					"activities": activities
+					"activities": activities,
+					"totalCost": totalCost
 				};
 			},
 			"addGuest": function (event) {
@@ -49,7 +51,7 @@ define(["lodash", "templates/registration"], function (_, registrationTemplates)
 
 				publicMembers.insetGuestListIntoDOM(guestList);
 
-				$(document).trigger("guest:added");
+				$(document).trigger("guest:added", ["#guests"]);
 
 			},
 			"insetGuestListIntoDOM": function (guestList) {
@@ -62,13 +64,24 @@ define(["lodash", "templates/registration"], function (_, registrationTemplates)
 			"removeGuest": function (event) {
 				var guestList = JSON.parse($("#guestList").val()),
 					listItemToRemove = $(event.target).parent(),
-					indexOfItemToRemove = listItemToRemove.index();
+					indexOfItemToRemove = listItemToRemove.index(),
+					totalCostToSubtract = guestList.guest[indexOfItemToRemove].totalCost;
 
 				guestList.guest.splice(indexOfItemToRemove, 1); //Can't spyOn(Array.prototype, "push"). Need to create a mediator
 
 				publicMembers.insetGuestListIntoDOM(guestList);
 
-				//TODO: get the total amount to remove from total and broadcast a message containing that total amount
+				$(document).trigger("guest:removed", [totalCostToSubtract]);
+			},
+			"getTotalForGuestPassesSelect": function () {
+				var selectedEventPasses = $(".event-pass-types input[type='radio']:checked, .activity-pass-types input[type='checkbox']:checked", "#guests"),
+					selectedEventPassPrices = _.map(selectedEventPasses, publicMembers.getPriceFromDataAttr),
+					selectedEventPassPricesTotal = registerService.total(selectedEventPassPrices);
+
+				return selectedEventPassPricesTotal;
+			},
+			"getPriceFromDataAttr": function (element) {
+				return $(element).attr("data-price");
 			}
 		};
 

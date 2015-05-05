@@ -1,4 +1,6 @@
 define(['lodash'], function (_) {
+	"use strict";
+	
 	var privateMember = {
 		"priceArray": ["65", "55", "45", "35", "25", "5"]
 	};
@@ -7,10 +9,12 @@ define(['lodash'], function (_) {
 		"total": function (passes, currentTotal) {
 			var self = this,
 				total = currentTotal || 0,
-				pricingIsValid = self.isAllPricingValid(passes);
+				pricingIsValid = self.isAllPricingValid(passes),
+				passTotal = 0;
 
 			if (pricingIsValid === true) {
-				total = self.sum(passes);
+				passTotal = self.sum(passes);
+				total = self.add(total, passTotal);
 			}
 
 			return total;
