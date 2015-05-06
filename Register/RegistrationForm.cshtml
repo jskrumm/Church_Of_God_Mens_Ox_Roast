@@ -42,20 +42,15 @@
     if (IsPost) {
         int finalGuestCount = 0;
         bool invalidGuestNameInputs = false;
-
-        bool invalidRegistrationCount = false;
-
         NameValueCollection postedForm = new NameValueCollection(Request.Form); //Create new name/value collection from form data
-
         guestCount = Request["guest-count"].IsEmpty() ? 0 : int.Parse(Request["guest-count"]);
-        
         guestList = Request["guestList"];
         
         if (guestList != "") {
             finalGuestCount = guestList.Split(new string[] { ";" }, StringSplitOptions.None).Length;
         }
 
-        if (Validation.IsValid() && !Request["PAYMENTREQUEST_0_AMT"].IsEmpty() && !Request["PAYMENTREQUEST_0_SHIPTOSTATE"].IsEmpty() && !invalidGuestNameInputs && !invalidRegistrationCount) {
+        if (Validation.IsValid() && !Request["PAYMENTREQUEST_0_AMT"].IsEmpty() && !invalidGuestNameInputs) {
 
             //Remove any unnessary fields before sending data to PayPal
             postedForm.Remove("firstname");
@@ -87,11 +82,13 @@
 
             formSB.Remove(formSB.Length - 1, 1); // remove the last '&'
 
-            //Do Post
+            //Do Post to PayPal
             DoPostPayPalData doPostToPayPal = new DoPostPayPalData(formSB.ToString(), App.ProdPayInfoUrl);
+
+            //Get the repsonse from the post to PayPal
             string response = doPostToPayPal.Post();
 
-            NameValueCollection responseObj = HttpUtility.ParseQueryString(response); //Parse server response
+            NameValueCollection responseObj = HttpUtility.ParseQueryString(response); //Parse response from PayPal
  
             if (responseObj.Get("ACK") == "Success") {
                 string token = responseObj.Get("TOKEN");
@@ -110,10 +107,6 @@
                    dynamic reg = new ExpandoObject();
                    reg.ID = confirmID;
                    reg.Attendee = Request["lastname"] + ", " + Request["firstname"];
-                   reg.Address = Request["PAYMENTREQUEST_0_SHIPTOSTREET"];
-                   reg.City = Request["PAYMENTREQUEST_0_SHIPTOCITY"];
-                   reg.State = Request["PAYMENTREQUEST_0_SHIPTOSTATE"];
-                   reg.Zip = Request["PAYMENTREQUEST_0_SHIPTOZIP"];
                    reg.Phone_Num = phoneNumber;
                    reg.Email = Request["EMAIL"];
                    reg.Church = Request["church-atteding"];
@@ -143,17 +136,9 @@
            
             ModelState.AddFormError("You must resolve all errors before you can proceed.");
 
-            if (Request["PAYMENTREQUEST_0_SHIPTOSTATE"].IsEmpty()) {
-                ModelState.AddFormError("Please choose a state from the dropdown.");
-            } 
-
             if (invalidGuestNameInputs) {
                 ModelState.AddFormError("If you wish to register a guest please provide us with there first and last name; starting with the first guest fields you come to and adding more if needed.");
-            }
-
-            if (invalidRegistrationCount) {
-                ModelState.AddFormError("The total number of guest plus yourself must match the total counts for registring for two day registration, one day registration, or underage registration");
-            }  
+            } 
         }
     }
 }

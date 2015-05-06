@@ -17,12 +17,14 @@ define(["lodash", "service/register"], function (_, registerService) {
 				currentTotal = cachedTotalTarget.text() || 0,
 				grandTotal = registerService.total(selectedEventPassPrices, currentTotal);
 
+			publicMembers.setPassPriceTotalOnTarget(selectedEventPassPrices, target);
+
 			cachedTotalTarget.text(grandTotal);
 		},
 		"getPriceFromDataAttr": function (element) {
 			return $(element).attr("data-price");
 		},
-		"deductAmount": function (amount) {
+		"deductAmount": function (event, amount) {
 			var cachedTotalTarget = $("#total"),
 				currentTotal = cachedTotalTarget.text(),
 				grandTotal = parseInt(currentTotal) - amount;
@@ -30,7 +32,20 @@ define(["lodash", "service/register"], function (_, registerService) {
 			cachedTotalTarget.text(grandTotal);
 		},
 		"triggerSetTotalEvent": function (event) {
+			var amountToDeduct = $(event.data.scope).attr("data-passPriceTotal") || 0; //TODO: Needs unit tested
+
+			publicMembers.deductAmount(event, amountToDeduct); //TODO: Needs unit tested
+
 			$(event.data.scope).trigger("setTotal", [event.data.scope]);
+		},
+		"setPassPriceTotalOnTarget": function (passPrices, target) {
+			var passPriceTotal = 0;
+
+			if (target === "#generalInfo") {
+				passPriceTotal = registerService.total(passPrices);
+
+				$(target).attr("data-passPriceTotal", passPriceTotal);
+			}
 		}
 	};
 

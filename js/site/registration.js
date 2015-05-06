@@ -269,12 +269,14 @@ define('module/passes',["lodash", "service/register"], function (_, registerServ
 				currentTotal = cachedTotalTarget.text() || 0,
 				grandTotal = registerService.total(selectedEventPassPrices, currentTotal);
 
+			publicMembers.setPassPricesOnTarget(selectedEventPassPrices, target);
+
 			cachedTotalTarget.text(grandTotal);
 		},
 		"getPriceFromDataAttr": function (element) {
 			return $(element).attr("data-price");
 		},
-		"deductAmount": function (amount) {
+		"deductAmount": function (event, amount) {
 			var cachedTotalTarget = $("#total"),
 				currentTotal = cachedTotalTarget.text(),
 				grandTotal = parseInt(currentTotal) - amount;
@@ -282,7 +284,17 @@ define('module/passes',["lodash", "service/register"], function (_, registerServ
 			cachedTotalTarget.text(grandTotal);
 		},
 		"triggerSetTotalEvent": function (event) {
+			var amountToDeduct = $(event.data.scope).attr("data-passPriceTotal") || 0;
+
+			publicMembers.deductAmount(event, amountToDeduct);
+			
 			$(event.data.scope).trigger("setTotal", [event.data.scope]);
+		},
+		"setPassPricesOnTarget": function (passPrices, target) {
+			if (target === "#generalInfo") {
+				var passPriceTotal = registerService.total(passPrices);
+				$(target).attr("data-passPriceTotal", passPriceTotal);
+			}
 		}
 	};
 

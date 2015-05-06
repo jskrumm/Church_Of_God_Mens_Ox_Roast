@@ -15,10 +15,10 @@
 <div class="header high">
     <h1>Code coverage report for <span class="entity">./js/module/passes.js</span></h1>
     <h2>
-        Statements: <span class="metric">100% <small>(13 / 13)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
-        Branches: <span class="metric">100% <small>(2 / 2)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
-        Functions: <span class="metric">100% <small>(7 / 7)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
-        Lines: <span class="metric">100% <small>(13 / 13)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Statements: <span class="metric">100% <small>(20 / 20)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">100% <small>(6 / 6)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">100% <small>(8 / 8)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">100% <small>(20 / 20)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
     </h2>
     <div class="path"><a href="../../index.html">All files</a> &#187; <a href="index.html">./js/module/</a> &#187; passes.js</div>
@@ -62,7 +62,22 @@
 35
 36
 37
-38</td><td class="line-coverage"><span class="cline-any cline-yes">1</span>
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53</td><td class="line-coverage"><span class="cline-any cline-yes">1</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1</span>
@@ -75,26 +90,41 @@
 <span class="cline-any cline-yes">4</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9</span>
+<span class="cline-any cline-yes">11</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9</span>
+<span class="cline-any cline-yes">11</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-yes">5</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-yes">5</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -118,12 +148,14 @@
 				currentTotal = cachedTotalTarget.text() || 0,
 				grandTotal = registerService.total(selectedEventPassPrices, currentTotal);
 &nbsp;
+			publicMembers.setPassPriceTotalOnTarget(selectedEventPassPrices, target); //TODO: Needs unit tested
+&nbsp;
 			cachedTotalTarget.text(grandTotal);
 		},
 		"getPriceFromDataAttr": function (element) {
 			return $(element).attr("data-price");
 		},
-		"deductAmount": function (amount) {
+		"deductAmount": function (event, amount) {
 			var cachedTotalTarget = $("#total"),
 				currentTotal = cachedTotalTarget.text(),
 				grandTotal = parseInt(currentTotal) - amount;
@@ -131,7 +163,20 @@
 			cachedTotalTarget.text(grandTotal);
 		},
 		"triggerSetTotalEvent": function (event) {
+			var amountToDeduct = $(event.data.scope).attr("data-passPriceTotal") || 0; //TODO: Needs unit tested
+&nbsp;
+			publicMembers.deductAmount(event, amountToDeduct); //TODO: Needs unit tested
+&nbsp;
 			$(event.data.scope).trigger("setTotal", [event.data.scope]);
+		},
+		"setPassPriceTotalOnTarget": function (passPrices, target) {
+			var passPriceTotal = 0;
+&nbsp;
+			if (target === "#generalInfo") {
+				passPriceTotal = registerService.total(passPrices);
+&nbsp;
+				$(target).attr("data-passPriceTotal", passPriceTotal);
+			}
 		}
 	};
 &nbsp;
@@ -141,7 +186,7 @@
 
 </div>
 <div class="footer">
-    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon May 04 2015 21:39:14 GMT-0400 (Eastern Daylight Time)</div>
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Tue May 05 2015 21:29:07 GMT-0400 (Eastern Daylight Time)</div>
 </div>
 <script src="../../prettify.js"></script>
 <script>

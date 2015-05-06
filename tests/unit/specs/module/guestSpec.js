@@ -1,4 +1,4 @@
-define(['lodash', 'templates/registration', 'module/guest'], function (_, registrationTemplates, module) {
+define(['lodash', 'templates/registration', 'module/guest', 'service/register'], function (_, registrationTemplates, module, registerService) {
 	"use strict";
 
 	var fakejQueryTextInput = $('<input id="guest_firstname" type="text" name="guest_firstname" placeholder="First Name" class="valid">'),
@@ -23,7 +23,8 @@ define(['lodash', 'templates/registration', 'module/guest'], function (_, regist
 			"activities": "Golfing",
 			"eventPassType": "2 Day Pass",
 			"firstname": "test",
-			"lastname": "set"
+			"lastname": "set",
+			"totalCost": 100
 		};
 
 	describe('Add Guest Module', function() {
@@ -201,6 +202,10 @@ define(['lodash', 'templates/registration', 'module/guest'], function (_, regist
 					it('activities', function() {
 						expect(returnVal.activities).toBeDefined()
 					});
+
+					it('totalCost', function() {
+						expect(returnVal.totalCost).toBeDefined()
+					});
 				});
 
 				describe('gets fristname and lastname', function() {
@@ -256,6 +261,18 @@ define(['lodash', 'templates/registration', 'module/guest'], function (_, regist
 
 					it('using the lodash map function with the jquery oject and the modules getValue function', function() {
 						expect(_.map.calls.argsFor(1)).toEqual([jasmine.any(Object), module.getValue]);
+					});
+				});
+
+				describe('gets the total cost for that guest', function() {
+					beforeEach(function() {
+						spyOn(module, "getTotalForGuestPassesSelect");
+
+						module.buildNewGuestObject();
+					});
+
+					it('using the modules function called getTotalForGuestPassesSelect', function() {
+						expect(module.getTotalForGuestPassesSelect).toHaveBeenCalled();
 					});
 				});
 			});
@@ -433,7 +450,7 @@ define(['lodash', 'templates/registration', 'module/guest'], function (_, regist
 				});
 			});
 
-			xdescribe('removeGuest', function() {
+			describe('removeGuest', function() {
 				var guestList = "{\"guest\":[{\"firstname\":\"test\",\"lastname\":\"set\",\"eventPassType\":\"2 Day Pass\",\"activities\":\"Golfing\", \"totalCost\": 100},{\"firstname\":\"test2\",\"lastname\":\"set2\",\"eventPassType\":\"2 Day Pass\",\"activities\":\"Golfing, Fishing\", \"totalCost\": 125}]}";
 				var fakeEvent = {"target": "fake"};
 				var parsedGuestList = null;
@@ -444,6 +461,8 @@ define(['lodash', 'templates/registration', 'module/guest'], function (_, regist
 
 				describe('that when called', function() {
 					beforeEach(function() {
+						spyOn($.fn, "trigger");
+
 						parsedGuestList = JSON.parse(guestList)
 					});
 
@@ -451,6 +470,8 @@ define(['lodash', 'templates/registration', 'module/guest'], function (_, regist
 						beforeEach(function() {
 							spyOn($.fn, "val").and.returnValue(guestList);
 							spyOn(JSON, "parse").and.returnValue(parsedGuestList);
+							spyOn($.fn, "index").and.returnValue(1);
+
 							module.removeGuest(fakeEvent);
 						});
 
@@ -463,6 +484,8 @@ define(['lodash', 'templates/registration', 'module/guest'], function (_, regist
 						beforeEach(function() {
 							spyOn($.fn, "val").and.returnValue(guestList);
 							spyOn(JSON, "parse").and.returnValue(parsedGuestList);
+							spyOn($.fn, "index").and.returnValue(1);
+
 							module.removeGuest(fakeEvent);
 						});
 
@@ -480,7 +503,7 @@ define(['lodash', 'templates/registration', 'module/guest'], function (_, regist
 							spyOn($.fn, "val").and.returnValue(guestList);
 							spyOn(JSON, "parse").and.returnValue(parsedGuestList);
 							spyOn($.fn, "parent").and.returnValue($("<li>Test</li>"));
-							spyOn($.fn, "index");
+							spyOn($.fn, "index").and.returnValue(1);
 
 							module.removeGuest(fakeEvent);
 						});
@@ -495,7 +518,7 @@ define(['lodash', 'templates/registration', 'module/guest'], function (_, regist
 							spyOn($.fn, "val").and.returnValue(guestList);
 							spyOn(JSON, "parse").and.returnValue(parsedGuestList);
 							spyOn($.fn, "parent").and.returnValue($("<li>Test</li>"));
-							spyOn($.fn, "index");
+							spyOn($.fn, "index").and.returnValue(1);
 
 							module.removeGuest(fakeEvent);
 						});
@@ -524,6 +547,107 @@ define(['lodash', 'templates/registration', 'module/guest'], function (_, regist
 						it('using the modules function called insetGuestListIntoDOM with the new guest list', function() {
 							expect(module.insetGuestListIntoDOM).toHaveBeenCalledWith({"guest": [fakeGuestObjectAfterRemove]});
 						});
+					});
+
+					describe('broadcast its state with the total cost for that guest who was removed', function() {
+						beforeEach(function() {
+							spyOn($.fn, "val").and.returnValue(guestList);
+							spyOn(JSON, "parse").and.returnValue(parsedGuestList);
+							spyOn($.fn, "parent").and.returnValue($("<li>Test</li>"));
+							spyOn($.fn, "index").and.returnValue(1);
+							spyOn(module, "insetGuestListIntoDOM");
+
+							returnVal = parsedGuestList.guest[1].totalCost;
+
+							module.removeGuest(fakeEvent);
+						});
+
+						it('using jQuey trigger function', function() {
+							expect($.fn.trigger).toHaveBeenCalled();
+						});
+
+						it('using jQuey trigger function with the message "guest:removed" and the cost for that guest', function() {
+							expect($.fn.trigger).toHaveBeenCalledWith('guest:removed', [returnVal]);
+						});
+					});
+				});
+			});
+
+			describe('getTotalForGuestPassesSelect', function() {
+				it('that is defined', function() {
+					expect(module.getTotalForGuestPassesSelect).toBeDefined();
+				});
+
+				describe('that when called', function() {
+					describe('creates an array of prices based on events and activities selected by the user', function() {
+						beforeEach(function() {
+							spyOn(_, "map");
+							spyOn(registerService, "total");
+
+							module.getTotalForGuestPassesSelect();
+						});
+
+						it('using lodash map function', function() {
+							expect(_.map).toHaveBeenCalled();
+						});
+
+						it('using lodash map function with some jquery objects and the public function getPriceFromDataAttr', function() {
+							expect(_.map).toHaveBeenCalledWith(jasmine.any(Object), module.getPriceFromDataAttr);
+						});
+					});
+
+
+					describe('calculates the total of the array of prices', function() {
+						beforeEach(function() {
+							spyOn(_, "map").and.returnValue(["55", "25", "5"]);
+							spyOn(registerService, "total");
+							module.getTotalForGuestPassesSelect();
+						});
+
+						it('then we use the register service total function to calculate the total', function() {
+							expect(registerService.total).toHaveBeenCalled();
+						});
+
+						it('and we use the register service total function with the array of prices selected', function() {
+							expect(registerService.total).toHaveBeenCalledWith(["55", "25", "5"]);	
+						});
+					});
+				});
+			});
+
+			describe('getPriceFromDataAttr', function() {
+				var fakeJQueryObject = $('<input type="radio" id="test" name="test" value="2" data-price="55" />');
+
+				it('that is defined', function() {
+					expect(module.getPriceFromDataAttr).toBeDefined();
+				});
+
+				describe('that when called', function() {
+					describe('checks for an attribute data-price is on the element passed to the function', function() {						
+						beforeEach(function() {
+							spyOn($.fn, "attr");
+							module.getPriceFromDataAttr(fakeJQueryObject);
+						});
+
+						it('using jQuery attr function', function() {
+							expect($.fn.attr).toHaveBeenCalled();
+						});
+
+						it('using jQuery attr function with the data attrbute of data-price', function() {
+							expect($.fn.attr).toHaveBeenCalledWith("data-price");
+						});
+					});
+
+					it('returns the data attribute value if one exits for data-price', function() {
+						returnVal = module.getPriceFromDataAttr(fakeJQueryObject);
+
+						expect(returnVal).toEqual("55");
+					});
+
+					it('returns undefined if the data attribute data-price does not exit', function() {
+						returnVal = module.getPriceFromDataAttr($('<input type="radio" id="test" name="test" value="2"/>'));
+
+						expect(returnVal).toEqual(undefined);
 					});
 				});
 			});

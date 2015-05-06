@@ -118,6 +118,7 @@ define(["lodash", "module/passes", "service/register"], function (_, module, reg
 						beforeEach(function() {
 							spyOn(_, "map");
 							spyOn(registerService, "total");
+							spyOn(module, "setPassPriceTotalOnTarget");
 							spyOn($.fn, "text");
 
 							module.setTotal();
@@ -136,6 +137,7 @@ define(["lodash", "module/passes", "service/register"], function (_, module, reg
 						beforeEach(function() {
 							spyOn(_, "map");
 							spyOn(registerService, "total");
+							spyOn(module, "setPassPriceTotalOnTarget");
 							spyOn($.fn, "text");
 
 							module.setTotal();	
@@ -151,6 +153,7 @@ define(["lodash", "module/passes", "service/register"], function (_, module, reg
 							beforeEach(function() {
 								spyOn(_, "map").and.returnValue(["55", "25", "5"]);
 								spyOn(registerService, "total");
+								spyOn(module, "setPassPriceTotalOnTarget");
 								spyOn($.fn, "text").and.returnValue("");
 								module.setTotal();
 							});
@@ -168,6 +171,7 @@ define(["lodash", "module/passes", "service/register"], function (_, module, reg
 							beforeEach(function() {
 								spyOn(_, "map").and.returnValue(["55", "25", "5"]);
 								spyOn(registerService, "total");
+								spyOn(module, "setPassPriceTotalOnTarget");
 								spyOn($.fn, "text").and.returnValue("5");
 
 								module.setTotal();
@@ -183,10 +187,30 @@ define(["lodash", "module/passes", "service/register"], function (_, module, reg
 						});
 					});
 
+					describe('attempts to set the pass price total on the target', function() {
+						beforeEach(function() {
+							spyOn(_, "map").and.returnValue(["55", "25", "5"]);
+							spyOn(registerService, "total").and.returnValue(85);
+							spyOn(module, "setPassPriceTotalOnTarget");
+							spyOn($.fn, "text");
+
+							module.setTotal({}, "#generalInfo");
+						});
+
+						it('using the modules setPassPriceTotalOnTarget function', function() {
+							expect(module.setPassPriceTotalOnTarget).toHaveBeenCalled();
+						});
+
+						it('using the modules setPassPriceTotalOnTarget function with the pass prices array and the target to set it on', function() {
+							expect(module.setPassPriceTotalOnTarget).toHaveBeenCalledWith(["55", "25", "5"], "#generalInfo");
+						});
+					});
+
 					describe('inserts the new total into the DOM', function() {
 						beforeEach(function() {
 							spyOn(_, "map");
 							spyOn(registerService, "total").and.returnValue(85);
+							spyOn(module, "setPassPriceTotalOnTarget");
 							spyOn($.fn, "text");
 
 							module.setTotal();
@@ -204,6 +228,8 @@ define(["lodash", "module/passes", "service/register"], function (_, module, reg
 			});
 
 			describe('called deductAmount', function() {
+				var fakeEventObject = {};
+
 				it('that is defined', function() {
 					expect(module.deductAmount).toBeDefined();
 				});
@@ -212,7 +238,7 @@ define(["lodash", "module/passes", "service/register"], function (_, module, reg
 					beforeEach(function() {
 						spyOn($.fn, "text");
 
-						module.deductAmount("50");	
+						module.deductAmount(fakeEventObject, "50");	
 					});
 
 					it('using jQuery text function', function() {
@@ -223,7 +249,7 @@ define(["lodash", "module/passes", "service/register"], function (_, module, reg
 				describe('inserts the new total into the DOM', function() {
 					beforeEach(function() {
 						spyOn($.fn, "text").and.returnValue("100");
-						module.deductAmount("50");
+						module.deductAmount(fakeEventObject, "50");
 					});
 
 					it('by using the jQuery text function again', function() {
@@ -260,6 +286,62 @@ define(["lodash", "module/passes", "service/register"], function (_, module, reg
 
 						it('using jQuery trigger function with the custom event name and the correct array of parameters', function() {
 							expect($.fn.trigger).toHaveBeenCalledWith("setTotal", [fakeEvent.data.scope]);
+						});
+					});
+				});
+			});
+
+			describe('setPassPriceTotalOnTarget', function() {
+				it('that is defined', function() {
+					expect(module.setPassPriceTotalOnTarget).toBeDefined();
+				});
+
+				describe('that when called', function() {
+					beforeEach(function() {
+						spyOn(registerService, "total").and.returnValue(85);
+						spyOn($.fn, "attr");
+					});
+					describe('if the target passed to the function is "#generalInfo"', function() {
+						beforeEach(function() {
+							module.setPassPriceTotalOnTarget(["55", "25", "5"], "#generalInfo");
+						});
+
+						describe('then we get the total for the pass prices given', function() {
+							it('using the register service total function', function() {
+								expect(registerService.total).toHaveBeenCalled();
+							});
+
+							it('using the register service total function with the array of pass prices given', function() {
+								expect(registerService.total).toHaveBeenCalledWith(["55", "25", "5"]);
+							});
+						});
+
+						describe('and we add the pass pirce toatal to an attribut on the target given called "data-passPriceTotal"', function() {
+							it('using jQuery attr function', function() {
+								expect($.fn.attr).toHaveBeenCalled();
+							});
+
+							it('using jQuery attr function with the attribut name of "data-passPriceTotal" and the pass price total', function() {
+								expect($.fn.attr).toHaveBeenCalledWith("data-passPriceTotal", 85);
+							});
+						});
+					});
+
+					describe('if the target passed to the function is not "#generalInfo"', function() {
+						beforeEach(function() {
+							module.setPassPriceTotalOnTarget(["55", "25", "5"], "#guestInfo");
+						});
+
+						describe('then we do not get the total for the pass prices given', function() {
+							it('from the register service total function', function() {
+								expect(registerService.total).not.toHaveBeenCalled();
+							});
+						});
+
+						describe('then we do not add any pass price total to an attribut', function() {
+							it('using jQuery attr function', function() {
+								expect($.fn.attr).not.toHaveBeenCalled();
+							});
 						});
 					});
 				});
