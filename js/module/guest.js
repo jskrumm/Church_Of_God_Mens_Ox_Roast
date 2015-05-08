@@ -16,6 +16,12 @@ define(["lodash", "templates/registration", "service/register"], function (_, re
 				$(settings.scope).on("click", ".add-guest", publicMembers.addGuest);
 				$(settings.scope).on("click", ".remove-guest", publicMembers.removeGuest);
 			},
+			"isFormValid": function (event) { //TODO: Create rules and message using jquery valdiation plugin to validate that the form is valid.
+				var targetForm = $(event.target).parents("form"),
+					isValid = targetForm.valid();
+
+				return isValid;
+			},
 			"getValue": function (element) {
 				var value = $(element).val(),
 					passTypeObject = _.find(privateMembers.allPassTypes, "type", value),
@@ -44,17 +50,23 @@ define(["lodash", "templates/registration", "service/register"], function (_, re
 				};
 			},
 			"addGuest": function (event) {
-				var guestList = JSON.parse($("#guestList").val()),
+				var isFormValid = publicMembers.isFormValid(event),
+					guestList = null,
+					guestObject = null;
+
+				if (isFormValid === true) {
+					guestList = JSON.parse($("#guestList").val());
+
 					guestObject = publicMembers.buildNewGuestObject();
 
-				guestList.guest.push(guestObject); //Can't spyOn(Array.prototype, "push"). Need to create a mediator
+					guestList.guest.push(guestObject); //Can't spyOn(Array.prototype, "push"). Need to create a mediator
 
-				publicMembers.insetGuestListIntoDOM(guestList);
+					publicMembers.insertGuestListIntoDOM(guestList);
 
-				$(document).trigger("guest:added", ["#guests"]);
-
+					$(document).trigger("guest:added", ["#guests"]);
+				}
 			},
-			"insetGuestListIntoDOM": function (guestList) {
+			"insertGuestListIntoDOM": function (guestList) {
 				var markup = registrationTemplates.guestList(guestList); 
 
 				$("#guestList").val(JSON.stringify(guestList));
@@ -69,7 +81,7 @@ define(["lodash", "templates/registration", "service/register"], function (_, re
 
 				guestList.guest.splice(indexOfItemToRemove, 1); //Can't spyOn(Array.prototype, "push"). Need to create a mediator
 
-				publicMembers.insetGuestListIntoDOM(guestList);
+				publicMembers.insertGuestListIntoDOM(guestList);
 
 				$(document).trigger("guest:removed", [totalCostToSubtract]);
 			},

@@ -279,6 +279,7 @@ define(['lodash', 'templates/registration', 'module/guest', 'service/register'],
 
 			describe('addGuest', function() {
 				var guestList = "{\"guest\": []}";
+				var fakeEvent = {"target": "fake"};
 
 				it('that is defined', function() {
 					expect(module.addGuest).toBeDefined();
@@ -293,89 +294,140 @@ define(['lodash', 'templates/registration', 'module/guest', 'service/register'],
 						$.fn.trigger.reset;
 					});
 
-					describe('gets the guest list from the DOM', function() {
+					describe('checks to see if the form is valid', function() {
 						beforeEach(function() {
+							spyOn(module, "isFormValid");
 							spyOn($.fn, "val").and.returnValue(guestList);
 							spyOn(JSON, "parse").and.returnValue({"guest": []});
-							module.addGuest();
+
+							module.addGuest(fakeEvent);
 						});
 
-						it('using jQuey val function', function() {
-							expect($.fn.val).toHaveBeenCalled();
+						it('using the module function isFormValid', function() {
+							expect(module.isFormValid).toHaveBeenCalled();
+						});
+
+						it('using the module function isFormValid with the event that triggered the call', function() {
+							expect(module.isFormValid).toHaveBeenCalledWith(fakeEvent);
 						});
 					});
 
-					describe('formats the guest list return by the jQuey val function', function() {
+					describe('if the form is valid', function() {
 						beforeEach(function() {
+							spyOn(module, "isFormValid").and.returnValue(true);
 							spyOn($.fn, "val").and.returnValue(guestList);
 							spyOn(JSON, "parse").and.returnValue({"guest": []});
-							module.addGuest();
 						});
 
-						it('by calling JSON.parse', function() {
-							expect(JSON.parse).toHaveBeenCalled();
+						describe('gets the guest list from the DOM', function() {
+							beforeEach(function() {
+								module.addGuest(fakeEvent);
+							});
+
+							it('using jQuey val function', function() {
+								expect($.fn.val).toHaveBeenCalled();
+							});
 						});
 
-						it('by calling JSON.parse with the value returned from jQuey val function', function() {
-							expect(JSON.parse).toHaveBeenCalledWith(guestList);
+						describe('formats the guest list return by the jQuey val function', function() {
+							beforeEach(function() {
+								module.addGuest(fakeEvent);
+							});
+
+							it('by calling JSON.parse', function() {
+								expect(JSON.parse).toHaveBeenCalled();
+							});
+
+							it('by calling JSON.parse with the value returned from jQuey val function', function() {
+								expect(JSON.parse).toHaveBeenCalledWith(guestList);
+							});
+						});
+
+						describe('gets the newly built guest object', function() {
+							beforeEach(function() {
+								spyOn(module, "buildNewGuestObject");
+
+								module.addGuest(fakeEvent);		
+							});
+
+							it('by calling the modules buildNewGuestObject function', function() {
+								expect(module.buildNewGuestObject).toHaveBeenCalled();		
+							});	
+						});
+
+						describe('inserts the new guest list into the DOM', function() {
+							beforeEach(function() {
+								spyOn(module, "buildNewGuestObject").and.returnValue(fakeGuestObject);
+								spyOn(module, "insertGuestListIntoDOM");
+
+								module.addGuest(fakeEvent);
+							});
+
+
+							it('using the modules function called insertGuestListIntoDOM', function() {
+								expect(module.insertGuestListIntoDOM).toHaveBeenCalled();
+							});
+
+							it('using the modules function called insertGuestListIntoDOM with the new guest list', function() {
+								expect(module.insertGuestListIntoDOM).toHaveBeenCalledWith({"guest": [fakeGuestObject]});
+							});
+						});
+
+						describe('broadcast its state', function() {
+							beforeEach(function() {
+								spyOn(module, "buildNewGuestObject").and.returnValue(fakeGuestObject);
+								spyOn(module, "insertGuestListIntoDOM");
+
+								module.addGuest(fakeEvent);
+							});
+
+							it('using jQuey trigger function', function() {
+								expect($.fn.trigger).toHaveBeenCalled();
+							});
+
+							it('using jQuey trigger function with the state message and a target of "#guests"', function() {
+								expect($.fn.trigger).toHaveBeenCalledWith("guest:added", ["#guests"]);
+							});
 						});
 					});
 
-					describe('gets the newly built guest object', function() {
+					describe('if the form is not valid', function() {
 						beforeEach(function() {
-							spyOn($.fn, "val").and.returnValue(guestList);
+							spyOn(module, "isFormValid").and.returnValue(false);
+							spyOn($.fn, "val");
+							spyOn(JSON, "parse");
 							spyOn(module, "buildNewGuestObject");
+							spyOn(module, "insertGuestListIntoDOM");
 
-							module.addGuest();		
+							module.addGuest(fakeEvent);
 						});
 
-						it('by calling the modules buildNewGuestObject function', function() {
-							expect(module.buildNewGuestObject).toHaveBeenCalled();		
-						});	
-					});
-
-					describe('inserts the new guest list into the DOM', function() {
-						beforeEach(function() {
-							spyOn($.fn, "val").and.returnValue(guestList);
-							spyOn(module, "buildNewGuestObject").and.returnValue(fakeGuestObject);
-							spyOn(module, "insetGuestListIntoDOM");
-
-							module.addGuest();
+						it('then we do not gets the guest list from the DOM', function() {
+							expect($.fn.val).not.toHaveBeenCalled();
 						});
 
-
-						it('using the modules function called insetGuestListIntoDOM', function() {
-							expect(module.insetGuestListIntoDOM).toHaveBeenCalled();
+						it('then we do not format the guest list return', function() {
+							expect(JSON.parse).not.toHaveBeenCalled();
 						});
 
-						it('using the modules function called insetGuestListIntoDOM with the new guest list', function() {
-							expect(module.insetGuestListIntoDOM).toHaveBeenCalledWith({"guest": [fakeGuestObject]});
-						});
-					});
-
-					describe('broadcast its state', function() {
-						beforeEach(function() {
-							spyOn($.fn, "val").and.returnValue(guestList);
-							spyOn(module, "buildNewGuestObject").and.returnValue(fakeGuestObject);
-							spyOn(module, "insetGuestListIntoDOM");
-
-							module.addGuest();
+						it('then we do not get the newly built guest object', function() {
+							expect(module.buildNewGuestObject).not.toHaveBeenCalled();
 						});
 
-						it('using jQuey trigger function', function() {
-							expect($.fn.trigger).toHaveBeenCalled();
+						it('then we do not inserts the new guest list into the DOM', function() {
+							expect(module.insertGuestListIntoDOM).not.toHaveBeenCalled();
 						});
 
-						it('using jQuey trigger function with the state message and a target of "#guests"', function() {
-							expect($.fn.trigger).toHaveBeenCalledWith("guest:added", ["#guests"]);
+						it('then we do not broadcast the state', function() {
+							expect($.fn.trigger).not.toHaveBeenCalled();
 						});
 					});
 				});
 			});
 
-			describe('insetGuestListIntoDOM', function() {
+			describe('insertGuestListIntoDOM', function() {
 				it('that is defined', function() {
-					expect(module.insetGuestListIntoDOM).toBeDefined();
+					expect(module.insertGuestListIntoDOM).toBeDefined();
 				});
 
 				describe('that when called', function() {
@@ -383,7 +435,7 @@ define(['lodash', 'templates/registration', 'module/guest', 'service/register'],
 						beforeEach(function() {
 							spyOn(JSON, "stringify");
 
-							module.insetGuestListIntoDOM({"guest": [fakeGuestObject]});
+							module.insertGuestListIntoDOM({"guest": [fakeGuestObject]});
 						});
 
 						it('using JSON stringify function', function() {
@@ -400,7 +452,7 @@ define(['lodash', 'templates/registration', 'module/guest', 'service/register'],
 							spyOn($.fn, "val");
 							spyOn($.fn, "html");
 
-							module.insetGuestListIntoDOM({"guest": [fakeGuestObject]});
+							module.insertGuestListIntoDOM({"guest": [fakeGuestObject]});
 						});
 
 						it('using jQuey val function', function() {
@@ -418,7 +470,7 @@ define(['lodash', 'templates/registration', 'module/guest', 'service/register'],
 							spyOn(registrationTemplates, "guestList");
 							spyOn($.fn, "html");
 
-							module.insetGuestListIntoDOM({"guest": [fakeGuestObject]});
+							module.insertGuestListIntoDOM({"guest": [fakeGuestObject]});
 						});
 
 						it('using the registration guest list template', function() {
@@ -436,7 +488,7 @@ define(['lodash', 'templates/registration', 'module/guest', 'service/register'],
 							spyOn(registrationTemplates, "guestList").and.returnValue(markupToInsert);
 							spyOn($.fn, "html");
 
-							module.insetGuestListIntoDOM({"guest": [fakeGuestObject]});
+							module.insertGuestListIntoDOM({"guest": [fakeGuestObject]});
 						});
 
 						it('using jQuey html function', function() {
@@ -534,18 +586,18 @@ define(['lodash', 'templates/registration', 'module/guest', 'service/register'],
 							spyOn(JSON, "parse").and.returnValue(parsedGuestList);
 							spyOn($.fn, "parent").and.returnValue($("<li>Test</li>"));
 							spyOn($.fn, "index").and.returnValue(1);
-							spyOn(module, "insetGuestListIntoDOM");
+							spyOn(module, "insertGuestListIntoDOM");
 
 							module.removeGuest(fakeEvent);
 						});
 
 
-						it('using the modules function called insetGuestListIntoDOM', function() {
-							expect(module.insetGuestListIntoDOM).toHaveBeenCalled();
+						it('using the modules function called insertGuestListIntoDOM', function() {
+							expect(module.insertGuestListIntoDOM).toHaveBeenCalled();
 						});
 
-						it('using the modules function called insetGuestListIntoDOM with the new guest list', function() {
-							expect(module.insetGuestListIntoDOM).toHaveBeenCalledWith({"guest": [fakeGuestObjectAfterRemove]});
+						it('using the modules function called insertGuestListIntoDOM with the new guest list', function() {
+							expect(module.insertGuestListIntoDOM).toHaveBeenCalledWith({"guest": [fakeGuestObjectAfterRemove]});
 						});
 					});
 
@@ -555,7 +607,7 @@ define(['lodash', 'templates/registration', 'module/guest', 'service/register'],
 							spyOn(JSON, "parse").and.returnValue(parsedGuestList);
 							spyOn($.fn, "parent").and.returnValue($("<li>Test</li>"));
 							spyOn($.fn, "index").and.returnValue(1);
-							spyOn(module, "insetGuestListIntoDOM");
+							spyOn(module, "insertGuestListIntoDOM");
 
 							returnVal = parsedGuestList.guest[1].totalCost;
 
@@ -648,6 +700,41 @@ define(['lodash', 'templates/registration', 'module/guest', 'service/register'],
 						returnVal = module.getPriceFromDataAttr($('<input type="radio" id="test" name="test" value="2"/>'));
 
 						expect(returnVal).toEqual(undefined);
+					});
+				});
+			});
+
+			describe('isFormValid', function() {
+				it('that is defined', function() {
+					expect(module.isFormValid).toBeDefined();
+				});
+
+				describe('that when called', function() {
+					var fakeEvent = {
+						target: "#test"
+					};
+
+					beforeEach(function() {
+						spyOn($.fn, "parents").and.returnValue($("<form></form"));
+						spyOn($.fn, "valid");
+
+						module.isFormValid(fakeEvent);
+					});
+
+					describe('gets the nearest form to the target pass in', function() {
+						it('using jQuey parents function', function() {
+							expect($.fn.parents).toHaveBeenCalled();
+						});
+
+						it('using jQuey parents function with the form selector', function() {
+							expect($.fn.parents).toHaveBeenCalledWith("form");
+						});
+					});
+
+					describe('checks to see if the nearest form is valid', function() {
+						it('using jQuey validation valid function', function() {
+							expect($.fn.valid).toHaveBeenCalled();
+						});
 					});
 				});
 			});

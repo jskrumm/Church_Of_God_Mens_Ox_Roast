@@ -17,6 +17,8 @@ module.exports = function(config) {
     files: [
         'tests/test-main.js',
         'js/common/lib/jquery-1.10.2.min.js',
+        'Scripts/jquery.validate.min.js',
+        'Scripts/jquery.validate.unobtrusive.min.js',
         {pattern: 'js/common/lib/lodash.min.js', included: false},
         {pattern: 'js/common/lib/handlebars.runtime-v3.0.1.js', included: false},
         {pattern: 'js/common/compiledTemplates/*.js', included: false},

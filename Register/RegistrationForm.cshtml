@@ -36,6 +36,19 @@
         Validator.Required("Please select an event type.")
         );
 
+@*     Validation.Add("guest_firstname", 
+        Validator.Required("First name is required."), 
+        Validator.StringLength(100, 0, "Must be 100 characters or less.")
+        );
+    Validation.Add("guest_lastname", 
+        Validator.Required("Last name is required."), 
+        Validator.StringLength(100, 0, "Must be 100 characters or less.")
+        );
+
+    Validation.Add("eventGuestPass", 
+        Validator.Required("Please select an event type.")
+        ); *@
+
     int guestCount = 0;
     string guestList = "{\"guest\": []}";
 
@@ -49,6 +62,8 @@
         if (guestList != "") {
             finalGuestCount = guestList.Split(new string[] { ";" }, StringSplitOptions.None).Length;
         }
+
+        @Validation.IsValid();
 
         if (Validation.IsValid() && !Request["PAYMENTREQUEST_0_AMT"].IsEmpty() && !invalidGuestNameInputs) {
 
@@ -209,7 +224,7 @@
     </fieldset>
 
     <!-- ko stopBinding: true -->
-    <fieldset id="guests">
+    <fieldset id="guests" class="hidden">
         <legend>Guest(s) Information (optional)</legend>
         <div class="guestAdded">
             @if(guestCount < 1) {
@@ -221,9 +236,10 @@
         <input type="hidden" value="@guestList" id="guestList" name="guestList"/>
         <div class="first-last-name-fields">
             <label for="guest_firstname">First Name</label>
-            <input id="guest_firstname" type="text" name="guest_firstname" placeholder="First Name"/>
+            <input id="guest_firstname" type="text" name="guest_firstname"  placeholder="First Name" />
+
             <label for="guest_lastname">Last Name</label>
-            <input id="guest_lastname" type="text" name="guest_lastname" placeholder="Last Name"/>
+            <input id="guest_lastname" type="text" name="guest_lastname"  placeholder="Last Name" />
         </div>
 
 

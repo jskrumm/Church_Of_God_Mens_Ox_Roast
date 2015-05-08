@@ -269,7 +269,7 @@ define('module/passes',["lodash", "service/register"], function (_, registerServ
 				currentTotal = cachedTotalTarget.text() || 0,
 				grandTotal = registerService.total(selectedEventPassPrices, currentTotal);
 
-			publicMembers.setPassPricesOnTarget(selectedEventPassPrices, target);
+			publicMembers.setPassPriceTotalOnTarget(selectedEventPassPrices, target);
 
 			cachedTotalTarget.text(grandTotal);
 		},
@@ -284,15 +284,18 @@ define('module/passes',["lodash", "service/register"], function (_, registerServ
 			cachedTotalTarget.text(grandTotal);
 		},
 		"triggerSetTotalEvent": function (event) {
-			var amountToDeduct = $(event.data.scope).attr("data-passPriceTotal") || 0;
+			var amountToDeduct = $(event.data.scope).attr("data-passPriceTotal") || 0; //TODO: Needs unit tested
 
-			publicMembers.deductAmount(event, amountToDeduct);
-			
+			publicMembers.deductAmount(event, amountToDeduct); //TODO: Needs unit tested
+
 			$(event.data.scope).trigger("setTotal", [event.data.scope]);
 		},
-		"setPassPricesOnTarget": function (passPrices, target) {
+		"setPassPriceTotalOnTarget": function (passPrices, target) {
+			var passPriceTotal = 0;
+
 			if (target === "#generalInfo") {
-				var passPriceTotal = registerService.total(passPrices);
+				passPriceTotal = registerService.total(passPrices);
+
 				$(target).attr("data-passPriceTotal", passPriceTotal);
 			}
 		}
@@ -1105,6 +1108,12 @@ define('module/guest',["lodash", "templates/registration", "service/register"], 
 				$(settings.scope).on("click", ".add-guest", publicMembers.addGuest);
 				$(settings.scope).on("click", ".remove-guest", publicMembers.removeGuest);
 			},
+			"isFormValid": function (event) {
+				var targetForm = $(event.target).parents("form"),
+					isValid = targetForm.valid();
+
+				return isValid;
+			},
 			"getValue": function (element) {
 				var value = $(element).val(),
 					passTypeObject = _.find(privateMembers.allPassTypes, "type", value),
@@ -1133,17 +1142,23 @@ define('module/guest',["lodash", "templates/registration", "service/register"], 
 				};
 			},
 			"addGuest": function (event) {
-				var guestList = JSON.parse($("#guestList").val()),
+				var isFormValid = publicMembers.isFormValid(event),
+					guestList = null,
+					guestObject = null;
+
+				if (isFormValid === true) {
+					guestList = JSON.parse($("#guestList").val());
+
 					guestObject = publicMembers.buildNewGuestObject();
 
-				guestList.guest.push(guestObject); //Can't spyOn(Array.prototype, "push"). Need to create a mediator
+					guestList.guest.push(guestObject); //Can't spyOn(Array.prototype, "push"). Need to create a mediator
 
-				publicMembers.insetGuestListIntoDOM(guestList);
+					publicMembers.insertGuestListIntoDOM(guestList);
 
-				$(document).trigger("guest:added", ["#guests"]);
-
+					$(document).trigger("guest:added", ["#guests"]);
+				}
 			},
-			"insetGuestListIntoDOM": function (guestList) {
+			"insertGuestListIntoDOM": function (guestList) {
 				var markup = registrationTemplates.guestList(guestList); 
 
 				$("#guestList").val(JSON.stringify(guestList));
@@ -1158,7 +1173,7 @@ define('module/guest',["lodash", "templates/registration", "service/register"], 
 
 				guestList.guest.splice(indexOfItemToRemove, 1); //Can't spyOn(Array.prototype, "push"). Need to create a mediator
 
-				publicMembers.insetGuestListIntoDOM(guestList);
+				publicMembers.insertGuestListIntoDOM(guestList);
 
 				$(document).trigger("guest:removed", [totalCostToSubtract]);
 			},
