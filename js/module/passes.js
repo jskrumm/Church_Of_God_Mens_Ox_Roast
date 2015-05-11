@@ -19,6 +19,7 @@ define(["lodash", "service/register"], function (_, registerService) {
 
 			publicMembers.setPassPriceTotalOnTarget(selectedEventPassPrices, target);
 
+			$("#PAYMENTREQUEST_0_AMT").val(grandTotal); //TODO:Needs unit tested
 			cachedTotalTarget.text(grandTotal);
 		},
 		"getPriceFromDataAttr": function (element) {

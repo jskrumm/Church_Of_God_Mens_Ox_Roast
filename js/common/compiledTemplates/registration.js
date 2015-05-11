@@ -13,6 +13,8 @@ this["JST"]["guestList"] = Handlebars.template({"1":function(depth0,helpers,part
     + alias3(((helper = (helper = helpers.eventPassType || (depth0 != null ? depth0.eventPassType : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"eventPassType","hash":{},"data":data}) : helper)))
     + "</span>\r\n	        Activities: <span class=\"eventPassType\">"
     + alias3(((helper = (helper = helpers.activities || (depth0 != null ? depth0.activities : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"activities","hash":{},"data":data}) : helper)))
+    + "</span>\r\n	        Guest Total: <span class=\"guestCost\">"
+    + alias3(((helper = (helper = helpers.totalCost || (depth0 != null ? depth0.totalCost : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"totalCost","hash":{},"data":data}) : helper)))
     + "</span>\r\n	        <input type=\"button\" value=\"Remove\" class=\"remove-guest\"/>\r\n	    </li>\r\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
