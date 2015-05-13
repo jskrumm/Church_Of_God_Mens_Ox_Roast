@@ -33,6 +33,12 @@
 		text-align: left;
 	}
 
+	.hasGuests {
+		p {
+			display: inline-block;
+			margin-right: 10px;
+		}
+	}
 	input.submit {
 		height: 50px;
         width: 150px;

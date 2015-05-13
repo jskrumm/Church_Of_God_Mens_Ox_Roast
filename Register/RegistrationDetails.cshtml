@@ -72,7 +72,7 @@
                 db.GuestRegistrationInfo.EventPass,
                 db.GuestRegistrationInfo.Activities,
                 db.GuestRegistrationInfo.TotalCost)
-            .Where(db.GuestRegistrationInfo.Id == confirmID)
+            .Where(db.GuestRegistrationInfo.RegID == confirmID)
             .ToList();
 
         if (IsPost) {
@@ -120,12 +120,90 @@
                 //Updated  database with succss order info from paypal
                 dynamic expSuccess = new ExpandoObject();
                 expSuccess.ID = confirmID;
-                expSuccess.ConfirmationDate = @DateTime.Now.ToString("G");
+                expSuccess.ConfirmationDate = DateTime.Now.ToString("G");
 
                 db.DoExpressCheckoutSuccessDetails.Insert(expSuccess);
 
                 //Send user email and copy email to info@ohiomensoxroast.org
+                try {
+                    foreach (var regInfo in registrationInfo) {
+                        var regInfoID = regInfo.ID;
+                        var regInfoFirstName = regInfo.FirstName;
+                        var regInfoLastName = regInfo.LastName;
+                        var regInfoPhoneNum = regInfo.Phone_Num;
+                        var regInfoEmail = regInfo.Email;
+                        var regInfoChurch = regInfo.Church;
+                        var regInfoEventPass = regInfo.EventPass;
+                        var regInfoActivities = regInfo.Activities;
+                        var regInofPurchaseDate = regInfo.PurchaseDate;
+                        var regInofTotalPaid = regInfo.TotalPaid;
+                        var emailBody = new StringBuilder();
 
+                        emailBody.Append("<html>");
+                        emailBody.Append("<body style='margin: 0'>");
+                        emailBody.Append("<h3>Registration Information</h3>");
+                        emailBody.Append("<table>");
+                        emailBody.Append("<tr><td>Confirmation #:</td><td>" + regInfoID + "</td></tr>");
+                        emailBody.Append("<tr><td>Name:</td><td>" + regInfoFirstName + regInfoLastName + "</td></tr>");
+
+                        if (regInfoPhoneNum != null) {
+                            emailBody.Append("<tr><td>Phone #:</td><td>" + String.Format("{0:###-###-####}", regInfoPhoneNum).Replace("-",".") + "</td></tr>");
+                        }
+
+                        emailBody.Append("<tr><td>Email:</td><td>" + regInfoEmail + "</td></tr>");
+
+                        if (regInfoChurch != null && regInfoChurch != "") {
+                            emailBody.Append("<tr><td>Church Attending:</td><td>" + regInfoChurch + "</td></tr>");
+                        }
+
+                        if (guestRegistrationInfo.Count() >=1) {
+                            emailBody.Append("<tr><td colspan='2'><h3>Guest Information</h3></td></tr>");
+                            emailBody.Append("<tr><td colspan='2'>");
+                            emailBody.Append("<table>");
+                            emailBody.Append("<tr><th>First Name</th><th>Last Name</th><th>Event Pass</th><th>Activities</th><th>Guest Cost</th></tr>");
+
+                            foreach (var regGuestInfo in guestRegistrationInfo) {
+                                emailBody.Append("<tr>");
+                                emailBody.Append("<td>" + regGuestInfo.FirstName + "</td>");
+                                emailBody.Append("<td>" + regGuestInfo.LastName + "</td>");
+                                emailBody.Append("<td>" + regGuestInfo.EventPass + "</td>");
+                                emailBody.Append("<td>" + regGuestInfo.Activities + "</td>");
+                                emailBody.Append("<td>$" + regGuestInfo.TotalCost + "</td>");
+                                emailBody.Append("</tr>");
+                            }
+
+                            emailBody.Append("</table>");
+                            emailBody.Append("</td></tr>");
+                        }
+
+                        emailBody.Append("<tr><td><h4>Total</h4></td><td>$" + regInofTotalPaid + "</td></tr>");
+                        emailBody.Append("</table>");
+                        emailBody.Append("</body>");
+                        emailBody.Append("</html>");
+                        
+                        <p class="debug">
+                            to: @regInfoEmail
+                            subject: "Registration Receipt"
+                            body: @emailBody.ToString()
+                            from: "info@ohiomensoxroast.org"
+                            cc:"info@ohiomensoxroast.org"
+                        </p>
+
+                        // Send email
+                        WebMail.Send(
+                            to: regInfoEmail,
+                            subject: "Registration Receipt",
+                            body: emailBody.ToString(),
+                            isBodyHtml: true,
+                            from: "info@ohiomensoxroast.org",
+                            cc: "info@ohiomensoxroast.org"
+                        );
+                    } 
+                } catch (Exception ex) {
+                    <p class="error">
+                        Sorry, we can not send you an email copy of your receipt at this time. Your order will be confirmed by checking your Paypal account, please print this page as your acknowledgement of payment.
+                    </p>
+                }
 
                <p class="success">
                     Thank you for registering for the Ox Roast. We have sent a copy of the registration information to your email account.
@@ -168,7 +246,7 @@
                     <span>@regInfo.LastName</span>
                 </li>
                 <li>
-			        <h4>Phone Number:</h4>
+			        <h4>Phone #:</h4>
 			        <span>@String.Format("{0:###-###-####}", regInfo.Phone_Num).Replace("-",".")</span>
                 </li>
                 <li>
@@ -216,15 +294,15 @@
                             <span>@regGuestInfo.Activities</span>
                         </li>
                         <li>
-                            <span>@regGuestInfo.TotalCost</span>
+                            <span>&#36; @regGuestInfo.TotalCost</span>
                         </li>
                     }
                 </ul>
             }
-            <p>
+            <div>
                 <h4>Total</h4>
                 <span>&#36; @regInfo.TotalPaid</span>
-            </p>
+            </div>
         }
         
         if (didDoExpressCheckoutPayment == false) {

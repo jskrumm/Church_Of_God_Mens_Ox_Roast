@@ -88,7 +88,9 @@
                 userActivities.Append("Paintball, ");
             }
 
-            userActivities.Remove(userActivities.Length - 2, 2); // remove the last ', '
+            if (!userGolfPass.IsEmpty() || !userFishingPass.IsEmpty() || !userPaintballPass.IsEmpty()) {
+                userActivities.Remove(userActivities.Length - 2, 2); // remove the last ', '
+            }
 
         //Set string value for event passes
             if (userEventPassType == "2") {
@@ -263,7 +265,7 @@
                     }
 
                     //Redirct the user to PayPal to finishing the payment process
-                    //Response.Redirect(App.ProdPayAuthUrl + "?cmd=" + expressCheckoutCmd + "&token=" + token);
+                    Response.Redirect(App.ProdPayAuthUrl + "?cmd=" + expressCheckoutCmd + "&token=" + token);
                 } catch (Exception ex) { //If we can't insert into the database or redirect the user to PayPal then we show an error and stop processing
                     <p class="error">
                         Sorry, something went wrong and we could not continue processing your regestration request at this time. Please try again later or contact us at info@ohiomensoxroast.org for how you can register.
