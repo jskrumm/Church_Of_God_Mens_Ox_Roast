@@ -228,7 +228,10 @@
     }
 }
 <div class="registration-details">
-    <p>Please review your order below and confirmation your payment. Note: Make sure you click confirm payment so that we may process your registration fully.</p>
+    @if (didDoExpressCheckoutPayment == false) {
+        <p>Please review your order below and confirmation your payment. Make sure you click confirm payment so that we may process your registration fully.</p>
+    }
+
     @if (gotExpressCheckoutDetails) {
         foreach (var regInfo in registrationInfo) {
             <h3>Registration Information</h3>
@@ -273,35 +276,33 @@
             if (guestRegistrationInfo.Count() >=1) {
                 <h3>Guest Information</h3>
                 <ul class="guestInfo">
-                    <li class="headings">
-                        <h4>First Name</h4>
-                        <h4>Last Name</h4>
-                        <h4>Event Pass</h4>
-                        <h4>Activities</h4>
-                        <h4>Total Cost</h4>
-                    </li>
                     @foreach (var regGuestInfo in guestRegistrationInfo) {
                         <li>
+                            <h4>First Name:</h4>
                             <span>@regGuestInfo.FirstName</span>
                         </li>
                         <li>
+                            <h4>Last Name:</h4>
                             <span>@regGuestInfo.LastName</span>
                         </li>
                         <li>
+                            <h4>Event Pass:</h4>
                             <span>@regGuestInfo.EventPass</span>
                         </li>
                         <li>
+                            <h4>Activities:</h4>
                             <span>@regGuestInfo.Activities</span>
                         </li>
-                        <li>
-                            <span>&#36; @regGuestInfo.TotalCost</span>
+                        <li class="total">
+                            <h4>Total Cost:</h4>
+                            <span>&#36;@regGuestInfo.TotalCost</span>
                         </li>
                     }
                 </ul>
             }
             <div>
-                <h4>Total</h4>
-                <span>&#36; @regInfo.TotalPaid</span>
+                <h4>Grand Total:</h4>
+                <span>&#36;@regInfo.TotalPaid</span>
             </div>
         }
         

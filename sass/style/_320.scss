@@ -39,4 +39,16 @@
 	    font-size: 20px;
 	    line-height: 30px;
 	}
+
+	p.success {
+		color: #468847;
+		font-weight: bold;
+		text-transform: uppercase;
+	}
+
+	p.error {
+		color: #F3493D;
+		font-weight: bold;
+		text-transform: uppercase;
+	}
 }

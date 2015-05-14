@@ -2,11 +2,22 @@
 <ul>
 	{{#each guest}}
 	    <li>
-	        First Name: <span class="firstName">{{firstname}}</span>
-	        Last Name: <span class="lastName">{{lastname}}</span>
-	        Pass Type: <span class="eventPassType">{{eventPassType}}</span>
-	        Activities: <span class="eventPassType">{{activities}}</span>
-	        Guest Total: <span class="guestCost">{{totalCost}}</span>
+	    	<dl>
+	    		<dt>First Name:</dt>
+	    		<dd class="firstName">{{firstname}}</dd>
+
+	    		<dt>Last Name:</dt>
+	    		<dd class="lastName">{{lastname}}</dd>
+
+	    		<dt>Pass Type:</dt>
+	    		<dd class="eventPassType">{{eventPassType}}</dd>
+				
+	    		<dt>Activities:</dt>
+	    		<dd class="eventPassType">{{activities}}</dd>
+
+	    		<dt>Guest Total:</dt>
+	    		<dd class="guestCost">${{totalCost}}</dd>
+	    	</dl>
 	        <input type="button" value="Remove" class="remove-guest"/>
 	    </li>
 	{{/each}}

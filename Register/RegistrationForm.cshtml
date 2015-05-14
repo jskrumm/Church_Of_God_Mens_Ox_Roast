@@ -362,11 +362,22 @@
                 <ul>
                     @foreach(var g in guestListToParse.guest) {
                         <li>
-                            First Name: <span class="firstName">@g.firstname</span>
-                            Last Name: <span class="lastName">@g.lastname</span>
-                            Pass Type: <span class="eventPassType">@g.eventPassType</span>
-                            Activities: <span class="eventPassType">@g.activities</span>
-                            Guest Total: <span class="guestCost">@g.totalCost</span>
+                            <dl>
+                                <dt>First Name:</dt>
+                                <dd class="firstName">@g.firstname</dd>
+
+                                <dt>Last Name:</dt>
+                                <dd class="lastName">@g.lastname</dd>
+
+                                <dt>Pass Type:</dt>
+                                <dd class="eventPassType">@g.eventPassType</dd>
+
+                                <dt>Activities:</dt>
+                                <dd class="eventPassType">@g.activities</dd>
+
+                                <dt>Guest Total:</dt>
+                                <dd class="guestCost">$@g.totalCost</dd>
+                            </dl>
                             <input type="button" value="Remove" class="remove-guest"/>
                         </li>
                     }
@@ -424,9 +435,11 @@
     </fieldset>
     <!-- /ko -->
 
-    <label for="PAYMENTREQUEST_0_AMT" class="totalLabel">Grand Total</label>
-    <input id="PAYMENTREQUEST_0_AMT" type="hidden" name="PAYMENTREQUEST_0_AMT" value="@grandTotal"/>
-    $<output id="total" name="total">@grandTotal</output>
+    <div class="total-wrapper">
+        <input id="PAYMENTREQUEST_0_AMT" type="hidden" name="PAYMENTREQUEST_0_AMT" value="@grandTotal"/>
+        <label for="PAYMENTREQUEST_0_AMT" class="totalLabel">Grand Total: </label>
+        $<output id="total" name="total">@grandTotal</output>
+    </div>
 
     <input type=submit class="submit" value=""/>
 </form>

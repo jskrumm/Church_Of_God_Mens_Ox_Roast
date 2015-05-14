@@ -24,6 +24,64 @@
 		}
 	}
 
+	.hasGuests {
+		p {
+			font-weight: bold;
+		}
+
+		button {
+			font-weight: bold;
+			text-transform: uppercase;
+			border: 1px solid $or-black-05;
+			background-color: $or-white-01;
+
+			&:hover,
+			&:active {
+				background-color: $or-black-05;
+				color: $or-white-01;
+			}
+		}
+	}
+	
+	.guestAdded ul{
+		list-style-type: none;
+
+		li {
+			border-bottom: 1px solid $or-grey-02;
+		}
+
+		dl {
+			text-align: left;
+		}
+
+		dl dt {
+			font-style: italic;
+  			text-decoration: underline;
+		}
+
+		.remove-guest {
+			font-weight: bold;
+			text-transform: uppercase;
+			border: 1px solid $or-black-05;
+			background-color: $or-white-01;
+
+			&:hover,
+			&:active {
+				background-color: $or-black-05;
+				color: $or-white-01;
+			}
+		}
+	}
+
+	.total-wrapper {
+		text-align: left;
+		text-transform: uppercase;
+	  	color: #468847;
+	  	font-size: 18px;
+	  	font-weight: bold;
+	  	border-bottom: 1px solid $or-grey-02;
+	}
+
 	input.submit {
 		background: url("https://www.paypalobjects.com/en_US/i/btn/btn_xpressCheckout.gif") no-repeat scroll 0 0 transparent;
 		border:none;

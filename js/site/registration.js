@@ -1071,17 +1071,17 @@ this["JST"] = this["JST"] || {};
 this["JST"]["guestList"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
     var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
-  return "	    <li>\r\n	        First Name: <span class=\"firstName\">"
+  return "	    <li>\r\n	    	<dl>\r\n	    		<dt>First Name:</dt>\r\n	    		<dd class=\"firstName\">"
     + alias3(((helper = (helper = helpers.firstname || (depth0 != null ? depth0.firstname : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"firstname","hash":{},"data":data}) : helper)))
-    + "</span>\r\n	        Last Name: <span class=\"lastName\">"
+    + "</dd>\r\n\r\n	    		<dt>Last Name:</dt>\r\n	    		<dd class=\"lastName\">"
     + alias3(((helper = (helper = helpers.lastname || (depth0 != null ? depth0.lastname : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"lastname","hash":{},"data":data}) : helper)))
-    + "</span>\r\n	        Pass Type: <span class=\"eventPassType\">"
+    + "</dd>\r\n\r\n	    		<dt>Pass Type:</dt>\r\n	    		<dd class=\"eventPassType\">"
     + alias3(((helper = (helper = helpers.eventPassType || (depth0 != null ? depth0.eventPassType : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"eventPassType","hash":{},"data":data}) : helper)))
-    + "</span>\r\n	        Activities: <span class=\"eventPassType\">"
+    + "</dd>\r\n				\r\n	    		<dt>Activities:</dt>\r\n	    		<dd class=\"eventPassType\">"
     + alias3(((helper = (helper = helpers.activities || (depth0 != null ? depth0.activities : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"activities","hash":{},"data":data}) : helper)))
-    + "</span>\r\n	        Guest Total: <span class=\"guestCost\">"
+    + "</dd>\r\n\r\n	    		<dt>Guest Total:</dt>\r\n	    		<dd class=\"guestCost\">$"
     + alias3(((helper = (helper = helpers.totalCost || (depth0 != null ? depth0.totalCost : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"totalCost","hash":{},"data":data}) : helper)))
-    + "</span>\r\n	        <input type=\"button\" value=\"Remove\" class=\"remove-guest\"/>\r\n	    </li>\r\n";
+    + "</dd>\r\n	    	</dl>\r\n	        <input type=\"button\" value=\"Remove\" class=\"remove-guest\"/>\r\n	    </li>\r\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
