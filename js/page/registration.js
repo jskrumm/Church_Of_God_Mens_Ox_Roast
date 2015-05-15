@@ -18,6 +18,11 @@ define(['section/userInfo', 'section/guestInfo'], function (userInfo, guestInfo)
 
 			guestInfoSection.init();
 			guestInfoSection.subscribe();
+
+			if (parseInt($("#total").text()) === 0) {
+				$("form")[0].reset();
+				$("#guestList").val("{\"guest\": []}");
+			}
 		}
 	};
 

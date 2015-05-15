@@ -181,13 +181,14 @@
                         emailBody.Append("</body>");
                         emailBody.Append("</html>");
                         
-                        <p class="debug">
-                            to: @regInfoEmail
-                            subject: "Registration Receipt"
-                            body: @emailBody.ToString()
-                            from: "info@ohiomensoxroast.org"
-                            cc:"info@ohiomensoxroast.org"
-                        </p>
+                        //Spit out debug information
+                        //<p class="debug">
+                        //    to: @regInfoEmail
+                        //    subject: "Registration Receipt"
+                        //    body: @emailBody.ToString()
+                        //    from: "info@ohiomensoxroast.org"
+                        //    cc:"info@ohiomensoxroast.org"
+                        //</p>
 
                         // Send email
                         WebMail.Send(

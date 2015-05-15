@@ -47,10 +47,39 @@ define('module/registerGuest',[],function () {
 		"showGuestInputs": function () {
 			$("#hasGuests").val(true);
 			$("#guests").removeClass("hidden");
+
+			$("#guest_firstname", "#guests").rules( "add", {
+				required: true,
+			  	maxlength: 100,
+			  	messages: {
+			    	required: "First name is required.",
+			    	maxlength: jQuery.format("Must be {0} characters or less.")
+			  	}
+			});
+
+			$("#guest_lastname", "#guests").rules( "add", {
+				required: true,
+			  	maxlength: 100,
+			  	messages: {
+			    	required: "Last name is required.",
+			    	maxlength: jQuery.format("Must be {0} characters or less.")
+			  	}
+			});
+
+			$("input[name='eventGuestPass']", "#guests").rules( "add", {
+				required: true,
+			  	messages: {
+			    	required: "Please select an event pass.",
+			  	}
+			});
 		},
 		"hideGuestInputs": function () {
 			$("#hasGuests").val(false);
 			$("#guests").addClass("hidden");
+
+			$("#guest_firstname", "#guests").rules("remove");
+			$("#guest_lastname", "#guests").rules("remove");
+			$("#eventGuestPass", "#guests").rules("remove");
 		}
 	};
 
@@ -1245,6 +1274,11 @@ define('page/registration',['section/userInfo', 'section/guestInfo'], function (
 
 			guestInfoSection.init();
 			guestInfoSection.subscribe();
+
+			if (parseInt($("#total").text()) === 0) {
+				$("form")[0].reset();
+				$("#guestList").val("{\"guest\": []}");
+			}
 		}
 	};
 

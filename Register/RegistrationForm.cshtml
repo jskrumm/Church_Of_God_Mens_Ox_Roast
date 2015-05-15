@@ -34,21 +34,9 @@
         );
 
     Validation.Add("eventPass", 
-        Validator.Required("Please select an event type.")
+        Validator.Required("Please select an event pass.")
         );
 
-@*     Validation.Add("guest_firstname", 
-        Validator.Required("First name is required."), 
-        Validator.StringLength(100, 0, "Must be 100 characters or less.")
-        );
-    Validation.Add("guest_lastname", 
-        Validator.Required("Last name is required."), 
-        Validator.StringLength(100, 0, "Must be 100 characters or less.")
-        );
-
-    Validation.Add("eventGuestPass", 
-        Validator.Required("Please select an event type.")
-        ); *@
 
     //Set variables used in markup
     string unparsedGuestList = Request["guestList"].IsEmpty() ? "{\"guest\": []}" : Request["guestList"];
@@ -57,6 +45,7 @@
     int guestListCount = guestListToParse.guest.Length;
     bool guestListCountIsLessThanOne = (guestListCount < 1) ? true : false;
     var guestSectionHideClass = (guestListCountIsLessThanOne) ? "hidden" : "";
+
 
     if (IsPost) {
         //Set variables when a form gets submitted
@@ -102,7 +91,7 @@
             }
 
         //Spit out debug information
-        <p class="debug">
+@*         <p class="debug">
             User Input: <br/>
             <br/>
             First Name: @firstname<br/>
@@ -119,7 +108,7 @@
             <br/>
             Is Form Valid: @Validation.IsValid()<br/>
             Grand Total: @grandTotal
-        </p>
+        </p> *@
 
         //Check to see if the form is valid and can be used to send a request to PayPal
         if (Validation.IsValid() && !Request["PAYMENTREQUEST_0_AMT"].IsEmpty()) {
@@ -164,10 +153,10 @@
                 formSB.Remove(formSB.Length - 1, 1); // remove the last '&'
 
             //Spit out debug information
-            <p class="postURL">
-                Query String Sent To PayPal: <br/>
-                @formSB.ToString()
-            </p>
+            //<p class="debug">
+               // Query String Sent To PayPal: <br/>
+               // @formSB.ToString()
+           // </p>
 
             //Send a Post request to PayPal
                 DoPostPayPalData doPostToPayPal = new DoPostPayPalData(formSB.ToString(), App.ProdPayInfoUrl);
@@ -177,10 +166,10 @@
                 NameValueCollection responseObj = HttpUtility.ParseQueryString(response);
 
             //Spit out debug information
-            <p class="payPalResponse">
-                PayPal Response: <br/>
-                @responseObj
-            </p>
+            //<p class="debug">
+                //PayPal Response: <br/>
+                //@responseObj
+            //</p>
 
             //If the response from PayPal is successful 
             if (responseObj.Get("ACK") == "Success") {
@@ -218,19 +207,19 @@
                     db.RegistrationInfo.Insert(reg);
 
                     //Spit out debug information
-                    <p class="registrationDataInsertedIntoDatabase">
-                        Registration Data insterted into DB:<br/>
-                        ID: @confirmID<br/>
-                        FirstName: @firstname<br/>
-                        LastName: @lastname<br/>
-                        Phone_Num: @phoneNumber<br/>
-                        Email: @email<br/>
-                        Church: @church<br/>
-                        EventPass: @userEventPass<br/>
-                        Activities = @userActivities<br/>
-                        PurchaseDate: @DateTime.Now.ToString("yyyy-MM-dd")<br/>
-                        TotalPaid: @grandTotal<br/>
-                    </p>
+                    //<p class="registrationDataInsertedIntoDatabase">
+                    //    Registration Data insterted into DB:<br/>
+                    //    ID: @confirmID<br/>
+                    //    FirstName: @firstname<br/>
+                    //    LastName: @lastname<br/>
+                    //    Phone_Num: @phoneNumber<br/>
+                    //    Email: @email<br/>
+                    //    Church: @church<br/>
+                    //    EventPass: @userEventPass<br/>
+                    //    Activities = @userActivities<br/>
+                    //    PurchaseDate: @DateTime.Now.ToString("yyyy-MM-dd")<br/>
+                    //    TotalPaid: @grandTotal<br/>
+                    //</p>
                         
                     
                     //If we have guest insert each one into the database
@@ -251,16 +240,17 @@
                             //Insert guest user register into the database
                             db.GuestRegistrationInfo.Insert(guestReg);
 
-                            <p class="guestRegistrationDataInsertedIntoDatabase">
-                                Guest Registration Data insterted into DB:<br/>
-                                ID: @randomNumber<br/>
-                                RegID: @confirmID<br/>
-                                FirstName: @rg.firstname<br/>
-                                LastName: @rg.lastname<br/>
-                                EventPass: @rg.eventPassType<br/>
-                                Activities = @rg.activities<br/>
-                                TotalCost: @rg.totalCost<br/>
-                            </p>
+                            //Spit out debug information
+                            //<p class="debug">
+                            //    Guest Registration Data insterted into DB:<br/>
+                            //    ID: @randomNumber<br/>
+                            //    RegID: @confirmID<br/>
+                            //    FirstName: @rg.firstname<br/>
+                            //    LastName: @rg.lastname<br/>
+                            //    EventPass: @rg.eventPassType<br/>
+                            //    Activities = @rg.activities<br/>
+                            //    TotalCost: @rg.totalCost<br/>
+                            //</p>
                         }
                     }
 
@@ -353,7 +343,7 @@
 
     <!-- ko stopBinding: true -->
     <fieldset id="guests" class="@guestSectionHideClass">
-        <legend>Guest(s) Information (optional)</legend>
+        <legend>Guest(s) Information</legend>
         <div class="guestAdded">
             @if(guestListCountIsLessThanOne) {
                 <h4 style="display: none">Guest Added</h4>
@@ -388,14 +378,18 @@
         <div class="first-last-name-fields">
             <label for="guest_firstname">First Name</label>
             <input id="guest_firstname" type="text" name="guest_firstname"  placeholder="First Name" />
+            @Html.ValidationMessage("guest_firstname")
+            
 
             <label for="guest_lastname">Last Name</label>
             <input id="guest_lastname" type="text" name="guest_lastname"  placeholder="Last Name" />
+            @Html.ValidationMessage("guest_lastname")
         </div>
 
 
         <div class="event-pass-types">
             <h4>Event Passes</h4>
+            @Html.ValidationMessage("eventGuestPass")
             <ul>  
                 <li>
                     <input type="radio" id="twoDayGuestPass" name="eventGuestPass" value="2" data-price="@App.twoDayPrice" />
