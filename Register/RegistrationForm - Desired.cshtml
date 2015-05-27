@@ -1,0 +1,442 @@
+﻿@using System;
+@using System.IO;
+@using System.Text;
+@using System.Text.RegularExpressions;
+@using System.Net;
+@using System.Web;
+@using System.Collections.Specialized;
+@using System.Dynamic;
+@using SD = Simple.Data;
+@using System.Web.Mvc;
+@using System.Web.Helpers;
+@{
+
+    //Setup Validation
+    Validation.Add("firstname", 
+        Validator.Required("First name is required."), 
+        Validator.StringLength(100, 0, "Must be 100 characters or less.")
+        );
+    Validation.Add("lastname", 
+        Validator.Required("Last name is required."), 
+        Validator.StringLength(100, 0, "Must be 100 characters or less.")
+        );
+    Validation.Add("PAYMENTREQUEST_0_SHIPTOPHONENUM",
+        Validator.Required("Phone number is required."), 
+        Validator.StringLength(15, 0, "Can't be more than 15 characters long."),
+        Validator.Regex(@"^(1?)(-| ?)(\()?([0-9]{3})(\)|-| |\)-|\) )?([0-9]{3})(-| )?([0-9]{4}|[0-9]{4})$", "Invalid phone number format (e.g., 14165551212, 4165551212, (416)5551212, 416 555 1212, 416-555-1212, (416)-555-1212, (416) 555 1212, or 1-900-888-1212)") 
+        );
+   Validation.Add("EMAIL", 
+        Validator.Required("Email is required."),
+        Validator.Regex(@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$", "Invalid email format.")
+        );
+    Validation.Add("church-atteding",
+        Validator.StringLength(4000, 0, "Must be 4000 characters or less.")
+        );
+
+    Validation.Add("eventPass", 
+        Validator.Required("Please select an event pass.")
+        );
+
+
+    //Set variables used in markup
+    string unparsedGuestList = Request["guestList"].IsEmpty() ? "{\"guest\": []}" : Request["guestList"];
+    int grandTotal = Request["PAYMENTREQUEST_0_AMT"].IsEmpty() ? 0 : int.Parse(Request["PAYMENTREQUEST_0_AMT"]);
+    var guestListToParse = Json.Decode(unparsedGuestList);
+    int guestListCount = guestListToParse.guest.Length;
+    bool guestListCountIsLessThanOne = (guestListCount < 1) ? true : false;
+    var guestSectionHideClass = (guestListCountIsLessThanOne) ? "hidden" : "";
+
+
+    if (IsPost) {
+        //Set variables when a form gets submitted
+        string firstname = Request["firstname"];
+        string lastname = Request["lastname"];
+        string phoneNum = Request["PAYMENTREQUEST_0_SHIPTOPHONENUM"];
+        string email = Request["EMAIL"];
+        string church = Request["church-atteding"];
+        string userEventPassType = Request["eventPass"];
+        string userGolfPass = Request["golfPass"];
+        string userFishingPass = Request["fishingPass"];
+        string userPaintballPass = Request["paintballPass"];
+        var userActivities = new StringBuilder();
+        string userEventPass = "";
+        
+        //Create new name/value collection from form data and put it in a variable
+        NameValueCollection postedForm = new NameValueCollection(Request.Form); 
+
+        //Build Activities String
+            if (!userGolfPass.IsEmpty()) {
+                userActivities.Append("Golfing, ");
+            }
+
+            if (!userFishingPass.IsEmpty()) {
+                userActivities.Append("Fishing, ");
+            }
+
+            if (!userPaintballPass.IsEmpty()) {
+                userActivities.Append("Paintball, ");
+            }
+
+            if (!userGolfPass.IsEmpty() || !userFishingPass.IsEmpty() || !userPaintballPass.IsEmpty()) {
+                userActivities.Remove(userActivities.Length - 2, 2); // remove the last ', '
+            }
+
+        //Set string value for event passes
+            if (userEventPassType == "2") {
+                userEventPass = "2 Day Pass";
+            }
+
+            if (userEventPassType == "1") {
+                userEventPass = "1 Day Pass";
+            }
+
+        //Spit out debug information
+@*         <p class="debug">
+            User Input: <br/>
+            <br/>
+            First Name: @firstname<br/>
+            Last Name: @lastname<br/>
+            Phone #: @phoneNum<br/>
+            Email: @email<br/>
+            Church: @church<br/>
+            Event Pass: @userEventPass<br/>
+            Activities: @userActivities.ToString()<br/>
+            <br/>
+            Guest Inputs:<br/>
+            Unparsed Guest List : @unparsedGuestList<br/>
+            Guest List Count: @guestListCount<br/>
+            <br/>
+            Is Form Valid: @Validation.IsValid()<br/>
+            Grand Total: @grandTotal
+        </p> *@
+
+        //Check to see if the form is valid and can be used to send a request to PayPal
+        if (Validation.IsValid() && !Request["PAYMENTREQUEST_0_AMT"].IsEmpty()) {
+
+            //Remove fields not used by PayPal, before submitting form to PayPal
+            postedForm.Remove("firstname");
+            postedForm.Remove("lastname");
+            postedForm.Remove("church-atteding");
+            postedForm.Remove("eventPass");
+            postedForm.Remove("golfPass");
+            postedForm.Remove("fishingPass");
+            postedForm.Remove("paintballPass");
+            postedForm.Remove("hasGuests");
+
+            postedForm.Remove("guestList");
+            postedForm.Remove("guest_firstname");
+            postedForm.Remove("guest_lastname");
+            postedForm.Remove("eventGuestPass");
+            postedForm.Remove("golfGuestPass");
+            postedForm.Remove("fishingGuestPass");
+            postedForm.Remove("paintballGuestPass");
+            
+            //Add required data sensitive fields need by PayPal, before submitting form to Paypal
+            postedForm.Set("USER", App.PayPalUser);
+            postedForm.Set("PWD", App.PayPalPassword);
+            postedForm.Set("SIGNATURE", App.PayPalSignature);
+            postedForm.Set("METHOD", App.ExpressCheckoutMethod);
+            postedForm.Set("VERSION", App.ExpressCheckoutVersion);
+            postedForm.Set("PAYMENTREQUEST_0_PAYMENTACTION", App.ExpressCheckoutPaymentAction);
+            postedForm.Set("PAYMENTREQUEST_0_CURRENCYCODE", App.ExpressCheckoutCurrencyCode);
+            postedForm.Set("RETURNURL", App.ExpressCheckoutReturnUrl);
+            postedForm.Set("CANCELURL", App.ExpressCheckoutCancelUrl);
+
+            //Build query string from name/value collection using StringBuilder, that can be used when sending request to PayPal
+                var formSB = new StringBuilder();
+                var postedFormItems = postedForm.AllKeys.SelectMany(postedForm.GetValues, (k, v) => new {key = k, value = v});
+
+                foreach(var item in postedFormItems) {
+                    formSB.AppendFormat("{0}={1}&", item.key, HttpUtility.UrlEncode(item.value.ToString()));
+                }
+
+                formSB.Remove(formSB.Length - 1, 1); // remove the last '&'
+
+            //Spit out debug information
+            //<p class="debug">
+               // Query String Sent To PayPal: <br/>
+               // @formSB.ToString()
+           // </p>
+
+            //Send a Post request to PayPal
+                DoPostPayPalData doPostToPayPal = new DoPostPayPalData(formSB.ToString(), App.ProdPayInfoUrl);
+
+            //Get the repsonse from the post to PayPal and parse it into a new name/value pair collection
+                string response = doPostToPayPal.Post();
+                NameValueCollection responseObj = HttpUtility.ParseQueryString(response);
+
+            //Spit out debug information
+            //<p class="debug">
+                //PayPal Response: <br/>
+                //@responseObj
+            //</p>
+
+            //If the response from PayPal is successful 
+            if (responseObj.Get("ACK") == "Success") {
+                //Create regex objects that can be used to format all information
+                Regex confirmationIdRegexObj = new Regex(@"[^\d]");
+                Regex phoneNumberRegexObj = new Regex(@"(?<!^)\+|[^\d]");
+
+                //Set variable based on PayPal response
+                string token = responseObj.Get("TOKEN");
+                string expressCheckoutCmd = "_express-checkout";
+
+                //Set variables used to insert data in the correct format
+                var confirmID = confirmationIdRegexObj.Replace(token, "");
+                long ? phoneNumber = phoneNum.IsEmpty() ? (long?)null : long.Parse(phoneNumberRegexObj.Replace(phoneNum, "").Trim());
+                var randomNumGenerator = new Random();
+
+                try {
+
+                    //Open database
+                    var dbPath = HttpContext.Current.Server.MapPath("~/App_Data/COGMOR.sdf");
+                    var db = SD.Database.OpenFile(dbPath);
+
+                    //Prepare object used to insert registered users into the database
+                    dynamic reg = new ExpandoObject();
+                    reg.ID = confirmID;
+                    reg.FirstName = firstname;
+                    reg.LastName = lastname;
+                    reg.Phone_Num = phoneNumber;
+                    reg.Email = email;
+                    reg.Church = church;
+                    reg.EventPass = userEventPass;
+                    reg.Activities = userActivities;
+                    reg.PurchaseDate = DateTime.Now.ToString("G");
+                    reg.TotalPaid = grandTotal;
+
+                    
+                    //Spit out debug information
+                    //<p class="registrationDataInsertedIntoDatabase">
+                    //    Registration Data insterted into DB:<br/>
+                    //    ID: @reg.ID<br/>
+                    //    FirstName: @reg.FirstName<br/>
+                    //    LastName: @reg.LastName<br/>
+                    //    Phone_Num: @reg.Phone_Num<br/>
+                    //    Email: @reg.Email<br/>
+                    //    Church: @reg.Church<br/>
+                    //    EventPass: @reg.EventPass<br/>
+                    //    Activities = @reg.Activities<br/>
+                    //    PurchaseDate: @reg.PurchaseDate<br/>
+                    //    TotalPaid: @reg.TotalPaid<br/>
+                    //</p>
+                        
+                    //Insert user to register into the database
+                    db.RegistrationInfo.Insert(reg);
+                    //If we have guest insert each one into the database
+                    if (guestListCountIsLessThanOne == false) {
+                        foreach(var rg in guestListToParse.guest) {
+                            int randomNumber = randomNumGenerator.Next();
+
+                            //Prepare object used to insert guest registered users into the database
+                            dynamic guestReg = new ExpandoObject();
+                            guestReg.ID = randomNumber;
+                            guestReg.RegID = confirmID;
+                            guestReg.FirstName = rg.firstname;
+                            guestReg.LastName = rg.lastname;
+                            guestReg.EventPass = rg.eventPassType;
+                            guestReg.Activities = rg.activities;
+                            guestReg.TotalCost = rg.totalCost;
+
+                            //Insert guest user register into the database
+                            db.GuestRegistrationInfo.Insert(guestReg);
+
+                            //Spit out debug information
+                            //<p class="debug">
+                            //    Guest Registration Data insterted into DB:<br/>
+                            //    ID: @randomNumber<br/>
+                            //    RegID: @confirmID<br/>
+                            //    FirstName: @rg.firstname<br/>
+                            //    LastName: @rg.lastname<br/>
+                            //    EventPass: @rg.eventPassType<br/>
+                            //    Activities = @rg.activities<br/>
+                            //    TotalCost: @rg.totalCost<br/>
+                            //</p>
+                        }
+                    }
+
+                    //Redirct the user to PayPal to finishing the payment process
+                    Response.Redirect(App.ProdPayAuthUrl + "?cmd=" + expressCheckoutCmd + "&token=" + token);
+                } catch (Exception ex) { //If we can't insert into the database or redirect the user to PayPal then we show an error and stop processing
+                    @ex.Message;
+                    @ex.StackTrace;
+                    <p class="error">
+                        Sorry, something went wrong and we could not continue processing your regestration request at this time. Please try again later or contact us at info@ohiomensoxroast.org for how you can register.
+                    </p>
+                }
+            } else { //If the response from PayPal is not successful
+                <p class="error">
+                    Sorry, we could not get a response from PayPal at this time and will not be able to process your registration. Either please try again later or contact us at info@ohiomensoxroast.org for how you can register.
+                </p>
+            }   
+        } else {
+            ModelState.AddFormError("You must resolve all errors before you can proceed.");
+        }
+    }
+}
+
+<form action="" method="post">
+    <h2>Registration</h2>
+    @Html.ValidationSummary(true)
+    <fieldset id="generalInfo" data-passPriceTotal="@grandTotal">
+        <legend>Your Information</legend>
+        <label for="firstname">First Name</label>
+        <input id="firstname" name="firstname" type="text" class="@Validation.ClassFor("firstname")" required="required" placeholder="First Name" value="@Request["firstname"]" @Validation.For("firstname")/>
+        @Html.ValidationMessage("firstname")
+        
+        <label for="lastname">Last Name</label>
+        <input id="lastname" name="lastname" type="text" class="@Validation.ClassFor("lastname")" required="required" placeholder="Last Name" value="@Request["lastname"]" @Validation.For("lastname")/>
+        @Html.ValidationMessage("lastname")
+
+        <label for="PAYMENTREQUEST_0_SHIPTOPHONENUM">Phone Number</label>
+        <input id="PAYMENTREQUEST_0_SHIPTOPHONENUM" name="PAYMENTREQUEST_0_SHIPTOPHONENUM" type="text" class="@Validation.ClassFor("PAYMENTREQUEST_0_SHIPTOPHONENUM")" required="required" placeholder="Phone Number" value="@Request["PAYMENTREQUEST_0_SHIPTOPHONENUM"]" @Validation.For("PAYMENTREQUEST_0_SHIPTOPHONENUM")/>
+        @Html.ValidationMessage("PAYMENTREQUEST_0_SHIPTOPHONENUM")
+        
+        <label for="EMAIL">Email</label>
+        <input id="EMAIL" name="EMAIL" type="email" class="@Validation.ClassFor("EMAIL")" required="required" placeholder="Email" value="@Request["EMAIL"]" @Validation.For("EMAIL")/>
+        @Html.ValidationMessage("EMAIL")
+
+        <label for="church-atteding">Church (optional)</label>
+        <input id="church-atteding" name="church-atteding" type="text" class="@Validation.ClassFor("church-atteding")" placeholder="Church (Optional)" value="@Request["church-atteding"]" @Validation.For("church-atteding")/>
+        @Html.ValidationMessage("church-atteding")
+
+        <div class="event-pass-types">
+            <h4>Event Passes</h4>
+            @Html.ValidationMessage("eventPass")
+            <ul>  
+                <li>
+                    <input type="radio" id="twoDayPass" name="eventPass" value="2" class="@Validation.ClassFor("eventPass")" required="required" @Validation.For("eventPass") data-price="@App.twoDayPrice" @(Request["eventPass"] == "2" ? "checked=checked" : "")>
+                    <label for="twoDayPass">2 Day Pass - $@App.twoDayPrice</label>
+                </li>
+                <li>
+                    <input type="radio" id="oneDayPass" name="eventPass" value="1" class="@Validation.ClassFor("eventPass")" required="required" @Validation.For("eventPass") data-price="35" @(Request["eventPass"] == "1" ? "checked=checked" : "")>
+                    <label for="oneDayPass">1 Day Pass - $35</label>
+                </li>
+            </ul>
+        </div>
+        <div class="activity-pass-types">
+            <h4>Activity Passes (optional)</h4>
+            <ul>
+                <li>
+                    <input type="checkbox" id="golfPass" name="golfPass" value="G" data-price="45" @(Request["golfPass"] == "G" ? "checked=checked" : "")>
+                    <label for="golfPass">Golf Pass - $45</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="fishingPass" name="fishingPass" value="F" data-price="25" @(Request["fishingPass"] == "F" ? "checked=checked" : "")>
+                    <label for="fishingPass">Fishing Pass - $25</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="paintballPass" name="paintballPass" value="P" data-price="5" @(Request["paintballPass"] == "P" ? "checked=checked" : "")>
+                    <label for="paintballPass">Paintball Pass - $5</label>
+                </li>
+            </ul>
+        </div>
+
+        <div class="hasGuests">
+            <p>Do you have any guest?</p>
+            <button type="button" class="yes">Yes</button>
+            <button type="button" class="no">No</button>
+            @if(guestListCountIsLessThanOne) {
+                <input id="hasGuests" type="hidden" value="false"/>
+            } else {
+                <input id="hasGuests" type="hidden" value="true"/>
+            }
+        </div>
+    </fieldset>
+
+    <!-- ko stopBinding: true -->
+    <fieldset id="guests" class="@guestSectionHideClass">
+        <legend>Guest(s) Information</legend>
+        <div class="guestAdded">
+            @if(guestListCountIsLessThanOne) {
+                <h4 style="display: none">Guest Added</h4>
+            } else {
+                <h4>Guest Added</h4>
+                <ul>
+                    @foreach(var g in guestListToParse.guest) {
+                        <li>
+                            <dl>
+                                <dt>First Name:</dt>
+                                <dd class="firstName">@g.firstname</dd>
+
+                                <dt>Last Name:</dt>
+                                <dd class="lastName">@g.lastname</dd>
+
+                                <dt>Pass Type:</dt>
+                                <dd class="eventPassType">@g.eventPassType</dd>
+
+                                <dt>Activities:</dt>
+                                <dd class="eventPassType">@g.activities</dd>
+
+                                <dt>Guest Total:</dt>
+                                <dd class="guestCost">$@g.totalCost</dd>
+                            </dl>
+                            <input type="button" value="Remove" class="remove-guest"/>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+        <input type="hidden" value="@unparsedGuestList" id="guestList" name="guestList"/>
+        <div class="first-last-name-fields">
+            <label for="guest_firstname">First Name</label>
+            <input id="guest_firstname" type="text" name="guest_firstname"  placeholder="First Name" />
+            @Html.ValidationMessage("guest_firstname")
+            
+
+            <label for="guest_lastname">Last Name</label>
+            <input id="guest_lastname" type="text" name="guest_lastname"  placeholder="Last Name" />
+            @Html.ValidationMessage("guest_lastname")
+        </div>
+
+
+        <div class="event-pass-types">
+            <h4>Event Passes</h4>
+            @Html.ValidationMessage("eventGuestPass")
+            <ul>  
+                <li>
+                    <input type="radio" id="twoDayGuestPass" name="eventGuestPass" value="2" data-price="@App.twoDayPrice" />
+                    <label for="twoDayGuestPass">2 Day Pass - $@App.twoDayPrice</label>
+                </li>
+                <li>
+                    <input type="radio" id="oneDayGuestPass" name="eventGuestPass" value="1" data-price="35" />
+                    <label for="oneDayGuestPass">1 Day Pass - $35</label>
+                </li>
+                <li>
+                    <input type="radio" id="twelveAndUnder" name="eventGuestPass" value="0" data-price="25"/>
+                    <label for="twelveAndUnder">12 and under - $25</label>
+                    <span>(Must be accompanied by an adult)</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="activity-pass-types">
+            <h4>Activity Passes (optional)</h4>
+            <ul>
+                <li>
+                    <input type="checkbox" id="golfGuestPass" name="golfGuestPass" value="G" data-price="45"/>
+                    <label for="golfGuestPass">Golf Pass - $45</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="fishingGuestPass" name="fishingGuestPass" value="F" data-price="25"/>
+                    <label for="fishingGuestPass">Fishing Pass - $25</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="paintballGuestPass" name="paintballGuestPass" value="P" data-price="5"/>
+                    <label for="paintballGuestPass">Paintball Pass - $5</label>
+                </li>
+            </ul>
+        </div>
+
+        <input type="button" value="Add Guest" class="add-guest"/>
+    </fieldset>
+    <!-- /ko -->
+
+    <div class="total-wrapper">
+        <input id="PAYMENTREQUEST_0_AMT" type="hidden" name="PAYMENTREQUEST_0_AMT" value="@grandTotal"/>
+        <label for="PAYMENTREQUEST_0_AMT" class="totalLabel">Grand Total: </label>
+        $<output id="total" name="total">@grandTotal</output>
+    </div>
+
+    <input type=submit class="submit" value=""/>
+</form>

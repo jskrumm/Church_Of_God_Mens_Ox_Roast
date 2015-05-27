@@ -4,4 +4,13 @@
 	div, .guestInfo .total{
 		border-bottom: 1px solid $or-grey-02;
 	}
+
+	.confirm {
+		background-color: #4CAF50;
+  		color: #fff;
+
+  		&:hover {
+  			color: #4CAF50;
+  		}
+	}
 }

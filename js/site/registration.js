@@ -69,7 +69,7 @@ define('module/registerGuest',[],function () {
 			$("input[name='eventGuestPass']", "#guests").rules( "add", {
 				required: true,
 			  	messages: {
-			    	required: "Please select an event pass.",
+			    	required: "Please select an event pass."
 			  	}
 			});
 		},
@@ -79,7 +79,7 @@ define('module/registerGuest',[],function () {
 
 			$("#guest_firstname", "#guests").rules("remove");
 			$("#guest_lastname", "#guests").rules("remove");
-			$("#eventGuestPass", "#guests").rules("remove");
+			$("input[name='eventGuestPass']", "#guests").rules("remove");
 		}
 	};
 

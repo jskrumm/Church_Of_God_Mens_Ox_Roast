@@ -10,8 +10,6 @@
 @using System.Web.Mvc;
 @using System.Web.Helpers;
 @{
-    List<dynamic> registrationInfo = new List<dynamic>();
-    List<dynamic> guestRegistrationInfo = new List<dynamic>();
     bool gotExpressCheckoutDetails = false;
     bool didDoExpressCheckoutPayment = false;
 
@@ -43,38 +41,10 @@
         Regex regexObj = new Regex(@"[^\d]");
 
         token = getDetatailsResponseObj.Get("TOKEN");  
+        var email = getDetatailsResponseObj.Get("EMAIL");
         var confirmID = regexObj.Replace(token, "");
         gotExpressCheckoutDetails = true;
        
-        var db = SD.Database.OpenFile(Server.MapPath("~/App_Data/OMOR.sdf"));
-
-        registrationInfo = db.RegistrationInfo.All()
-          .Select(
-            db.RegistrationInfo.Id, 
-            db.RegistrationInfo.FirstName, 
-            db.RegistrationInfo.LastName,
-            db.RegistrationInfo.Phone_Num,
-            db.RegistrationInfo.Email,
-            db.RegistrationInfo.Church,
-            db.RegistrationInfo.EventPass,
-            db.RegistrationInfo.Activities,
-            db.RegistrationInfo.PurchaseDate,
-            db.RegistrationInfo.TotalPaid)
-          .Where(db.RegistrationInfo.Id == confirmID)
-          .ToList();
-
-        guestRegistrationInfo = db.GuestRegistrationInfo.All()
-            .Select(
-                db.GuestRegistrationInfo.Id,
-                db.GuestRegistrationInfo.RegID,
-                db.GuestRegistrationInfo.FirstName,
-                db.GuestRegistrationInfo.LastName,
-                db.GuestRegistrationInfo.EventPass,
-                db.GuestRegistrationInfo.Activities,
-                db.GuestRegistrationInfo.TotalCost)
-            .Where(db.GuestRegistrationInfo.RegID == confirmID)
-            .ToList();
-
         if (IsPost) {
             App.ExpressCheckoutToken = getDetatailsResponseObj.Get("TOKEN");
   
@@ -116,110 +86,43 @@
             }
 
             if (confirmPaymentResponseObj.Get("ACK") == "Success") {
-                
-                //Updated  database with succss order info from paypal
-                dynamic expSuccess = new ExpandoObject();
-                expSuccess.ID = confirmID;
-                expSuccess.ConfirmationDate = DateTime.Now.ToString("G");
-
-                db.DoExpressCheckoutSuccessDetails.Insert(expSuccess);
-
-                //Send user email and copy email to info@ohiomensoxroast.org
                 try {
-                    foreach (var regInfo in registrationInfo) {
-                        var regInfoID = regInfo.ID;
-                        var regInfoFirstName = regInfo.FirstName;
-                        var regInfoLastName = regInfo.LastName;
-                        var regInfoPhoneNum = regInfo.Phone_Num;
-                        var regInfoEmail = regInfo.Email;
-                        var regInfoChurch = regInfo.Church;
-                        var regInfoEventPass = regInfo.EventPass;
-                        var regInfoActivities = regInfo.Activities;
-                        var regInofPurchaseDate = regInfo.PurchaseDate;
-                        var regInofTotalPaid = regInfo.TotalPaid;
-                        var emailBody = new StringBuilder();
-
-                        emailBody.Append("<html>");
-                        emailBody.Append("<body style='margin: 0'>");
-                        emailBody.Append("<h3>Registration Information</h3>");
-                        emailBody.Append("<table>");
-                        emailBody.Append("<tr><td>Confirmation #:</td><td>" + regInfoID + "</td></tr>");
-                        emailBody.Append("<tr><td>Name:</td><td>" + regInfoFirstName + regInfoLastName + "</td></tr>");
-
-                        if (regInfoPhoneNum != null) {
-                            emailBody.Append("<tr><td>Phone #:</td><td>" + String.Format("{0:###-###-####}", regInfoPhoneNum).Replace("-",".") + "</td></tr>");
-                        }
-
-                        emailBody.Append("<tr><td>Email:</td><td>" + regInfoEmail + "</td></tr>");
-
-                        if (regInfoChurch != null && regInfoChurch != "") {
-                            emailBody.Append("<tr><td>Church Attending:</td><td>" + regInfoChurch + "</td></tr>");
-                        }
-
-                        if (guestRegistrationInfo.Count() >=1) {
-                            emailBody.Append("<tr><td colspan='2'><h3>Guest Information</h3></td></tr>");
-                            emailBody.Append("<tr><td colspan='2'>");
-                            emailBody.Append("<table>");
-                            emailBody.Append("<tr><th>First Name</th><th>Last Name</th><th>Event Pass</th><th>Activities</th><th>Guest Cost</th></tr>");
-
-                            foreach (var regGuestInfo in guestRegistrationInfo) {
-                                emailBody.Append("<tr>");
-                                emailBody.Append("<td>" + regGuestInfo.FirstName + "</td>");
-                                emailBody.Append("<td>" + regGuestInfo.LastName + "</td>");
-                                emailBody.Append("<td>" + regGuestInfo.EventPass + "</td>");
-                                emailBody.Append("<td>" + regGuestInfo.Activities + "</td>");
-                                emailBody.Append("<td>$" + regGuestInfo.TotalCost + "</td>");
-                                emailBody.Append("</tr>");
-                            }
-
-                            emailBody.Append("</table>");
-                            emailBody.Append("</td></tr>");
-                        }
-
-                        emailBody.Append("<tr><td><h4>Total</h4></td><td>$" + regInofTotalPaid + "</td></tr>");
-                        emailBody.Append("</table>");
-                        emailBody.Append("</body>");
-                        emailBody.Append("</html>");
-                        
-                        //Spit out debug information
-                        //<p class="debug">
-                        //    to: @regInfoEmail
-                        //    subject: "Registration Receipt"
-                        //    body: @emailBody.ToString()
-                        //    from: "info@ohiomensoxroast.org"
-                        //    cc:"info@ohiomensoxroast.org"
-                        //</p>
-
-                        // Send email
-                        WebMail.Send(
-                            to: regInfoEmail,
-                            subject: "Registration Receipt",
-                            body: emailBody.ToString(),
-                            isBodyHtml: true,
-                            from: "info@ohiomensoxroast.org",
-                            cc: "info@ohiomensoxroast.org"
-                        );
-                    } 
+                    var emailBody = new StringBuilder();
+                    //Send user email and copy email to info@ohiomensoxroast.org
+                    emailBody.Append("<html>");
+                    emailBody.Append("<body style='margin: 0'>");
+                    emailBody.Append("<h3>Purchase Confirmation Information</h3>");
+                    emailBody.Append("<table>");
+                    emailBody.Append("<tr><td>Confirmation #:</td><td>" + confirmID + "</td></tr>");
+                    emailBody.Append("<tr><td>Confirmation Date:</td><td>" + DateTime.Now.ToString("G") + "</td></tr>");
+                    emailBody.Append("</table>");
+                    emailBody.Append("</body>");
+                    emailBody.Append("</html>");
+                    
+                    // Send email
+                    WebMail.Send(
+                        to: email,
+                        subject: "Ohio Men's Ox Roast and Retreat Registration Confirmation",
+                        body: emailBody.ToString(),
+                        isBodyHtml: true,
+                        from: "info@ohiomensoxroast.org",
+                        cc: "ohiomensoxroast@gmail.com"
+                    );
                 } catch (Exception ex) {
                     <p class="error">
-                        Sorry, we can not send you an email copy of your receipt at this time. Your order will be confirmed by checking your Paypal account, please print this page as your acknowledgement of payment.
+                        Sorry, we are having trouble sending you a confirmation email. We where able to confirm that you are register for the Ohio Men's Ox Roast and Retreat. You can verify your payment by checking your Paypal account. Please print this page as your acknowledgement of payment.
                     </p>
                 }
 
                <p class="success">
-                    Thank you for registering for the Ox Roast. We have sent a copy of the registration information to your email account.
-                    When you arrive at the Ox Roast we will veify that you have registered for the Ox Roast. 
-                    You will not be required to show a copy of your registration. 
-                    The registration information sent to your email account or any printing of page is purly for your benefit, 
-                    however it may not hurt to have a copy with you just incase.
+                    Thank you for registering for the Ohio Men's Ox Roast and Retreat. We have emailed you a copy of your registration and a confirmation of payment to your email address assoicated with your PayPal account.
                </p>
             } else {
                 <p class="error">
-                    Your request may have already been processed. Please check your email or with PayPal for confimation of purchase. 
-                    If you do not get an email from use or PayPal about order conrfimation please contact us at info@ohiomensoxroast.org.
+                    Your request may have already been processed. You an verify your payment by checking your PayPal account. 
+                    If you have any questions please contact us at info@ohiomensoxroast.org.
                 </p>
             }
-            
         }
     } else {
         <p class="error">
@@ -230,87 +133,14 @@
 }
 <div class="registration-details">
     @if (didDoExpressCheckoutPayment == false) {
-        <p>Please review your order below and confirmation your payment. Make sure you click confirm payment so that we may process your registration fully.</p>
+        <p>Thank you for your desire in attending the Ohio Men's Ox Roast and Retreat. To fully process your payment please verify you wish to attend the Ohio Men's Ox Roast and Retreat by click on the butto below.</p>
     }
 
     @if (gotExpressCheckoutDetails) {
-        foreach (var regInfo in registrationInfo) {
-            <h3>Registration Information</h3>
-            <ul class="generalInfo">
-                <li>
-                    <h4>Confirmation #:</h4>
-                    <span>@regInfo.ID</span>
-                </li>
-			    <li>
-				    <h4>First Name:</h4>
-				    <span>@regInfo.FirstName</span>
-			    </li>
-                <li>
-                    <h4>Last Name:</h4>
-                    <span>@regInfo.LastName</span>
-                </li>
-                <li>
-			        <h4>Phone #:</h4>
-			        <span>@String.Format("{0:###-###-####}", regInfo.Phone_Num).Replace("-",".")</span>
-                </li>
-                <li>
-				    <h4>Email:</h4>
-				    <span>@regInfo.Email</span>
-                </li>
-                @if (regInfo.Church != null && regInfo.Church != "") {
-			        <li>
-				        <h4>Church Attending:</h4>
-				        <span>@regInfo.Church</span>
-			        </li>
-                }
-                <li>
-                    <h4>Event Pass:</h4>
-                    <span>@regInfo.EventPass</span>
-                </li>
-                @if (regInfo.Activities != null && regInfo.Activities != "") {
-                    <li>
-                        <h4>Activities:</h4>
-                        <span>@regInfo.Activities</span>
-                    </li>
-                }
-		    </ul>
-            if (guestRegistrationInfo.Count() >=1) {
-                <h3>Guest Information</h3>
-                <ul class="guestInfo">
-                    @foreach (var regGuestInfo in guestRegistrationInfo) {
-                        <li>
-                            <h4>First Name:</h4>
-                            <span>@regGuestInfo.FirstName</span>
-                        </li>
-                        <li>
-                            <h4>Last Name:</h4>
-                            <span>@regGuestInfo.LastName</span>
-                        </li>
-                        <li>
-                            <h4>Event Pass:</h4>
-                            <span>@regGuestInfo.EventPass</span>
-                        </li>
-                        <li>
-                            <h4>Activities:</h4>
-                            <span>@regGuestInfo.Activities</span>
-                        </li>
-                        <li class="total">
-                            <h4>Total Cost:</h4>
-                            <span>&#36;@regGuestInfo.TotalCost</span>
-                        </li>
-                    }
-                </ul>
-            }
-            <div>
-                <h4>Grand Total:</h4>
-                <span>&#36;@regInfo.TotalPaid</span>
-            </div>
-        }
-        
         if (didDoExpressCheckoutPayment == false) {
             <form action="" method="post">
                 <fieldset>
-                    <input type="submit" class="confirm" value="Confirm Payment"/>
+                    <input type="submit" class="confirm" value="Process My Regitration"/>
                 </fieldset>
             </form>
         }
