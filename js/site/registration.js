@@ -1279,6 +1279,10 @@ define('page/registration',['section/userInfo', 'section/guestInfo'], function (
 				$("form")[0].reset();
 				$("#guestList").val("{\"guest\": []}");
 			}
+
+			//Fix for IE 9 and lower so placeholders show up.
+			$("form input").focus();
+			window.scrollTo(0, 0);
 		}
 	};
 
