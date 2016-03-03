@@ -35,6 +35,10 @@ define(['module/registerGuest'], function (registerGuest) {
 			});
 
 			describe('called showGuestInputs', function() {
+				beforeEach(function() {
+					spyOn($.fn, "rules");	
+				});
+
 				it('that is defined', function() {
 					expect(module.showGuestInputs).toBeDefined();
 				});
@@ -73,12 +77,16 @@ define(['module/registerGuest'], function (registerGuest) {
 			});
 
 			describe('call hideGuestInputs', function() {
+				beforeEach(function() {
+					spyOn($.fn, "rules");	
+				});
+
 				it('that is defined', function() {
 					expect(module.hideGuestInputs).toBeDefined();
 				});
 
 				describe('and when called', function() {
-					describe('updates the value of a hidden filed called "hasGuest"', function() {
+					describe('updates the value of a hidden field called "hasGuest"', function() {
 						beforeEach(function() {
 							spyOn($.fn, "val");
 							module.hideGuestInputs();

@@ -1,4 +1,4 @@
-define(['section/userInfo', 'section/guestInfo'], function (userInfo, guestInfo) {
+define(['section/userInfo', 'section/guestInfo', 'section/registrationForm'], function (userInfo, guestInfo, registrationForm) {
 	"use strict";
 
 	var publicMembers = {
@@ -11,6 +11,9 @@ define(['section/userInfo', 'section/guestInfo'], function (userInfo, guestInfo)
 				}),
 				guestInfoSection = guestInfo({
 					"scope": "#guests"
+				}),
+				registrationFormSection = registrationForm({
+					"scope": "#registration-form"
 				});
 
 			userInfoSection.init();
@@ -18,6 +21,9 @@ define(['section/userInfo', 'section/guestInfo'], function (userInfo, guestInfo)
 
 			guestInfoSection.init();
 			guestInfoSection.subscribe();
+
+			registrationFormSection.init();
+			registrationFormSection.subscribe();
 
 			if (parseInt($("#total").text()) === 0) {
 				$("form")[0].reset();

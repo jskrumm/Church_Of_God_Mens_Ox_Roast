@@ -8,6 +8,7 @@ requirejs.config({
         'requireLib': 'js/common/lib/require.min',
         'lodash': 'js/common/lib/lodash.min',
         'handlebars': 'js/common/lib/handlebars.runtime-v3.0.1',
+        'firebase': 'js/common/lib/firebase',
         'templates': 'js/common/compiledTemplates',
         'page': 'js/page',
         'section': 'js/section',
@@ -22,7 +23,10 @@ requirejs.config({
           "exports": '_'
         },
         'handlebars': {
-          exports: 'Handlebars'
+          "exports": 'Handlebars'
+        },
+        'firebase': {
+            "exports": 'Firebase'
         }
     }
 });

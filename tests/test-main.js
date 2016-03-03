@@ -19,6 +19,7 @@ require.config({
     'jQuery': 'js/common/lib/jquery-1.10.2.min',
     'lodash': 'js/common/lib/lodash.min',
     'handlebars': 'js/common/lib/handlebars.runtime-v3.0.1',
+    'firebase': 'js/common/lib/firebase',
     'templates': 'js/common/compiledTemplates',
     'page': 'js/page',
     'section': 'js/section',
@@ -34,6 +35,9 @@ require.config({
     },
     'handlebars': {
       exports: 'Handlebars'
+    },
+    'firebase': {
+      "exports": 'Firebase'
     }
   },
   // dynamically load all test files
