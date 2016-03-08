@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>Code coverage report for ./js/section/guestInfo.js</title>
+    <title>Code coverage report for ./js/section/registrationForm.js</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../../prettify.css">
     <link rel="stylesheet" href="../../base.css">
@@ -12,16 +12,16 @@
     </style>
 </head>
 <body>
-<div class="header high">
-    <h1>Code coverage report for <span class="entity">./js/section/guestInfo.js</span></h1>
+<div class="header low">
+    <h1>Code coverage report for <span class="entity">./js/section/registrationForm.js</span></h1>
     <h2>
-        Statements: <span class="metric">100% <small>(8 / 8)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Statements: <span class="metric">42.86% <small>(3 / 7)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         Branches: <span class="metric">100% <small>(0 / 0)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
-        Functions: <span class="metric">60% <small>(3 / 5)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
-        Lines: <span class="metric">100% <small>(8 / 8)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">20% <small>(1 / 5)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">42.86% <small>(3 / 7)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
     </h2>
-    <div class="path"><a href="../../index.html">All files</a> &#187; <a href="index.html">./js/section/</a> &#187; guestInfo.js</div>
+    <div class="path"><a href="../../index.html">All files</a> &#187; <a href="index.html">./js/section/</a> &#187; registrationForm.js</div>
 </div>
 <div class="body">
 <pre><table class="coverage">
@@ -54,8 +54,7 @@
 27
 28
 29
-30
-31</td><td class="line-coverage"><span class="cline-any cline-yes">1</span>
+30</td><td class="line-coverage"><span class="cline-any cline-yes">1</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1</span>
@@ -63,19 +62,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1</span>
-<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -85,27 +81,28 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">define(['module/passes', 'module/guest'], function(passes, guest) {
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">define(['module/submitRegistration'], function(submitRegistration) {
 	"use strict";
 &nbsp;
 	var privateMembers = {
 		"GLOBAL_SCOPE": ""
 	};
 &nbsp;
-	return function(settings) {
-		privateMembers.GLOBAL_SCOPE = settings.scope;
+	return <span class="fstat-no" title="function not covered" >function(settings) {</span>
+<span class="cstat-no" title="statement not covered" >		privateMembers.GLOBAL_SCOPE = settings.scope;</span>
 &nbsp;
-		return {
-			"init": function () {
-				var settings = {
+<span class="cstat-no" title="statement not covered" >		return {</span>
+			"init": <span class="fstat-no" title="function not covered" >function () {</span>
+<span class="cstat-no" title="statement not covered" >				var settings = {</span>
 					"scope": privateMembers.GLOBAL_SCOPE
 				};
 				
 				//calls bindEvents for all modules
-				guest.bindEvents(settings);
+<span class="cstat-no" title="statement not covered" >				submitRegistration.bindEvents(settings);</span>
 				
 				//addes listeners for all modules
-				passes.listen();
 			},
 			"loadContent": <span class="fstat-no" title="function not covered" >function () {</span>
 				//ajax content

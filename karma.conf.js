@@ -20,6 +20,7 @@ module.exports = function(config) {
         'Scripts/jquery.validate.min.js',
         'Scripts/jquery.validate.unobtrusive.min.js',
         {pattern: 'js/common/lib/lodash.min.js', included: false},
+        {pattern: 'js/common/lib/firebase.js', included: false},
         {pattern: 'js/common/lib/handlebars.runtime-v3.0.1.js', included: false},
         {pattern: 'js/common/compiledTemplates/*.js', included: false},
         {pattern: 'js/page/*.js', included: false},
