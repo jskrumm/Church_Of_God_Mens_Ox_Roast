@@ -1509,7 +1509,45 @@ define("firebase", (function (global) {
     };
 }(this)));
 
-define('module/submitRegistration',["firebase"], function (Firebase) {
+define('service/data',["firebase"], function (Firebase) {
+	return {
+		"getReference": function (reference) {
+			var rootRef = new window.Firebase(reference);
+
+			return rootRef;
+		},
+		"set": function (rootRef, data) {
+			var uniqueIDPostRef = rootRef.push();
+
+			uniqueIDPostRef.set(data);
+
+			return uniqueIDPostRef.key();
+		},
+		"serializeToObject": function (form) {
+			var serializedObject = {},
+				serializedArray = $(form).serializeArray(),
+				index = serializedArray.length - 1,
+				name = null,
+				value = null,
+				formField = null;
+
+			for (; index >= 0; index--) {
+				formField = serializedArray[index];
+
+				if (formField.hasOwnProperty("name") && formField.hasOwnProperty("value")) {
+					name = formField.name;
+					value = formField.value;
+
+					serializedObject[name] = value;
+				}
+				
+			}
+
+			return serializedObject;
+		}
+	};
+});
+define('module/submitRegistration',["service/data"], function (dataService) {
 	var publicMembers = {
 		"bindEvents": function (settings) {
 			$(document).on("submit", settings.scope, publicMembers.foo);
@@ -1517,40 +1555,12 @@ define('module/submitRegistration',["firebase"], function (Firebase) {
 		"foo": function(event) {
 			event.preventDefault();
 
-			var registrationData = new Firebase('https://shining-heat-3928.firebaseio.com/oxroast/registration/2016');
+			var form = event.target,
+				serializedForm = dataService.serializeToObject(form),
+				noSQLDBReference = dataService.getReference("https://shining-heat-3928.firebaseio.com/oxroast/registration/2016");
+				databaseKey = dataService.set(noSQLDBReference, serializedForm);
 
-			registrationData.push().set({
-				"name": {
-					"first": "blah",
-					"last": "blah2"
-				},
-				"phoneNumber": "123456890",
-				"email": "t@gmail.com",
-				"church": "First Church Of God",
-				"eventPass": "2 Day",
-				"activityPasses": ["Paintbal", "Golf", "Fishing"],
-				"guests": [
-					{
-						"name": {
-							"first": "guest1",
-							"last": "guest1last"
-						},
-						"eventPass": "1 Day",
-						"activityPasses": ["Paintbal"]
-					},
-					{
-						"name": {
-							"first": "guest2",
-							"last": "guest2last"
-						},
-						"eventPass": "1 Day",
-						"activityPasses": ["Golf"]
-					}
-				],
-				"total": "$100.00",
-				"paymentConfirmed": false
-			});
-
+			//Need to do an ajax post here with the JSON data stringfied
 		}
 	};
 

@@ -49,66 +49,46 @@
 
     if (IsPost) {
         //Set variables when a form gets submitted
-        string firstname = Request["firstname"];
-        string lastname = Request["lastname"];
-        string phoneNum = Request["PAYMENTREQUEST_0_SHIPTOPHONENUM"];
-        string email = Request["EMAIL"];
-        string church = Request["church-atteding"];
-        string userEventPassType = Request["eventPass"];
-        string userGolfPass = Request["golfPass"];
-        string userFishingPass = Request["fishingPass"];
-        string userPaintballPass = Request["paintballPass"];
-        var userActivities = new StringBuilder();
-        string userEventPass = "";
+        //string firstname = Request["firstname"];
+        //string lastname = Request["lastname"];
+        //string phoneNum = Request["PAYMENTREQUEST_0_SHIPTOPHONENUM"];
+        //string email = Request["EMAIL"];
+        //string church = Request["church-atteding"];
+        //string userEventPassType = Request["eventPass"];
+        //string userGolfPass = Request["golfPass"];
+        //string userFishingPass = Request["fishingPass"];
+        //string userPaintballPass = Request["paintballPass"];
+        //var userActivities = new StringBuilder();
+        //string userEventPass = "";
         
         //Create new name/value collection from form data and put it in a variable
         NameValueCollection postedForm = new NameValueCollection(Request.Form); 
 
         //Build Activities String
-            if (!userGolfPass.IsEmpty()) {
-                userActivities.Append("Golfing, ");
-            }
+        //    if (!userGolfPass.IsEmpty()) {
+        //        userActivities.Append("Golfing, ");
+        //    }
 
-            if (!userFishingPass.IsEmpty()) {
-                userActivities.Append("Fishing, ");
-            }
+        //    if (!userFishingPass.IsEmpty()) {
+        //        userActivities.Append("Fishing, ");
+        //    }
 
-            if (!userPaintballPass.IsEmpty()) {
-                userActivities.Append("Paintball, ");
-            }
+        //    if (!userPaintballPass.IsEmpty()) {
+        //        userActivities.Append("Paintball, ");
+        //    }
 
-            if (!userGolfPass.IsEmpty() || !userFishingPass.IsEmpty() || !userPaintballPass.IsEmpty()) {
-                userActivities.Remove(userActivities.Length - 2, 2); // remove the last ', '
-            }
+        //    if (!userGolfPass.IsEmpty() || !userFishingPass.IsEmpty() || !userPaintballPass.IsEmpty()) {
+        //        userActivities.Remove(userActivities.Length - 2, 2); // remove the last ', '
+        //    }
 
         //Set string value for event passes
-            if (userEventPassType == "2") {
-                userEventPass = "2 Day Pass";
-            }
+        //    if (userEventPassType == "2") {
+        //        userEventPass = "2 Day Pass";
+        //    }
 
-            if (userEventPassType == "1") {
-                userEventPass = "1 Day Pass";
-            }
-
-        //Spit out debug information
-@*         <p class="debug">
-            User Input: <br/>
-            <br/>
-            First Name: @firstname<br/>
-            Last Name: @lastname<br/>
-            Phone #: @phoneNum<br/>
-            Email: @email<br/>
-            Church: @church<br/>
-            Event Pass: @userEventPass<br/>
-            Activities: @userActivities.ToString()<br/>
-            <br/>
-            Guest Inputs:<br/>
-            Unparsed Guest List : @unparsedGuestList<br/>
-            Guest List Count: @guestListCount<br/>
-            <br/>
-            Is Form Valid: @Validation.IsValid()<br/>
-            Grand Total: @grandTotal
-        </p> *@
+        //    if (userEventPassType == "1") {
+        //        userEventPass = "1 Day Pass";
+        //    }
 
         //Check to see if the form is valid and can be used to send a request to PayPal
         if (Validation.IsValid() && !Request["PAYMENTREQUEST_0_AMT"].IsEmpty()) {
@@ -152,12 +132,6 @@
 
                 formSB.Remove(formSB.Length - 1, 1); // remove the last '&'
 
-            //Spit out debug information
-            //<p class="debug">
-               // Query String Sent To PayPal: <br/>
-               // @formSB.ToString()
-           // </p>
-
             //Send a Post request to PayPal
                 DoPostPayPalData doPostToPayPal = new DoPostPayPalData(formSB.ToString(), App.ProdPayInfoUrl);
 
@@ -165,101 +139,96 @@
                 string response = doPostToPayPal.Post();
                 NameValueCollection responseObj = HttpUtility.ParseQueryString(response);
 
-            //Spit out debug information
-            //<p class="debug">
-                //PayPal Response: <br/>
-                //@responseObj
-            //</p>
 
             //If the response from PayPal is successful 
             if (responseObj.Get("ACK") == "Success") {
                 //Create regex objects that can be used to format all information
-                Regex confirmationIdRegexObj = new Regex(@"[^\d]");
-                Regex phoneNumberRegexObj = new Regex(@"(?<!^)\+|[^\d]");
+                //Regex confirmationIdRegexObj = new Regex(@"[^\d]");
+                //Regex phoneNumberRegexObj = new Regex(@"(?<!^)\+|[^\d]");
 
                 //Set variable based on PayPal response
                 string token = responseObj.Get("TOKEN");
                 string expressCheckoutCmd = "_express-checkout";
 
                 //Set variables used to insert data in the correct format
-                var confirmID = confirmationIdRegexObj.Replace(token, "");
-                long ? phoneNumber = phoneNum.IsEmpty() ? (long?)null : long.Parse(phoneNumberRegexObj.Replace(phoneNum, "").Trim());
-                var randomNumGenerator = new Random();
+                //var confirmID = confirmationIdRegexObj.Replace(token, "");
+                //long ? phoneNumber = phoneNum.IsEmpty() ? (long?)null : long.Parse(phoneNumberRegexObj.Replace(phoneNum, "").Trim());
+                //var randomNumGenerator = new Random();
 
-                try {
+                //try {
 
-                    var emailBody = new StringBuilder();
+                    //var emailBody = new StringBuilder();
 
-                    emailBody.Append("<html>");
-                    emailBody.Append("<body style='margin: 0'>");
-                    emailBody.Append("<h3>Registration Information</h3>");
-                    emailBody.Append("<table>");
-                    emailBody.Append("<tr><td>Confirmation #:</td><td>" + confirmID + "</td></tr>");
-                    emailBody.Append("<tr><td>Name:</td><td>" + firstname + " " + lastname + "</td></tr>");
+                    //emailBody.Append("<html>");
+                    //emailBody.Append("<body style='margin: 0'>");
+                    //emailBody.Append("<h3>Registration Information</h3>");
+                    //emailBody.Append("<table>");
+                    //emailBody.Append("<tr><td>Confirmation #:</td><td>" + confirmID + "</td></tr>");
+                    //emailBody.Append("<tr><td>Name:</td><td>" + firstname + " " + lastname + "</td></tr>");
 
-                    if (phoneNumber != null) {
-                        emailBody.Append("<tr><td>Phone #:</td><td>" + String.Format("{0:###-###-####}", phoneNumber).Replace("-",".") + "</td></tr>");
-                    }
+                    //if (phoneNumber != null) {
+                    //    emailBody.Append("<tr><td>Phone #:</td><td>" + String.Format("{0:###-###-####}", phoneNumber).Replace("-",".") + "</td></tr>");
+                    //}
 
-                    emailBody.Append("<tr><td>Email:</td><td>" + email + "</td></tr>");
+                    ///emailBody.Append("<tr><td>Email:</td><td>" + email + "</td></tr>");
 
-                    if (church != null && church != "") {
-                        emailBody.Append("<tr><td>Church Attending:</td><td>" + church + "</td></tr>");
-                    }
+                    //if (church != null && church != "") {
+                    //  emailBody.Append("<tr><td>Church Attending:</td><td>" + church + "</td></tr>");
+                    //}
 
-                    emailBody.Append("<tr><td>Event Pass:</td><td>" + userEventPass + "</td></tr>");
+                    //emailBody.Append("<tr><td>Event Pass:</td><td>" + userEventPass + "</td></tr>");
 
-                    if (userActivities != null) {
-                        emailBody.Append("<tr><td>Activities Passes:</td><td>" + userActivities + "</td></tr>");
-                    }
+                    //if (userActivities != null) {
+                    //  emailBody.Append("<tr><td>Activities Passes:</td><td>" + userActivities + "</td></tr>");
+                    //}
 
-                    emailBody.Append("<tr><td>Purchase Date:</td><td>" + DateTime.Now.ToString("G") + "</td></tr>");
+                    //emailBody.Append("<tr><td>Purchase Date:</td><td>" + DateTime.Now.ToString("G") + "</td></tr>");
 
-                    if (guestListCountIsLessThanOne == false) {
-                        emailBody.Append("<tr><td colspan='2'><h3>Guest Information</h3></td></tr>");
-                        emailBody.Append("<tr><td colspan='2'>");
-                        emailBody.Append("<table>");
-                        emailBody.Append("<tr><th>First Name</th><th>Last Name</th><th>Event Pass</th><th>Activities</th><th>Guest Cost</th></tr>");
+                    //if (guestListCountIsLessThanOne == false) {
+                    //    emailBody.Append("<tr><td colspan='2'><h3>Guest Information</h3></td></tr>");
+                    //    emailBody.Append("<tr><td colspan='2'>");
+                    //    emailBody.Append("<table>");
+                    //    emailBody.Append("<tr><th>First Name</th><th>Last Name</th><th>Event Pass</th><th>Activities</th><th>Guest Cost</th></tr>");
 
-                        foreach(var rg in guestListToParse.guest) {
-                            emailBody.Append("<tr>");
-                            emailBody.Append("<td>" + rg.firstname + "</td>");
-                            emailBody.Append("<td>" + rg.lastname + "</td>");
-                            emailBody.Append("<td>" + rg.eventPassType + "</td>");
-                            emailBody.Append("<td>" + rg.activities + "</td>");
-                            emailBody.Append("<td>$" + rg.totalCost + "</td>");
-                            emailBody.Append("</tr>");
-                        }
+                    //    foreach(var rg in guestListToParse.guest) {
+                    //        emailBody.Append("<tr>");
+                    //        emailBody.Append("<td>" + rg.firstname + "</td>");
+                    //        emailBody.Append("<td>" + rg.lastname + "</td>");
+                    //        emailBody.Append("<td>" + rg.eventPassType + "</td>");
+                    //        emailBody.Append("<td>" + rg.activities + "</td>");
+                    //        emailBody.Append("<td>$" + rg.totalCost + "</td>");
+                    //        emailBody.Append("</tr>");
+                    //    }
 
-                        emailBody.Append("</table>");
-                        emailBody.Append("</td></tr>");
-                    }
+                    //    emailBody.Append("</table>");
+                    //    emailBody.Append("</td></tr>");
+                    //}
 
-                    emailBody.Append("<tr><td><h4>Total</h4></td><td>$" + grandTotal + "</td></tr>");
-                    emailBody.Append("</table>");
-                    emailBody.Append("<p>Once you have confirmed your regirstration and payment information, you will recieve a confirmation email with a confirmation number.</p>");
-                    emailBody.Append("<p>If you do not get a confirmation email please contact us at info@ohiomensoxroast.org.</p>");
-                    emailBody.Append("</body>");
-                    emailBody.Append("</html>");
+                    //emailBody.Append("<tr><td><h4>Total</h4></td><td>$" + grandTotal + "</td></tr>");
+                    //emailBody.Append("</table>");
+                    //emailBody.Append("<p>Once you have confirmed your regirstration and payment information, you will recieve a confirmation email with a confirmation number.</p>");
+                    //emailBody.Append("<p>If you do not get a confirmation email please contact us at info@ohiomensoxroast.org.</p>");
+                    //emailBody.Append("</body>");
+                    //emailBody.Append("</html>");
 
 
                     // Send email
-                    WebMail.Send(
-                        to: email,
-                        subject: "Ohio Men's Ox Roast and Retreat Registration Information",
-                        body: emailBody.ToString(),
-                        isBodyHtml: true,
-                        from: "info@ohiomensoxroast.org",
-                        cc: "ohiomensoxroast@gmail.com"
-                    );
+                    //WebMail.Send(
+                    //    to: email,
+                    //    subject: "Ohio Men's Ox Roast and Retreat Registration Information",
+                    //    body: emailBody.ToString(),
+                    //    isBodyHtml: true,
+                    //    from: "info@ohiomensoxroast.org",
+                    //    cc: "ohiomensoxroast@gmail.com"
+                    //);
 
                     //Redirct the user to PayPal to finishing the payment process
                     Response.Redirect(App.ProdPayAuthUrl + "?cmd=" + expressCheckoutCmd + "&token=" + token);
-                } catch (Exception ex) { //If we can't insert into the database or redirect the user to PayPal then we show an error and stop processing
-                    <p class="error">
-                        Sorry, something went wrong and we could not continue processing your regestration request at this time. Please try again later or contact us at info@ohiomensoxroast.org for how you can register.
-                    </p>
-                }
+                //} catch (Exception ex) { //If we can't insert into the database or redirect the user to PayPal then we show an error and stop processing
+                //    <p class="error">
+                //        Sorry, something went wrong and we could not continue processing your regestration request at this time. Please try again later or contact us at info@ohiomensoxroast.org for how you can register.
+                //    </p>
+                //}
             } else { //If the response from PayPal is not successful
                 <p class="error">
                     Sorry, we could not get a response from PayPal at this time and will not be able to process your registration. Either please try again later or contact us at info@ohiomensoxroast.org for how you can register.
@@ -430,6 +399,7 @@
 
     <div class="total-wrapper">
         <input id="PAYMENTREQUEST_0_AMT" type="hidden" name="PAYMENTREQUEST_0_AMT" value="@grandTotal"/>
+        <input id="paymentConfirmed" type="hidden" name="paymentConfirmed" value="false"/>
         <label for="PAYMENTREQUEST_0_AMT" class="totalLabel">Grand Total: </label>
         $<output id="total" name="total">@grandTotal</output>
     </div>
