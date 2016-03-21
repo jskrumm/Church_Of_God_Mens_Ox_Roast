@@ -6,12 +6,23 @@ define(["service/data"], function (dataService) {
 		"foo": function(event) {
 			event.preventDefault();
 
-			var form = event.target,
-				serializedForm = dataService.serializeToObject(form),
-				noSQLDBReference = dataService.getReference("https://shining-heat-3928.firebaseio.com/oxroast/registration/2016");
-				databaseKey = dataService.set(noSQLDBReference, serializedForm);
+			var form = $(event.target),
+				formAction = form.attr("action"),
+				serializedForm = dataService.serializeToObject(form);
+				
+				
+			//This needs to pass validation first before calling. This will also need tested.
+			$.ajax({
+				type: "POST",
+                url: formAction,
+                data: serializedForm,
+                dataType: "json",
+                "done": function(data) {
+                	noSQLDBReference = dataService.getReference("https://shining-heat-3928.firebaseio.com/oxroast/registration/2016");
+                	databaseKey = dataService.set(noSQLDBReference, serializedForm);
+                }
 
-			//Need to do an ajax post here with the JSON data stringfied
+			});
 		}
 	};
 

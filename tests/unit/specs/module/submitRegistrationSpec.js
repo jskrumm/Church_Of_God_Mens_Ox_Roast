@@ -1,7 +1,7 @@
 define(["module/submitRegistration", "service/data"], function (module, dataService) {
 	"use strict";
 
-	describe('Submit Registration Module', function() {
+	xdescribe('Submit Registration Module', function() {
 		it('to be defined', function() {
 			expect(module).toBeDefined();
 		});

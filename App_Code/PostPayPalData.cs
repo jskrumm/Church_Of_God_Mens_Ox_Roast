@@ -40,6 +40,11 @@ public class DoPostPayPalData
         req.ContentType = "application/x-www-form-urlencoded";
         req.ContentLength = data.Length;
 
+        ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+
+        // allows for validation of SSL conversations
+        ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
         //Create a new request stream
         Stream newStream = req.GetRequestStream();
         newStream.Write(data, 0, data.Length);
