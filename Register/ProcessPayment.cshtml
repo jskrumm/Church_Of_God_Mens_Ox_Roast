@@ -1,0 +1,89 @@
+@using System;
+@using System.IO;
+@using System.Text;
+@using System.Text.RegularExpressions;
+@using System.Net;
+@using System.Web;
+@using System.Collections.Specialized;
+@using System.Dynamic;
+@using SD = Simple.Data;
+@using System.Web.Mvc;
+@using System.Web.Helpers;
+
+@{
+	if (IsPost) {
+		Dictionary<string, string> jsonDataObject = new Dictionary<string, string>();
+		string encodeJSON = null;
+		object decodedJSON = null;
+
+		 //Create new name/value collection from form data and put it in a variable
+        NameValueCollection postedForm = new NameValueCollection(Request.Form);
+
+        if (!Request["PAYMENTREQUEST_0_AMT"].IsEmpty()) {
+        	//Remove fields not used by PayPal, before submitting form to PayPal
+            postedForm.Remove("firstname");
+            postedForm.Remove("lastname");
+            postedForm.Remove("church-atteding");
+            postedForm.Remove("eventPass");
+            postedForm.Remove("golfPass");
+            postedForm.Remove("fishingPass");
+            postedForm.Remove("paintballPass");
+
+            postedForm.Remove("guestList");
+            postedForm.Remove("guest_firstname");
+            postedForm.Remove("guest_lastname");
+            postedForm.Remove("eventGuestPass");
+            postedForm.Remove("golfGuestPass");
+            postedForm.Remove("fishingGuestPass");
+            postedForm.Remove("paintballGuestPass");
+            
+            //Add required data sensitive fields need by PayPal, before submitting form to Paypal
+            postedForm.Add("USER", App.PayPalUser);
+            postedForm.Add("PWD", App.PayPalPassword);
+            postedForm.Add("SIGNATURE", App.PayPalSignature);
+            postedForm.Add("VERSION", App.ExpressCheckoutVersion);
+            postedForm.Add("METHOD", App.ExpressCheckoutMethod);
+            postedForm.Add("PAYMENTREQUEST_0_PAYMENTACTION", App.ExpressCheckoutPaymentAction);
+            postedForm.Add("PAYMENTREQUEST_0_CURRENCYCODE", App.ExpressCheckoutCurrencyCode);
+            postedForm.Add("RETURNURL", App.ExpressCheckoutReturnUrl);
+            postedForm.Add("CANCELURL", App.ExpressCheckoutCancelUrl);
+
+            //Build query string from name/value collection using StringBuilder, that can be used when sending request to PayPal
+                var formSB = new StringBuilder();
+                var postedFormItems = postedForm.AllKeys.SelectMany(postedForm.GetValues, (k, v) => new {key = k, value = v});
+
+                foreach(var item in postedFormItems) {
+                    formSB.AppendFormat("{0}={1}&", item.key, HttpUtility.UrlEncode(item.value.ToString()));
+                }
+
+                formSB.Remove(formSB.Length - 1, 1); // remove the last '&'
+
+            //Send a Post request to PayPal
+                DoPostPayPalData doPostToPayPal = new DoPostPayPalData(formSB.ToString(), App.ProdPayInfoUrl);
+
+            //Get the repsonse from the post to PayPal and parse it into a new name/value pair collection
+                string response = doPostToPayPal.Post();
+                NameValueCollection responseObj = HttpUtility.ParseQueryString(response);
+
+            //If the response from PayPal is successful 
+            if (responseObj.Get("ACK") == "Success") {
+                //Set variable based on PayPal response
+                string token = responseObj.Get("TOKEN");
+                string expressCheckoutCmd = "_express-checkout";
+            
+            	jsonDataObject.Add("paymentCommitted", "true");
+            	jsonDataObject.Add("paymentConfirmed", "false");
+            	jsonDataObject.Add("redirectUrl", App.ProdPayAuthUrl + "?cmd=" + expressCheckoutCmd + "&token=" + token);
+
+				encodeJSON = Json.Encode(jsonDataObject);
+				decodedJSON = Json.Decode(encodeJSON);
+
+            	Json.Write(decodedJSON, Response.Output);
+            } else { //If the response from PayPal is not successful
+               //return error json
+            }  
+        } else {
+        	//return error json
+        }
+	}
+}
