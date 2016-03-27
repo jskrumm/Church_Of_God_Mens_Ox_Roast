@@ -15,7 +15,6 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-        'tests/test-main.js',
         'js/common/lib/jquery-1.10.2.min.js',
         'Scripts/jquery.validate.min.js',
         'Scripts/jquery.validate.unobtrusive.min.js',
@@ -27,9 +26,10 @@ module.exports = function(config) {
         {pattern: 'js/section/*.js', included: false},
         {pattern: 'js/module/*.js', included: false},
         {pattern: 'js/service/*.js', included: false},
-        {pattern: 'tests/SpecHelper.js', included: false},
+        {pattern: 'tests/SpecHelper.js', included: true},
         {pattern: 'tests/integration/specs/**/*Spec.js', included: false},
-        {pattern: 'tests/unit/specs/**/*Spec.js', included: false}
+        {pattern: 'tests/unit/specs/**/*Spec.js', included: false},
+        'tests/test-main.js'
     ],
 
 

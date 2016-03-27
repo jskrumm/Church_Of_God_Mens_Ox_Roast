@@ -1547,37 +1547,120 @@ define('service/data',["firebase"], function (Firebase) {
 		}
 	};
 });
-define('module/submitRegistration',["service/data"], function (dataService) {
-	var publicMembers = {
-		"bindEvents": function (settings) {
-			$(document).on("submit", settings.scope, publicMembers.foo);
-		},
-		"foo": function(event) {
-			event.preventDefault();
+define('templates/error',['handlebars'], function(Handlebars) {
 
-			var form = $(event.target),
-				formAction = form.attr("action"),
-				serializedForm = dataService.serializeToObject(form);
+this["JST"] = this["JST"] || {};
 
-			//Needs tested
-			var guestList = JSON.parse(serializedForm.guestList);
+this["JST"]["error"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var helper;
 
-			serializedForm.guestList = guestList.guest;
+  return "<p class=\"error\">\r\n	"
+    + this.escapeExpression(((helper = (helper = helpers.errorMessage || (depth0 != null ? depth0.errorMessage : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"errorMessage","hash":{},"data":data}) : helper)))
+    + "\r\n</p>";
+},"useData":true});
 
-			//This needs to pass validation first before calling. This will also need tested.
-			$.ajax({
-				type: "POST",
-                url: formAction,
-                data: serializedForm,
-                dataType: "json"
-			}).done(function(data) {
-                noSQLDBReference = dataService.getReference("https://shining-heat-3928.firebaseio.com/oxroast/registration/2016");
-                databaseKey = dataService.set(noSQLDBReference, serializedForm);
+return this["JST"];
 
-                window.location.href = data.redirectUrl; //cant click back button
-            });
+});
+define('service/window',[],function () {
+	return {
+		"redirect": function (url) {
+			window.location.href = url;
 		}
-	};
+	}
+});
+define('module/submitRegistration',["service/data", "templates/error", "service/window"], function (dataService, templateError, windowService) {
+	"use strict";
+
+	var privateMembers = {
+			"error": {
+				"informationLost": "Sorry, we could not process your information.  We would love for you to attend this years Ohio Men's Ox Roast And Retreat, so please try again later or contact us at info@ohiomensoxroast.org and we can do your registration for you."
+			},
+			"unwantedDataFields": ["guest_firstname", "guest_lastname"]
+		},
+		publicMembers = {
+			"bindEvents": function (settings) {
+				$(document).on("submit", settings.scope, publicMembers.submitForm);
+			},
+			"submitForm": function(event) {
+				event.preventDefault();
+
+				var form = $(event.target),
+					formAction = form.attr("action"),
+					serializedForm = dataService.serializeToObject(form),
+					preparedFormData = publicMembers.prepareDataForSubmission(serializedForm, privateMembers.unwantedDataFields),
+					uniqueDataKey = publicMembers.addDataToDatabase(preparedFormData, "https://shining-heat-3928.firebaseio.com/oxroast/registration/2016"); //should only be done if we know the form is at leas valid
+
+
+				//Needs tested
+					preparedFormData.CUSTOM = uniqueDataKey;
+
+				//if form is valid
+				$.ajax({
+					type: "POST",
+	                url: formAction,
+	                data: preparedFormData,
+	                dataType: "json"
+				}).done(function(data) {
+					//if this comes back as successful then redirect other wise remove data from Firebase
+	                publicMembers.redirectUserToCompletePayment(data, uniqueDataKey);
+	            });
+			},
+			"prepareDataForSubmission": function (data, removeData) {
+				var guestList = JSON.parse(data.guestList),
+					index = 0,
+					fieldToRemove = null;
+
+				data.guests = guestList.guest;
+				delete data.guestList;
+
+				if (removeData && removeData.length > 0) {
+					index = removeData.length - 1;
+
+					for (; index >= 0; index -= 1) {
+						fieldToRemove = removeData[index];
+
+						delete data[fieldToRemove];
+					}
+				}
+
+				return data;
+			},
+			"addDataToDatabase": function (data, dbRef) {
+				var noSQLDBReference = null,
+					databaseKey = null;
+
+				if (data && dbRef) {
+					noSQLDBReference = dataService.getReference(dbRef),
+					databaseKey = dataService.set(noSQLDBReference, data);
+				} else {
+					publicMembers.processError({
+						"errorMessage": privateMembers.error.informationLost
+					});
+				}
+
+				return databaseKey;
+			},
+			"redirectUserToCompletePayment": function (data, uniqueDataKey) {
+				var redirectUrl = null;
+
+				if (data && data.redirectUrl && typeof data.redirectUrl === "string" && uniqueDataKey) {
+					//redirectUrl = data.redirectUrl + "&item_number=" + uniqueDataKey;
+					redirectUrl = data.redirectUrl + "&useraction=commit";
+
+					windowService.redirect(redirectUrl);
+				} else {
+					publicMembers.processError({
+						"errorMessage": privateMembers.error.informationLost
+					});
+				}
+			},
+			"processError": function (data) {
+				var markup = templateError.error(data);
+
+				$("#registration-form > fieldset:first-of-type").prepend(markup);
+			}
+		};
 
 	return publicMembers;
 });

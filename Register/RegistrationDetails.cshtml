@@ -37,6 +37,8 @@
 
     NameValueCollection getDetatailsResponseObj = HttpUtility.ParseQueryString(getDetatailsResponse); //Parse server response
 
+    @getDetatailsResponseObj;
+    
     if (getDetatailsResponseObj.Get("ACK") == "Success") {
         Regex regexObj = new Regex(@"[^\d]");
 

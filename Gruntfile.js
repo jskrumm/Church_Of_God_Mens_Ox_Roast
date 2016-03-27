@@ -64,13 +64,14 @@ module.exports = function (grunt) {
         handlebars: {
             compile: {
                 options: {
-                  amd: true,
+                    amd: true,
                     processName: function(filePath) {
                         return filePath.split("/").pop().replace(".html", "");
                     }
                 },
                 files: {
-                    "js/common/compiledTemplates/registration.js": "templates/registration/*.html"
+                    "js/common/compiledTemplates/registration.js": "templates/registration/*.html",
+                    "js/common/compiledTemplates/error.js": "templates/*.html"
                 }
             }
         }

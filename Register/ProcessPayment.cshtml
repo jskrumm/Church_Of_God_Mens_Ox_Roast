@@ -6,7 +6,6 @@
 @using System.Web;
 @using System.Collections.Specialized;
 @using System.Dynamic;
-@using SD = Simple.Data;
 @using System.Web.Mvc;
 @using System.Web.Helpers;
 
@@ -15,6 +14,7 @@
 		Dictionary<string, string> jsonDataObject = new Dictionary<string, string>();
 		string encodeJSON = null;
 		object decodedJSON = null;
+		string firebasekey = Request["CUSTOM"];
 
 		 //Create new name/value collection from form data and put it in a variable
         NameValueCollection postedForm = new NameValueCollection(Request.Form);
@@ -45,8 +45,9 @@
             postedForm.Add("METHOD", App.ExpressCheckoutMethod);
             postedForm.Add("PAYMENTREQUEST_0_PAYMENTACTION", App.ExpressCheckoutPaymentAction);
             postedForm.Add("PAYMENTREQUEST_0_CURRENCYCODE", App.ExpressCheckoutCurrencyCode);
-            postedForm.Add("RETURNURL", App.ExpressCheckoutReturnUrl);
+            postedForm.Add("RETURNURL", App.ExpressCheckoutReturnUrl + "?FIREBASEKEY=" + firebasekey); //We shouldn't send the key this way, we should send this to paypal and then they tell us!
             postedForm.Add("CANCELURL", App.ExpressCheckoutCancelUrl);
+            ///postedForm.Add("LOGOIMG", App.LogoImageUrl);
 
             //Build query string from name/value collection using StringBuilder, that can be used when sending request to PayPal
                 var formSB = new StringBuilder();
@@ -71,19 +72,26 @@
                 string token = responseObj.Get("TOKEN");
                 string expressCheckoutCmd = "_express-checkout";
             
+            	jsonDataObject.Add("firebaseUrl", App.FirebaseURL);
             	jsonDataObject.Add("paymentCommitted", "true");
             	jsonDataObject.Add("paymentConfirmed", "false");
             	jsonDataObject.Add("redirectUrl", App.ProdPayAuthUrl + "?cmd=" + expressCheckoutCmd + "&token=" + token);
 
-				encodeJSON = Json.Encode(jsonDataObject);
-				decodedJSON = Json.Decode(encodeJSON);
-
-            	Json.Write(decodedJSON, Response.Output);
             } else { //If the response from PayPal is not successful
-               //return error json
-            }  
+            	jsonDataObject.Add("error", App.CantConnectToPayPal);
+            }
+
+            encodeJSON = Json.Encode(jsonDataObject);
+			decodedJSON = Json.Decode(encodeJSON);
+
+            Json.Write(decodedJSON, Response.Output);
         } else {
-        	//return error json
+        	jsonDataObject.Add("error", App.MissingInformation);
+			
+        	encodeJSON = Json.Encode(jsonDataObject);
+			decodedJSON = Json.Decode(encodeJSON);
+
+            Json.Write(decodedJSON, Response.Output);
         }
 	}
 }
