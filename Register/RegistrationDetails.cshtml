@@ -15,9 +15,11 @@
 
     string token = Request["token"];
     string payerId = Request["PayerId"];
+   @*  string confirmID = Request["FIREBASEKEY"]; *@
 
     //build action
     var strGetExpressCheckoutDetails = new StringBuilder();
+
     strGetExpressCheckoutDetails.Append("METHOD=");
     strGetExpressCheckoutDetails.Append(App.GetExpressCheckoutDetailsMethod);
     strGetExpressCheckoutDetails.Append("&VERSION=");
@@ -37,114 +39,68 @@
 
     NameValueCollection getDetatailsResponseObj = HttpUtility.ParseQueryString(getDetatailsResponse); //Parse server response
 
-    @getDetatailsResponseObj;
-    
     if (getDetatailsResponseObj.Get("ACK") == "Success") {
         Regex regexObj = new Regex(@"[^\d]");
 
         token = getDetatailsResponseObj.Get("TOKEN");  
-        var email = getDetatailsResponseObj.Get("EMAIL");
-        var confirmID = regexObj.Replace(token, "");
+        @* var email = getDetatailsResponseObj.Get("EMAIL"); *@
+       @*  var confirmID = regexObj.Replace(token, ""); *@
         gotExpressCheckoutDetails = true;
        
-        if (IsPost) {
-            App.ExpressCheckoutToken = getDetatailsResponseObj.Get("TOKEN");
+
+        @* App.ExpressCheckoutToken = getDetatailsResponseObj.Get("TOKEN");
   
-            token = App.ExpressCheckoutToken;
+        token = App.ExpressCheckoutToken; *@
             
-            //build action
-            var strDoExpressCheckoutPayment = new StringBuilder();
-            strDoExpressCheckoutPayment.Append("METHOD=");
-            strDoExpressCheckoutPayment.Append(App.DoExpressCheckoutPaymentMethod);
-            strDoExpressCheckoutPayment.Append("&VERSION=");
-            strDoExpressCheckoutPayment.Append(App.ExpressCheckoutVersion);
-            strDoExpressCheckoutPayment.Append("&USER=");
-            strDoExpressCheckoutPayment.Append(App.PayPalUser);
-            strDoExpressCheckoutPayment.Append("&PWD=");
-            strDoExpressCheckoutPayment.Append(App.PayPalPassword);
-            strDoExpressCheckoutPayment.Append("&SIGNATURE=");
-            strDoExpressCheckoutPayment.Append(App.PayPalSignature);
-            strDoExpressCheckoutPayment.Append("&TOKEN=");
-            strDoExpressCheckoutPayment.Append(token);
-            strDoExpressCheckoutPayment.Append("&PAYERID=");
-            strDoExpressCheckoutPayment.Append(payerId);
-            strDoExpressCheckoutPayment.Append("&PAYMENTREQUEST_0_PAYMENTACTION=");
-            strDoExpressCheckoutPayment.Append(App.ExpressCheckoutPaymentAction);
-            strDoExpressCheckoutPayment.Append("&PAYMENTREQUEST_0_CURRENCYCODE=");
-            strDoExpressCheckoutPayment.Append(App.ExpressCheckoutCurrencyCode);
-            strDoExpressCheckoutPayment.Append("&PAYMENTREQUEST_0_AMT=");
-            strDoExpressCheckoutPayment.Append(getDetatailsResponseObj.Get("PAYMENTREQUEST_0_AMT"));
-            strDoExpressCheckoutPayment.Append("&PAYMENTREQUEST_0_ITEMAMT=");
-            strDoExpressCheckoutPayment.Append(getDetatailsResponseObj.Get("PAYMENTREQUEST_0_ITEMAMT"));
+        //build action
+        var strDoExpressCheckoutPayment = new StringBuilder();
+        
+        strDoExpressCheckoutPayment.Append("METHOD=");
+        strDoExpressCheckoutPayment.Append(App.DoExpressCheckoutPaymentMethod);
+        strDoExpressCheckoutPayment.Append("&VERSION=");
+        strDoExpressCheckoutPayment.Append(App.ExpressCheckoutVersion);
+        strDoExpressCheckoutPayment.Append("&USER=");
+        strDoExpressCheckoutPayment.Append(App.PayPalUser);
+        strDoExpressCheckoutPayment.Append("&PWD=");
+        strDoExpressCheckoutPayment.Append(App.PayPalPassword);
+        strDoExpressCheckoutPayment.Append("&SIGNATURE=");
+        strDoExpressCheckoutPayment.Append(App.PayPalSignature);
+        strDoExpressCheckoutPayment.Append("&TOKEN=");
+        strDoExpressCheckoutPayment.Append(token);
+        strDoExpressCheckoutPayment.Append("&PAYERID=");
+        strDoExpressCheckoutPayment.Append(payerId);
+        strDoExpressCheckoutPayment.Append("&PAYMENTREQUEST_0_PAYMENTACTION=");
+        strDoExpressCheckoutPayment.Append(App.ExpressCheckoutPaymentAction);
+        strDoExpressCheckoutPayment.Append("&PAYMENTREQUEST_0_CURRENCYCODE=");
+        strDoExpressCheckoutPayment.Append(App.ExpressCheckoutCurrencyCode);
+        strDoExpressCheckoutPayment.Append("&PAYMENTREQUEST_0_AMT=");
+        strDoExpressCheckoutPayment.Append(getDetatailsResponseObj.Get("PAYMENTREQUEST_0_AMT"));
+        strDoExpressCheckoutPayment.Append("&PAYMENTREQUEST_0_ITEMAMT=");
+        strDoExpressCheckoutPayment.Append(getDetatailsResponseObj.Get("PAYMENTREQUEST_0_ITEMAMT"));
 
-            //Do Post
-            DoPostPayPalData doPostToComfirmPayment = new DoPostPayPalData(strDoExpressCheckoutPayment.ToString(), App.ProdPayInfoUrl);
-            string confirmPaymentResponse = doPostToComfirmPayment.Post();
+        //Do Post
+        DoPostPayPalData doPostToComfirmPayment = new DoPostPayPalData(strDoExpressCheckoutPayment.ToString(), App.ProdPayInfoUrl);
+        string confirmPaymentResponse = doPostToComfirmPayment.Post();
             
-            NameValueCollection confirmPaymentResponseObj = HttpUtility.ParseQueryString(confirmPaymentResponse); //Parse server response
+        NameValueCollection confirmPaymentResponseObj = HttpUtility.ParseQueryString(confirmPaymentResponse); //Parse server response
 
-            if (confirmPaymentResponseObj.Get("ACK").Contains("Success")) {
-               didDoExpressCheckoutPayment = true; 
-            }
-
-            if (confirmPaymentResponseObj.Get("ACK") == "Success") {
-                try {
-                    var emailBody = new StringBuilder();
-                    //Send user email and copy email to info@ohiomensoxroast.org
-                    emailBody.Append("<html>");
-                    emailBody.Append("<body style='margin: 0'>");
-                    emailBody.Append("<h3>Purchase Confirmation Information</h3>");
-                    emailBody.Append("<table>");
-                    emailBody.Append("<tr><td>Confirmation #:</td><td>" + confirmID + "</td></tr>");
-                    emailBody.Append("<tr><td>Confirmation Date:</td><td>" + DateTime.Now.ToString("G") + "</td></tr>");
-                    emailBody.Append("</table>");
-                    emailBody.Append("</body>");
-                    emailBody.Append("</html>");
-                    
-                    // Send email
-                    WebMail.Send(
-                        to: email,
-                        subject: "Ohio Men's Ox Roast and Retreat Registration Confirmation",
-                        body: emailBody.ToString(),
-                        isBodyHtml: true,
-                        from: "info@ohiomensoxroast.org",
-                        cc: "ohiomensoxroast@gmail.com"
-                    );
-                } catch (Exception ex) {
-                    <p class="error">
-                        Sorry, we are having trouble sending you a confirmation email. We where able to confirm that you are register for the Ohio Men's Ox Roast and Retreat. You can verify your payment by checking your Paypal account. Please print this page as your acknowledgement of payment.
-                    </p>
-                }
-
-               <p class="success">
-                    Thank you for registering for the Ohio Men's Ox Roast and Retreat. We have emailed you a copy of your registration and a confirmation of payment to your email address assoicated with your PayPal account.
-               </p>
-            } else {
-                <p class="error">
-                    Your request may have already been processed. You an verify your payment by checking your PayPal account. 
-                    If you have any questions please contact us at info@ohiomensoxroast.org.
-                </p>
-            }
+        if (confirmPaymentResponseObj.Get("ACK").Contains("Success")) {
+            didDoExpressCheckoutPayment = true;
+        } else {
+            <p class="error">
+                @App.UnsureIfPayPalProcessedPayment
+            </p>
         }
     } else {
         <p class="error">
-            The server could not process your request. 
-            Please contact us at info@ohiomensoxroast.org for assiatance with an issues.
+            @App.ServerCantProcessRequest
         </p>
     }
 }
 <div class="registration-details">
-    @if (didDoExpressCheckoutPayment == false) {
-        <p>Thank you for your desire in attending the Ohio Men's Ox Roast and Retreat. To fully process your payment please verify you wish to attend the Ohio Men's Ox Roast and Retreat by click on the butto below.</p>
-    }
-
-    @if (gotExpressCheckoutDetails) {
-        if (didDoExpressCheckoutPayment == false) {
-            <form action="" method="post">
-                <fieldset>
-                    <input type="submit" class="confirm" value="Process My Regitration"/>
-                </fieldset>
-            </form>
-        }
+    @if (didDoExpressCheckoutPayment == true) {
+        <p class="success">
+            @App.ThankYouForYourRegistration
+        </p>
     }
 </div>

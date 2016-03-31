@@ -15,14 +15,18 @@ define(["service/data", "templates/error", "service/window"], function (dataServ
 				event.preventDefault();
 
 				var form = $(event.target),
-					formAction = form.attr("action"),
-					serializedForm = dataService.serializeToObject(form),
-					preparedFormData = publicMembers.prepareDataForSubmission(serializedForm, privateMembers.unwantedDataFields),
-					uniqueDataKey = publicMembers.addDataToDatabase(preparedFormData, "https://shining-heat-3928.firebaseio.com/oxroast/registration/2016"); //should only be done if we know the form is at leas valid
+					isFormValid = form.valid(),
+					formAction = null,
+					serializedForm = null,
+					preparedFormData = null,
+					uniqueDataKey = null;
 
 
-				//Needs tested
-					preparedFormData.CUSTOM = uniqueDataKey; //Doesn't work!
+				formAction = form.attr("action");
+				serializedForm = dataService.serializeToObject(form);
+				preparedFormData = publicMembers.prepareDataForSubmission(serializedForm, privateMembers.unwantedDataFields);
+				uniqueDataKey = publicMembers.addDataToDatabase(preparedFormData, "https://shining-heat-3928.firebaseio.com/oxroast/registration/2016"); //should only be done if we know the form is at leas valid
+
 
 				//if form is valid
 				$.ajax({
@@ -88,7 +92,8 @@ define(["service/data", "templates/error", "service/window"], function (dataServ
 				var markup = templateError.error(data);
 
 				$("#registration-form > fieldset:first-of-type").prepend(markup);
-			}
+			},
+
 		};
 
 	return publicMembers;

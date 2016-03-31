@@ -46,7 +46,7 @@ define(["module/submitRegistration", "service/data", "templates/error", "service
 					expect(module.submitForm).toEqual(jasmine.any(Function));
 				});
 
-				describe('which when called', function() {
+				fdescribe('which when called', function() {
 					var event = null,
 						data = {
 							"PAYMENTREQUEST_0_AMT": "325",
@@ -79,54 +79,90 @@ define(["module/submitRegistration", "service/data", "templates/error", "service
 		
 					beforeEach(function() {
 						event = jasmine.createSpyObj("event", ["preventDefault", "target"]);
+						spyOn($.fn, "valid").and.returnValue(true);
 						spyOn($.fn, "attr").and.returnValue("blah");
 						spyOn(dataService, "serializeToObject").and.returnValue(data);
 						spyOn(module, "prepareDataForSubmission").and.returnValue(preparedData);
 						spyOn($, "ajax").and.returnValue(jasmine.defferedDone(fakeAjaxResponse));
 
-						module.submitForm(event);
 					});
 
 					it('prevents any default action', function() {
+						module.submitForm(event);
+
 						expect(event.preventDefault).toHaveBeenCalled();
 					});
 
 					it('gets the form submitted from events target', function() {
+						module.submitForm(event);
+
 						expect(event.target).toHaveBeenCalled;
 					});
 
-					describe('serializes the submited form to an object', function() {
-						it('using the data service method serializeToObject', function() {
-							expect(dataService.serializeToObject).toHaveBeenCalled();
-						});
+					it('checks to see if the form is valid', function() {
+						module.submitForm(event);
 
-						it('using the data service method serializeToObject and providing the form to serialize', function() {
-							expect(dataService.serializeToObject).toHaveBeenCalledWith($(event.target));
-						});
+						expect($.fn.valid).toHaveBeenCalled();
 					});
 
-					describe('prepare form data for submission', function() {
-						it('using the modules method prepareDataForSubmission', function() {
-							expect(module.prepareDataForSubmission).toHaveBeenCalled();
+					describe('if the form is valid', function() {
+						beforeEach(function() {
+							module.submitForm(event);
 						});
 
-						it('using the modules method prepareDataForSubmission and providing it the serialized form object and an array of unwanted properties', function() {
-							expect(module.prepareDataForSubmission).toHaveBeenCalledWith(data, jasmine.any(Array));
-						});
-					});
-
-					describe('make an ajax call to the server', function() {
-						it('using the jQuery ajax method', function() {
-							expect($.ajax).toHaveBeenCalled();
-						});
-
-						it('using the jQuery ajax method with the correct data object', function() {
-							expect($.ajax).toHaveBeenCalledWith({
-								type: "POST",
-				                url: "blah",
-				                data: preparedData,
-				                dataType: "json"
+						describe('serializes the submited form to an object', function() {
+							it('using the data service method serializeToObject', function() {
+								expect(dataService.serializeToObject).toHaveBeenCalled();
 							});
+
+							it('using the data service method serializeToObject and providing the form to serialize', function() {
+								expect(dataService.serializeToObject).toHaveBeenCalledWith($(event.target));
+							});
+						});
+
+						describe('prepare form data for submission', function() {
+							it('using the modules method prepareDataForSubmission', function() {
+								expect(module.prepareDataForSubmission).toHaveBeenCalled();
+							});
+
+							it('using the modules method prepareDataForSubmission and providing it the serialized form object and an array of unwanted properties', function() {
+								expect(module.prepareDataForSubmission).toHaveBeenCalledWith(data, jasmine.any(Array));
+							});
+						});
+
+						describe('make an ajax call to the server', function() {
+							it('using the jQuery ajax method', function() {
+								expect($.ajax).toHaveBeenCalled();
+							});
+
+							it('using the jQuery ajax method with the correct data object', function() {
+								expect($.ajax).toHaveBeenCalledWith({
+									type: "POST",
+					                url: "blah",
+					                data: preparedData,
+					                dataType: "json"
+								});
+							});
+						});
+					});
+
+					describe('if the form is not valid', function() {
+						beforeEach(function() {
+							$.fn.valid.and.returnValue(false);
+
+							module.submitForm(event);
+						});
+
+						it('dont serialize the submited form to an object', function() {
+							expect(dataService.serializeToObject).not.toHaveBeenCalled();
+						});
+
+						it('dont prepare form data for submission', function() {
+							expect(module.prepareDataForSubmission).not.toHaveBeenCalled();
+						});
+
+						it('dont make an ajax call to the server', function() {
+							expect($.ajax).not.toHaveBeenCalled();
 						});
 					});
 				});

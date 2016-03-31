@@ -715,7 +715,7 @@ define(['lodash', 'templates/registration', 'module/guest', 'service/register'],
 					};
 
 					beforeEach(function() {
-						spyOn($.fn, "parents").and.returnValue($("<form></form"));
+						spyOn($.fn, "parents").and.returnValue($("<form></form>"));
 						spyOn($.fn, "valid");
 
 						module.isFormValid(fakeEvent);

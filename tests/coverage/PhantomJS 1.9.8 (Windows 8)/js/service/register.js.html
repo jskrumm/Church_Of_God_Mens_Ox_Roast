@@ -12,13 +12,13 @@
     </style>
 </head>
 <body>
-<div class="header high">
+<div class="header low">
     <h1>Code coverage report for <span class="entity">./js/service/register.js</span></h1>
     <h2>
-        Statements: <span class="metric">100% <small>(20 / 20)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
-        Branches: <span class="metric">100% <small>(15 / 15)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
-        Functions: <span class="metric">100% <small>(7 / 7)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
-        Lines: <span class="metric">100% <small>(20 / 20)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Statements: <span class="metric">15% <small>(3 / 20)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">0% <small>(0 / 15)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">14.29% <small>(1 / 7)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">15% <small>(3 / 20)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
     </h2>
     <div class="path"><a href="../../index.html">All files</a> &#187; <a href="index.html">./js/service/</a> &#187; register.js</div>
@@ -87,48 +87,48 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">35</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">35</span>
-<span class="cline-any cline-yes">19</span>
-<span class="cline-any cline-yes">19</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">35</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">37</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">35</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">35</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">32</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">32</span>
-<span class="cline-any cline-yes">40</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">40</span>
-<span class="cline-any cline-yes">13</span>
-<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">32</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">define(['lodash'], function (_) {
@@ -139,49 +139,49 @@
 	};
 &nbsp;
 	return {
-		"total": function (passes, currentTotal) {
-			var self = this,
+		"total": <span class="fstat-no" title="function not covered" >function (passes, currentTotal) {</span>
+<span class="cstat-no" title="statement not covered" >			var self = this,</span>
 				total = currentTotal || 0,
 				pricingIsValid = self.isAllPricingValid(passes),
 				passTotal = 0;
 &nbsp;
-			if (pricingIsValid === true) {
-				passTotal = self.sum(passes);
-				total = self.add(total, passTotal);
+<span class="cstat-no" title="statement not covered" >			if (pricingIsValid === true) {</span>
+<span class="cstat-no" title="statement not covered" >				passTotal = self.sum(passes);</span>
+<span class="cstat-no" title="statement not covered" >				total = self.add(total, passTotal);</span>
 			}
 &nbsp;
-			return total;
+<span class="cstat-no" title="statement not covered" >			return total;</span>
 		},
-		"add": function (initalTotal, passPrice) {
-			return _.add(initalTotal,passPrice);
+		"add": <span class="fstat-no" title="function not covered" >function (initalTotal, passPrice) {</span>
+<span class="cstat-no" title="statement not covered" >			return _.add(initalTotal,passPrice);</span>
 		},
-		"isValueValid": function (value) {
-			return (_.isUndefined(value) || _.isNull(value) || _.isEmpty(value)) ? false : true;
+		"isValueValid": <span class="fstat-no" title="function not covered" >function (value) {</span>
+<span class="cstat-no" title="statement not covered" >			return (_.isUndefined(value) || _.isNull(value) || _.isEmpty(value)) ? false : true;</span>
 		},
-		"isPassPriceValid": function (passPrice) {
-			var self = this;
+		"isPassPriceValid": <span class="fstat-no" title="function not covered" >function (passPrice) {</span>
+<span class="cstat-no" title="statement not covered" >			var self = this;</span>
 &nbsp;
-			return (self.isValueValid(passPrice) === true &amp;&amp; _.indexOf(privateMember.priceArray, passPrice) !== -1) ? true : false;
+<span class="cstat-no" title="statement not covered" >			return (self.isValueValid(passPrice) === true &amp;&amp; _.indexOf(privateMember.priceArray, passPrice) !== -1) ? true : false;</span>
 		},
-		"isAllPricingValid": function (passes) {
-			var self = this,
+		"isAllPricingValid": <span class="fstat-no" title="function not covered" >function (passes) {</span>
+<span class="cstat-no" title="statement not covered" >			var self = this,</span>
 				i = 0,
 				allPricingIsValid = true,
 				passPriceIsValid = true;
 &nbsp;
-			for(; i &lt; passes.length; i++) {
-				passPriceIsValid = self.isPassPriceValid(passes[i]);
+<span class="cstat-no" title="statement not covered" >			for(; i &lt; passes.length; i++) {</span>
+<span class="cstat-no" title="statement not covered" >				passPriceIsValid = self.isPassPriceValid(passes[i]);</span>
 &nbsp;
-				if (passPriceIsValid === false) {
-					allPricingIsValid = false;
-					break;
+<span class="cstat-no" title="statement not covered" >				if (passPriceIsValid === false) {</span>
+<span class="cstat-no" title="statement not covered" >					allPricingIsValid = false;</span>
+<span class="cstat-no" title="statement not covered" >					break;</span>
 				}
 			}
 &nbsp;
-			return allPricingIsValid;
+<span class="cstat-no" title="statement not covered" >			return allPricingIsValid;</span>
 		},
-		"sum": function (passes) {
-			return _.sum(passes);
+		"sum": <span class="fstat-no" title="function not covered" >function (passes) {</span>
+<span class="cstat-no" title="statement not covered" >			return _.sum(passes);</span>
 		}
 	}
 });</pre></td></tr>
@@ -189,7 +189,7 @@
 
 </div>
 <div class="footer">
-    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sat Mar 26 2016 18:51:46 GMT-0400 (Eastern Daylight Time)</div>
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Thu Mar 31 2016 19:48:31 GMT-0400 (Eastern Daylight Time)</div>
 </div>
 <script src="../../prettify.js"></script>
 <script>

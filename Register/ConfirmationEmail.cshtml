@@ -1,0 +1,70 @@
+@using System;
+@using System.IO;
+@using System.Text;
+@using System.Text.RegularExpressions;
+@using System.Net;
+@using System.Web;
+@using System.Collections.Specialized;
+@using System.Dynamic;
+@using SD = Simple.Data;
+@using System.Web.Mvc;
+@using System.Web.Helpers;
+@{
+	Dictionary<string, string> jsonDataObject = new Dictionary<string, string>();
+	NameValueCollection postedForm = new NameValueCollection(Request.Form);
+	string encodeJSON = null;
+	object decodedJSON = null;
+
+    try {
+        var emailBody = new StringBuilder();
+
+        //Send user email and copy email to info@ohiomensoxroast.org
+        emailBody.Append("<html>");
+        emailBody.Append("<body style='margin: 0'>");
+        emailBody.Append("<h3>Purchase Confirmation Information</h3>");
+        emailBody.Append("<table>");
+        emailBody.Append("<tr><td>Confirmation #:</td><td>" + postedForm.confirmID + "</td></tr>"); //This should probably be the FirebaseKey
+        emailBody.Append("<tr><td>Confirmation Date:</td><td>" + DateTime.Now.ToString("G") + "</td></tr>");
+        emailBody.Append("<tr><td></td></tr>");
+        emailBody.Append("<h3>Details</h3>");
+        emailBody.Append("<tr><td>First Name:</td><td>" + postedForm.firstname + "</td></tr>");
+        emailBody.Append("<tr><td>Last Name:</td><td>" + postedForm.lastname + "</td></tr>");
+        emailBody.Append("<tr><td>Phone Number:</td><td>" + postedForm.PAYMENTREQUEST_0_SHIPTOPHONENUM + "</td></tr>");
+        emailBody.Append("<tr><td>Email:</td><td>" + postedForm.EMAIL + "</td></tr>");
+        
+        if (postedForm.church-atteding != null) {
+        	emailBody.Append("<tr><td>Church:</td><td>" + postedForm.church-atteding + "</td></tr>");
+        }
+
+        emailBody.Append("<tr><td>Event Pass:</td><td>" + postedForm.eventPass + "</td></tr>");
+
+        if (postedForm.golfPass != null || postedForm.fishingPass != null || postedForm.paintballPass != null) {
+        	emailBody.Append("<tr><td>Activity Passes:</td><td>" + postedForm.golfPass + ", " + postedForm.fishingPass + ", " + postedForm.paintballPass + "</td></tr>");
+        }
+
+        emailBody.Append("</table>");
+        emailBody.Append("</body>");
+        emailBody.Append("</html>");
+            
+        // Send email
+        WebMail.Send(
+            to: email,
+            subject: "Ohio Men's Ox Roast and Retreat Registration Confirmation",
+            body: emailBody.ToString(),
+            isBodyHtml: true,
+            from: "info@ohiomensoxroast.org",
+            cc: "ohiomensoxroast@gmail.com"
+        );
+
+        jsonDataObject.Add("status", "success");
+
+    } catch (Exception ex) {
+    	jsonDataObject.Add("status", "failed");
+    	jsonDataObject.Add("error", App.UnableToSendEmail);
+    }
+
+    encodeJSON = Json.Encode(jsonDataObject);
+	decodedJSON = Json.Decode(encodeJSON);
+
+    Json.Write(decodedJSON, Response.Output);
+}
