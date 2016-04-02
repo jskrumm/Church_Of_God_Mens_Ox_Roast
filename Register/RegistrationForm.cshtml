@@ -51,6 +51,20 @@
 <form id="registration-form" action="@Href("~/Register/ProcessPayment.cshtml")">
     <h2>Registration</h2>
     @Html.ValidationSummary(true)
+    <div class="special-offers">
+        <h4>Special Offers</h4>
+        <ul>
+            <li>
+                Register 10 or more people from 1 church and your paster gets in for FREE!
+            </li>
+            <li>
+                If have never attended the Ohio Men's Ox Roast and Retreat and you are one of the first 60 people to register you will pay half price, but you must contact our registration manager to qualify.
+            </li>
+        </ul>
+        <p>
+            If you would like to get more information bout these special offers please contact our registration manager Steve Krumm at steven.krumm@gmail.com
+        </p>
+    </div>
     <fieldset id="generalInfo" data-passPriceTotal="@grandTotal">
         <legend>Your Information</legend>
         <label for="firstname">First Name</label>

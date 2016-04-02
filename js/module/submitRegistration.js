@@ -3,9 +3,12 @@ define(["service/data", "templates/error", "service/window"], function (dataServ
 
 	var privateMembers = {
 			"error": {
-				"informationLost": "Sorry, we could not process your information.  We would love for you to attend this years Ohio Men's Ox Roast And Retreat, so please try again later or contact us at info@ohiomensoxroast.org and we can do your registration for you."
+				"informationLost": "Sorry, we could not process your information.  We would love for you to attend this years Ohio Men's Ox Roast And Retreat, so please try again later or contact us at info@ohiomensoxroast.org and we can do your registration for you.",
+				"inValidForm": "Please correct any highlighted fields.",
+				"cantConnectToPayPal": "Sorry, we are having some trouble communicating to PayPal and can not complete your registration. We would love for you to attend this years Ohio Men's Ox Roast And Retreat, so please try again later or contact us at info@ohiomensoxroast.org and we can do your registration for you."
 			},
-			"unwantedDataFields": ["guest_firstname", "guest_lastname"]
+			"unwantedDataFields": ["guest_firstname", "guest_lastname"],
+			"dbReference": "https://shining-heat-3928.firebaseio.com/oxroast/registration/2016"
 		},
 		publicMembers = {
 			"bindEvents": function (settings) {
@@ -19,25 +22,41 @@ define(["service/data", "templates/error", "service/window"], function (dataServ
 					formAction = null,
 					serializedForm = null,
 					preparedFormData = null,
-					uniqueDataKey = null;
+					uniqueDataKey = null,
+					dataShowingError = null;
 
+				if (isFormValid === true) {
+					formAction = form.attr("action");
+					serializedForm = dataService.serializeToObject(form);
+					preparedFormData = publicMembers.prepareDataForSubmission(serializedForm, privateMembers.unwantedDataFields);
+					uniqueDataKey = publicMembers.addDataToDatabase(preparedFormData, privateMembers.dbReference);
 
-				formAction = form.attr("action");
-				serializedForm = dataService.serializeToObject(form);
-				preparedFormData = publicMembers.prepareDataForSubmission(serializedForm, privateMembers.unwantedDataFields);
-				uniqueDataKey = publicMembers.addDataToDatabase(preparedFormData, "https://shining-heat-3928.firebaseio.com/oxroast/registration/2016"); //should only be done if we know the form is at leas valid
+					$.ajax({
+						type: "POST",
+		                url: formAction,
+		                data: preparedFormData,
+		                dataType: "json"
+					}).done(function(data) {
+						dataShowingError = (data && data.errorMessage) ? true : false;
 
+						if (dataShowingError === false) {
+		                	publicMembers.redirectUserToCompletePayment(data, uniqueDataKey);
+		            	} else {
+		            		publicMembers.removeDataFromDatabase(privateMembers.dbReference + "/" + uniqueDataKey);
+		            		publicMembers.processError(data);
+		            	}
+		            }).fail(function () {
+		            	publicMembers.removeDataFromDatabase(privateMembers.dbReference + "/" + uniqueDataKey);
 
-				//if form is valid
-				$.ajax({
-					type: "POST",
-	                url: formAction,
-	                data: preparedFormData,
-	                dataType: "json"
-				}).done(function(data) {
-					//if this comes back as successful then redirect other wise remove data from Firebase
-	                publicMembers.redirectUserToCompletePayment(data, uniqueDataKey);
-	            });
+		            	publicMembers.processError({
+							"errorMessage": privateMembers.error.cantConnectToPayPal
+						});
+		            });
+				} else {
+					publicMembers.processError({
+						"errorMessage": privateMembers.error.inValidForm
+					});
+				}
 			},
 			"prepareDataForSubmission": function (data, removeData) {
 				var guestList = JSON.parse(data.guestList),
@@ -74,11 +93,18 @@ define(["service/data", "templates/error", "service/window"], function (dataServ
 
 				return databaseKey;
 			},
-			"redirectUserToCompletePayment": function (data, uniqueDataKey) {
+			"removeDataFromDatabase": function (dbRef) {
+				var noSQLDBReference = null;
+
+				if (dbRef) {
+					noSQLDBReference = dataService.getReference(dbRef);
+					dataService.set(noSQLDBReference, null);
+				}
+			},
+			"redirectUserToCompletePayment": function (data) {
 				var redirectUrl = null;
 
-				if (data && data.redirectUrl && typeof data.redirectUrl === "string" && uniqueDataKey) {
-					//redirectUrl = data.redirectUrl + "&item_number=" + uniqueDataKey;
+				if (data && data.redirectUrl && typeof data.redirectUrl === "string") {
 					redirectUrl = data.redirectUrl + "&useraction=commit";
 
 					windowService.redirect(redirectUrl);
