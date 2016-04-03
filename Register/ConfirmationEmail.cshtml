@@ -42,6 +42,7 @@
         	emailBody.Append("<tr><td>Activity Passes:</td><td>" + postedForm.golfPass + ", " + postedForm.fishingPass + ", " + postedForm.paintballPass + "</td></tr>");
         }
 
+        emailBody.Append("<tr><td>Grand Total:</td><td>" + postedForm.PAYMENTREQUEST_0_AMT + "</td></tr>");
         emailBody.Append("</table>");
         emailBody.Append("</body>");
         emailBody.Append("</html>");

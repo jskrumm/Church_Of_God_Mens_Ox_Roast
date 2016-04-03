@@ -7,7 +7,7 @@ define(["service/data", "templates/error", "service/window"], function (dataServ
 				"inValidForm": "Please correct any highlighted fields.",
 				"cantConnectToPayPal": "Sorry, we are having some trouble communicating to PayPal and can not complete your registration. We would love for you to attend this years Ohio Men's Ox Roast And Retreat, so please try again later or contact us at info@ohiomensoxroast.org and we can do your registration for you."
 			},
-			"unwantedDataFields": ["guest_firstname", "guest_lastname"],
+			"unwantedDataFields": ["guest_firstname", "guest_lastname", "eventGuestPass"],
 			"dbReference": "https://shining-heat-3928.firebaseio.com/oxroast/registration/2016"
 		},
 		publicMembers = {
