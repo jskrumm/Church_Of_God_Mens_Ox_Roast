@@ -42,30 +42,32 @@
     {{/if}}
 </ul>
 
-<h3>Guest Information</h3>
-<ul class="guestInfo">
-    {{#each guests}}
-        <li>
-            <h4>First Name:</h4>
-            <span>{{firstname}}</span>
-        </li>
-        <li>
-            <h4>Last Name:</h4>
-            <span>{{lastname}}</span>
-        </li>
-        <li>
-            <h4>Event Pass:</h4>
-            <span>{{eventPassType}}</span>
-        </li>
-        <li>
-            <h4>Activities:</h4>
-            <span>{{activities}}</span>
-        </li>
-        <li class="total">
-            <h4>Total Cost:</h4>
-            <span>&#36;{{totalCost}}</span>
-        </li>
-    {{/each}}
-</ul>
+{{#if guests}}
+    <h3>Guest Information</h3>
+    <ul class="guestInfo">
+        {{#each guests}}
+            <li>
+                <h4>First Name:</h4>
+                <span>{{firstname}}</span>
+            </li>
+            <li>
+                <h4>Last Name:</h4>
+                <span>{{lastname}}</span>
+            </li>
+            <li>
+                <h4>Event Pass:</h4>
+                <span>{{eventPassType}}</span>
+            </li>
+            <li>
+                <h4>Activities:</h4>
+                <span>{{activities}}</span>
+            </li>
+            <li class="total">
+                <h4>Total Cost:</h4>
+                <span>&#36;{{totalCost}}</span>
+            </li>
+        {{/each}}
+    </ul>
+{{/if}}
 
-<p>&#36;{{PAYMENTREQUEST_0_AMT}}</p>
+<p>Grand Total: &#36;{{PAYMENTREQUEST_0_AMT}}</p>

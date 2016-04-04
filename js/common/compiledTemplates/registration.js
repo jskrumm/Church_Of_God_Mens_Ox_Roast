@@ -19,19 +19,25 @@ this["JST"]["confirmationInformation"] = Handlebars.template({"1":function(depth
     + this.escapeExpression(this.lambda(depth0, depth0))
     + "</span>\r\n";
 },"6":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return "    <h3>Guest Information</h3>\r\n    <ul class=\"guestInfo\">\r\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.guests : depth0),{"name":"each","hash":{},"fn":this.program(7, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "    </ul>\r\n";
+},"7":function(depth0,helpers,partials,data) {
     var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
-  return "        <li>\r\n            <h4>First Name:</h4>\r\n            <span>"
+  return "            <li>\r\n                <h4>First Name:</h4>\r\n                <span>"
     + alias3(((helper = (helper = helpers.firstname || (depth0 != null ? depth0.firstname : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"firstname","hash":{},"data":data}) : helper)))
-    + "</span>\r\n        </li>\r\n        <li>\r\n            <h4>Last Name:</h4>\r\n            <span>"
+    + "</span>\r\n            </li>\r\n            <li>\r\n                <h4>Last Name:</h4>\r\n                <span>"
     + alias3(((helper = (helper = helpers.lastname || (depth0 != null ? depth0.lastname : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"lastname","hash":{},"data":data}) : helper)))
-    + "</span>\r\n        </li>\r\n        <li>\r\n            <h4>Event Pass:</h4>\r\n            <span>"
+    + "</span>\r\n            </li>\r\n            <li>\r\n                <h4>Event Pass:</h4>\r\n                <span>"
     + alias3(((helper = (helper = helpers.eventPassType || (depth0 != null ? depth0.eventPassType : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"eventPassType","hash":{},"data":data}) : helper)))
-    + "</span>\r\n        </li>\r\n        <li>\r\n            <h4>Activities:</h4>\r\n            <span>"
+    + "</span>\r\n            </li>\r\n            <li>\r\n                <h4>Activities:</h4>\r\n                <span>"
     + alias3(((helper = (helper = helpers.activities || (depth0 != null ? depth0.activities : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"activities","hash":{},"data":data}) : helper)))
-    + "</span>\r\n        </li>\r\n        <li class=\"total\">\r\n            <h4>Total Cost:</h4>\r\n            <span>&#36;"
+    + "</span>\r\n            </li>\r\n            <li class=\"total\">\r\n                <h4>Total Cost:</h4>\r\n                <span>&#36;"
     + alias3(((helper = (helper = helpers.totalCost || (depth0 != null ? depth0.totalCost : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"totalCost","hash":{},"data":data}) : helper)))
-    + "</span>\r\n        </li>\r\n";
+    + "</span>\r\n            </li>\r\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
@@ -51,9 +57,9 @@ this["JST"]["confirmationInformation"] = Handlebars.template({"1":function(depth
     + alias3(((helper = (helper = helpers.eventPass || (depth0 != null ? depth0.eventPass : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"eventPass","hash":{},"data":data}) : helper)))
     + "</span>\r\n    </li>\r\n\r\n"
     + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.activities : depth0),{"name":"if","hash":{},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "</ul>\r\n\r\n<h3>Guest Information</h3>\r\n<ul class=\"guestInfo\">\r\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.guests : depth0),{"name":"each","hash":{},"fn":this.program(6, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "</ul>\r\n\r\n<p>&#36;"
+    + "</ul>\r\n\r\n"
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.guests : depth0),{"name":"if","hash":{},"fn":this.program(6, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "\r\n<p>Grand Total: &#36;"
     + alias3(((helper = (helper = helpers.PAYMENTREQUEST_0_AMT || (depth0 != null ? depth0.PAYMENTREQUEST_0_AMT : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"PAYMENTREQUEST_0_AMT","hash":{},"data":data}) : helper)))
     + "</p>\r\n";
 },"useData":true});

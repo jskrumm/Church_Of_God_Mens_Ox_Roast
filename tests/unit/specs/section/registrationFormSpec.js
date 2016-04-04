@@ -3,7 +3,7 @@ define(['section/registrationForm', 'module/submitRegistration'], function (sect
 
 	var calledSection = null;
 
-	describe('Guest Info section', function() {
+	describe('Registration Form section', function() {
 		it('is defined', function() {
 			expect(section).toBeDefined();
 		});

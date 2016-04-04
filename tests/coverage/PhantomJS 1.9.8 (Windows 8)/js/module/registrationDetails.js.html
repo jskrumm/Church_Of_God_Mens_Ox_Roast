@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>Code coverage report for ./js/section/guestInfo.js</title>
+    <title>Code coverage report for ./js/module/registrationDetails.js</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../../prettify.css">
     <link rel="stylesheet" href="../../base.css">
@@ -13,15 +13,15 @@
 </head>
 <body>
 <div class="header high">
-    <h1>Code coverage report for <span class="entity">./js/section/guestInfo.js</span></h1>
+    <h1>Code coverage report for <span class="entity">./js/module/registrationDetails.js</span></h1>
     <h2>
-        Statements: <span class="metric">100% <small>(8 / 8)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Statements: <span class="metric">100% <small>(10 / 10)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         Branches: <span class="metric">100% <small>(0 / 0)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
-        Functions: <span class="metric">60% <small>(3 / 5)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
-        Lines: <span class="metric">100% <small>(8 / 8)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">100% <small>(5 / 5)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">100% <small>(10 / 10)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
     </h2>
-    <div class="path"><a href="../../index.html">All files</a> &#187; <a href="index.html">./js/section/</a> &#187; guestInfo.js</div>
+    <div class="path"><a href="../../index.html">All files</a> &#187; <a href="index.html">./js/module/</a> &#187; registrationDetails.js</div>
 </div>
 <div class="body">
 <pre><table class="coverage">
@@ -62,59 +62,59 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1</span>
-<span class="cline-any cline-yes">6</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">define(['module/passes', 'module/guest'], function(passes, guest) {
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">define(['service/window', 'service/data', 'templates/registration'], function (windowService, dataService, registrationTemplates) {
 	"use strict";
 &nbsp;
 	var privateMembers = {
-		"GLOBAL_SCOPE": ""
-	};
-&nbsp;
-	return function(settings) {
-		privateMembers.GLOBAL_SCOPE = settings.scope;
-&nbsp;
-		return {
-			"init": function () {
-				var settings = {
-					"scope": privateMembers.GLOBAL_SCOPE
-				};
-				
-				//calls bindEvents for all modules
-				guest.bindEvents(settings);
-				
-				//addes listeners for all modules
-				passes.listen();
+			"firebaseRootReference": "https://shining-heat-3928.firebaseio.com/oxroast/registration/2016"
+		},
+		publicMembers = {
+			"listen": function () {
+				$(document).on("registrationDetails:load", publicMembers.loadContent);
 			},
-			"loadContent": <span class="fstat-no" title="function not covered" >function () {</span>
-				//ajax content
+			"loadContent": function () {
+				var firebaseKey = windowService.getParameterByName("FIREBASEKEY"),
+					firebaseReferenceAtKey = privateMembers.firebaseRootReference + "/" + firebaseKey,
+					firebaseDataReference = dataService.getReference(firebaseReferenceAtKey);
+&nbsp;
+				firebaseDataReference.on("value", publicMembers.processInformation);
 			},
-			"subscribe": <span class="fstat-no" title="function not covered" >function () {</span>
-				//listens for a message to call load content
+			"processInformation": function(snapshot) {
+				var userRegistration = snapshot.val();
+&nbsp;
+				publicMembers.showDetails(userRegistration);
+			},
+			"showDetails": function(data) {
+				var markup = registrationTemplates.confirmationInformation(data);
+&nbsp;
+				$("#registration-details").append(markup);
 			}
 		};
-	};
+&nbsp;
+	return publicMembers;
 });</pre></td></tr>
 </table></pre>
 

@@ -1098,6 +1098,68 @@ define('templates/registration',['handlebars'], function(Handlebars) {
 
 this["JST"] = this["JST"] || {};
 
+this["JST"]["confirmationInformation"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
+    var helper;
+
+  return "        <li>\r\n	        <h4>Church Attending:</h4>\r\n	        <span>"
+    + this.escapeExpression(((helper = (helper = helpers['church-atteding'] || (depth0 != null ? depth0['church-atteding'] : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"church-atteding","hash":{},"data":data}) : helper)))
+    + "</span>\r\n        </li>\r\n";
+},"3":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return "        <li>\r\n            <h4>Activities:</h4>\r\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.activities : depth0),{"name":"each","hash":{},"fn":this.program(4, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </li>\r\n";
+},"4":function(depth0,helpers,partials,data) {
+    return "                <span>"
+    + this.escapeExpression(this.lambda(depth0, depth0))
+    + "</span>\r\n";
+},"6":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return "    <h3>Guest Information</h3>\r\n    <ul class=\"guestInfo\">\r\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.guests : depth0),{"name":"each","hash":{},"fn":this.program(7, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "    </ul>\r\n";
+},"7":function(depth0,helpers,partials,data) {
+    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "            <li>\r\n                <h4>First Name:</h4>\r\n                <span>"
+    + alias3(((helper = (helper = helpers.firstname || (depth0 != null ? depth0.firstname : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"firstname","hash":{},"data":data}) : helper)))
+    + "</span>\r\n            </li>\r\n            <li>\r\n                <h4>Last Name:</h4>\r\n                <span>"
+    + alias3(((helper = (helper = helpers.lastname || (depth0 != null ? depth0.lastname : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"lastname","hash":{},"data":data}) : helper)))
+    + "</span>\r\n            </li>\r\n            <li>\r\n                <h4>Event Pass:</h4>\r\n                <span>"
+    + alias3(((helper = (helper = helpers.eventPassType || (depth0 != null ? depth0.eventPassType : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"eventPassType","hash":{},"data":data}) : helper)))
+    + "</span>\r\n            </li>\r\n            <li>\r\n                <h4>Activities:</h4>\r\n                <span>"
+    + alias3(((helper = (helper = helpers.activities || (depth0 != null ? depth0.activities : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"activities","hash":{},"data":data}) : helper)))
+    + "</span>\r\n            </li>\r\n            <li class=\"total\">\r\n                <h4>Total Cost:</h4>\r\n                <span>&#36;"
+    + alias3(((helper = (helper = helpers.totalCost || (depth0 != null ? depth0.totalCost : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"totalCost","hash":{},"data":data}) : helper)))
+    + "</span>\r\n            </li>\r\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "<h3>Registration Information</h3>\r\n<ul class=\"generalInfo\">\r\n    <li>\r\n        <h4>Confirmation #:</h4>\r\n        <span>"
+    + alias3(((helper = (helper = helpers.confirmationId || (depth0 != null ? depth0.confirmationId : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"confirmationId","hash":{},"data":data}) : helper)))
+    + "</span>\r\n    </li>\r\n    <li>\r\n	    <h4>First Name:</h4>\r\n	    <span>"
+    + alias3(((helper = (helper = helpers.firstname || (depth0 != null ? depth0.firstname : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"firstname","hash":{},"data":data}) : helper)))
+    + "</span>\r\n    </li>\r\n    <li>\r\n        <h4>Last Name:</h4>\r\n        <span>"
+    + alias3(((helper = (helper = helpers.lastname || (depth0 != null ? depth0.lastname : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"lastname","hash":{},"data":data}) : helper)))
+    + "</span>\r\n    </li>\r\n    <li>\r\n        <h4>Phone #:</h4>\r\n        <span>"
+    + alias3(((helper = (helper = helpers.PAYMENTREQUEST_0_SHIPTOPHONENUM || (depth0 != null ? depth0.PAYMENTREQUEST_0_SHIPTOPHONENUM : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"PAYMENTREQUEST_0_SHIPTOPHONENUM","hash":{},"data":data}) : helper)))
+    + "</span>\r\n    </li>\r\n    <li>\r\n	    <h4>Email:</h4>\r\n	    <span>"
+    + alias3(((helper = (helper = helpers.EMAIL || (depth0 != null ? depth0.EMAIL : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"EMAIL","hash":{},"data":data}) : helper)))
+    + "</span>\r\n    </li>\r\n"
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0['church-atteding'] : depth0),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "\r\n    <li>\r\n        <h4>Event Pass:</h4>\r\n        <span>"
+    + alias3(((helper = (helper = helpers.eventPass || (depth0 != null ? depth0.eventPass : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"eventPass","hash":{},"data":data}) : helper)))
+    + "</span>\r\n    </li>\r\n\r\n"
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.activities : depth0),{"name":"if","hash":{},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "</ul>\r\n\r\n"
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.guests : depth0),{"name":"if","hash":{},"fn":this.program(6, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "\r\n<p>Grand Total: &#36;"
+    + alias3(((helper = (helper = helpers.PAYMENTREQUEST_0_AMT || (depth0 != null ? depth0.PAYMENTREQUEST_0_AMT : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"PAYMENTREQUEST_0_AMT","hash":{},"data":data}) : helper)))
+    + "</p>\r\n";
+},"useData":true});
+
 this["JST"]["guestList"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
     var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
@@ -1566,6 +1628,28 @@ define('service/window',[],function () {
 	return {
 		"redirect": function (url) {
 			window.location.href = url;
+		},
+		"getParameterByName": function (name, url) {
+			var regex = null,
+				results = null;
+
+			if (!url) {
+				url = window.location.href;
+			}
+    		
+    		name = name.replace(/[\[\]]/g, "\\$&");
+    		regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)", "i");
+        	results = regex.exec(url);
+
+		    if (!results) {
+		    	return null;
+		    }
+
+		    if (!results[2]) {
+		    	return '';
+		    }
+    		
+    		return decodeURIComponent(results[2].replace(/\+/g, " "));
 		}
 	}
 });
@@ -1574,9 +1658,12 @@ define('module/submitRegistration',["service/data", "templates/error", "service/
 
 	var privateMembers = {
 			"error": {
-				"informationLost": "Sorry, we could not process your information.  We would love for you to attend this years Ohio Men's Ox Roast And Retreat, so please try again later or contact us at info@ohiomensoxroast.org and we can do your registration for you."
+				"informationLost": "Sorry, we could not process your information.  We would love for you to attend this years Ohio Men's Ox Roast And Retreat, so please try again later or contact us at info@ohiomensoxroast.org and we can do your registration for you.",
+				"inValidForm": "Please correct any highlighted fields.",
+				"cantConnectToPayPal": "Sorry, we are having some trouble communicating to PayPal and can not complete your registration. We would love for you to attend this years Ohio Men's Ox Roast And Retreat, so please try again later or contact us at info@ohiomensoxroast.org and we can do your registration for you."
 			},
-			"unwantedDataFields": ["guest_firstname", "guest_lastname"]
+			"unwantedDataFields": ["guest_firstname", "guest_lastname", "eventGuestPass"],
+			"dbReference": "https://shining-heat-3928.firebaseio.com/oxroast/registration/2016"
 		},
 		publicMembers = {
 			"bindEvents": function (settings) {
@@ -1586,25 +1673,45 @@ define('module/submitRegistration',["service/data", "templates/error", "service/
 				event.preventDefault();
 
 				var form = $(event.target),
-					formAction = form.attr("action"),
-					serializedForm = dataService.serializeToObject(form),
-					preparedFormData = publicMembers.prepareDataForSubmission(serializedForm, privateMembers.unwantedDataFields),
-					uniqueDataKey = publicMembers.addDataToDatabase(preparedFormData, "https://shining-heat-3928.firebaseio.com/oxroast/registration/2016"); //should only be done if we know the form is at leas valid
+					isFormValid = form.valid(),
+					formAction = null,
+					serializedForm = null,
+					preparedFormData = null,
+					uniqueDataKey = null,
+					dataShowingError = null;
 
+				if (isFormValid === true) {
+					formAction = form.attr("action");
+					serializedForm = dataService.serializeToObject(form);
+					preparedFormData = publicMembers.prepareDataForSubmission(serializedForm, privateMembers.unwantedDataFields);
+					uniqueDataKey = publicMembers.addDataToDatabase(preparedFormData, privateMembers.dbReference);
 
-				//Needs tested
-					preparedFormData.CUSTOM = uniqueDataKey;
+					$.ajax({
+						type: "POST",
+		                url: formAction,
+		                data: preparedFormData,
+		                dataType: "json"
+					}).done(function(data) {
+						dataShowingError = (data && data.errorMessage) ? true : false;
 
-				//if form is valid
-				$.ajax({
-					type: "POST",
-	                url: formAction,
-	                data: preparedFormData,
-	                dataType: "json"
-				}).done(function(data) {
-					//if this comes back as successful then redirect other wise remove data from Firebase
-	                publicMembers.redirectUserToCompletePayment(data, uniqueDataKey);
-	            });
+						if (dataShowingError === false) {
+		                	publicMembers.redirectUserToCompletePayment(data, uniqueDataKey);
+		            	} else {
+		            		publicMembers.removeDataFromDatabase(privateMembers.dbReference + "/" + uniqueDataKey);
+		            		publicMembers.processError(data);
+		            	}
+		            }).fail(function () {
+		            	publicMembers.removeDataFromDatabase(privateMembers.dbReference + "/" + uniqueDataKey);
+
+		            	publicMembers.processError({
+							"errorMessage": privateMembers.error.cantConnectToPayPal
+						});
+		            });
+				} else {
+					publicMembers.processError({
+						"errorMessage": privateMembers.error.inValidForm
+					});
+				}
 			},
 			"prepareDataForSubmission": function (data, removeData) {
 				var guestList = JSON.parse(data.guestList),
@@ -1641,11 +1748,18 @@ define('module/submitRegistration',["service/data", "templates/error", "service/
 
 				return databaseKey;
 			},
-			"redirectUserToCompletePayment": function (data, uniqueDataKey) {
+			"removeDataFromDatabase": function (dbRef) {
+				var noSQLDBReference = null;
+
+				if (dbRef) {
+					noSQLDBReference = dataService.getReference(dbRef);
+					dataService.set(noSQLDBReference, null);
+				}
+			},
+			"redirectUserToCompletePayment": function (data) {
 				var redirectUrl = null;
 
-				if (data && data.redirectUrl && typeof data.redirectUrl === "string" && uniqueDataKey) {
-					//redirectUrl = data.redirectUrl + "&item_number=" + uniqueDataKey;
+				if (data && data.redirectUrl && typeof data.redirectUrl === "string") {
 					redirectUrl = data.redirectUrl + "&useraction=commit";
 
 					windowService.redirect(redirectUrl);
@@ -1659,7 +1773,8 @@ define('module/submitRegistration',["service/data", "templates/error", "service/
 				var markup = templateError.error(data);
 
 				$("#registration-form > fieldset:first-of-type").prepend(markup);
-			}
+			},
+
 		};
 
 	return publicMembers;
@@ -1694,7 +1809,72 @@ define('section/registrationForm',['module/submitRegistration'], function(submit
 		};
 	};
 });
-define('page/registration',['section/userInfo', 'section/guestInfo', 'section/registrationForm'], function (userInfo, guestInfo, registrationForm) {
+define('module/registrationDetails',['service/window', 'service/data', 'templates/registration'], function (windowService, dataService, registrationTemplates) {
+	"use strict";
+
+	var privateMembers = {
+			"firebaseRootReference": "https://shining-heat-3928.firebaseio.com/oxroast/registration/2016"
+		},
+		publicMembers = {
+			"listen": function () {
+				$(document).on("registrationDetails:load", publicMembers.loadContent);
+			},
+			"loadContent": function () {
+				var firebaseKey = windowService.getParameterByName("FIREBASEKEY"),
+					firebaseReferenceAtKey = privateMembers.firebaseRootReference + "/" + firebaseKey,
+					firebaseDataReference = dataService.getReference(firebaseReferenceAtKey);
+
+				firebaseDataReference.on("value", publicMembers.processInformation);
+			},
+			"processInformation": function(snapshot) {
+				var userRegistration = snapshot.val();
+
+				publicMembers.showDetails(userRegistration);
+			},
+			"showDetails": function(data) {
+				var markup = registrationTemplates.confirmationInformation(data);
+
+				$("#registration-details").append(markup);
+			}
+		};
+
+	return publicMembers;
+});
+define('section/confirmation',['module/registrationDetails'], function(registrationDetails) {
+	"use strict";
+
+	var privateMembers = {
+		"GLOBAL_SCOPE": ""
+	};
+
+	return function(settings) {
+		privateMembers.GLOBAL_SCOPE = settings.scope;
+
+		return {
+			"init": function () {
+				var settings = {
+					"scope": privateMembers.GLOBAL_SCOPE
+				};
+				
+				//calls bindEvents for all modules
+				
+				//addes listeners for all modules
+				registrationDetails.listen();
+			},
+			"loadContent": function () {
+				//ajax content
+				$(document).trigger("registrationDetails:load");
+			},
+			"subscribe": function () {
+				var section = this;
+				//listens for a message to call load content
+
+				$(document).on("confirmation:load", section.loadContent);
+			}
+		};
+	};
+});
+define('page/registration',['section/userInfo', 'section/guestInfo', 'section/registrationForm', 'section/confirmation'], function (userInfo, guestInfo, registrationForm, confirmation) {
 	"use strict";
 
 	var publicMembers = {
@@ -1702,33 +1882,71 @@ define('page/registration',['section/userInfo', 'section/guestInfo', 'section/re
 			$(document).on("document:ready", publicMembers.startSections);
 		},
 		"startSections": function () {
-			var userInfoSection = userInfo({
+			var userInfoSection = null,
+				guestInfoSection = null,
+				registrationFormSection = null,
+				confirmationSection = null,
+				conditionals = publicMembers.conditionals();
+
+
+			if (conditionals.hasUserInfoSection === true) {
+				userInfoSection = userInfo({
 					"scope": "#generalInfo"
-				}),
+				});
+
+				userInfoSection.init();
+				userInfoSection.subscribe();
+			}
+
+			if (conditionals.hasGuestInfoSection === true) {
 				guestInfoSection = guestInfo({
 					"scope": "#guests"
-				}),
+				});
+
+				guestInfoSection.init();
+				guestInfoSection.subscribe();
+			}
+
+
+			if (conditionals.hasRegistrationFormSection === true) {
 				registrationFormSection = registrationForm({
 					"scope": "#registration-form"
 				});
 
-			userInfoSection.init();
-			userInfoSection.subscribe();
-
-			guestInfoSection.init();
-			guestInfoSection.subscribe();
-
-			registrationFormSection.init();
-			registrationFormSection.subscribe();
-
-			if (parseInt($("#total").text()) === 0) {
-				$("form")[0].reset();
-				$("#guestList").val("{\"guest\": []}");
+				registrationFormSection.init();
+				registrationFormSection.subscribe();
 			}
 
-			//Fix for IE 9 and lower so placeholders show up.
-			$("form input").focus();
-			window.scrollTo(0, 0);
+
+			if (conditionals.hasConfirmationSection === true) {
+				confirmationSection = confirmation({
+					"scope": "#registration-details"
+				});
+
+				confirmationSection.init();
+				confirmationSection.subscribe();
+
+				$(document).trigger("confirmation:load");
+			}
+				
+			if (conditionals.hasConfirmationSection === false) {
+				if (parseInt($("#total").text()) === 0) {
+					$("form")[0].reset();
+					$("#guestList").val("{\"guest\": []}");
+				}
+
+				//Fix for IE 9 and lower so placeholders show up.
+				$("form input").focus();
+				window.scrollTo(0, 0);
+			}
+		},
+		"conditionals": function () {
+			return {
+				"hasUserInfoSection": ($("#generalInfo").length) ? true : false,
+				"hasGuestInfoSection": ($("#guests").length) ? true : false,
+				"hasRegistrationFormSection": ($("#registration-form").length) ? true : false,
+				"hasConfirmationSection": ($("#registration-details").length) ? true : false
+			}
 		}
 	};
 
