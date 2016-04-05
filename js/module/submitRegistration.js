@@ -31,6 +31,8 @@ define(["service/data", "templates/error", "service/window"], function (dataServ
 					preparedFormData = publicMembers.prepareDataForSubmission(serializedForm, privateMembers.unwantedDataFields);
 					uniqueDataKey = publicMembers.addDataToDatabase(preparedFormData, privateMembers.dbReference);
 
+					preparedFormData.FirebaseKey = uniqueDataKey //Needs tested
+
 					$.ajax({
 						type: "POST",
 		                url: formAction,
@@ -40,7 +42,8 @@ define(["service/data", "templates/error", "service/window"], function (dataServ
 						dataShowingError = (data && data.errorMessage) ? true : false;
 
 						if (dataShowingError === false) {
-		                	publicMembers.redirectUserToCompletePayment(data, uniqueDataKey);
+							publicMembers.updateDataFromDatabase({"paymentCommitted": Boolean(data.paymentCommitted), "paymentConfirmed": Boolean(data.paymentConfirmed)}, data.firebaseUrlToKey); //Needs tested
+		                	publicMembers.redirectUserToCompletePayment(data);
 		            	} else {
 		            		publicMembers.removeDataFromDatabase(privateMembers.dbReference + "/" + uniqueDataKey);
 		            		publicMembers.processError(data);
@@ -99,6 +102,15 @@ define(["service/data", "templates/error", "service/window"], function (dataServ
 				if (dbRef) {
 					noSQLDBReference = dataService.getReference(dbRef);
 					dataService.set(noSQLDBReference, null);
+				}
+			},
+			"updateDataFromDatabase": function (data, dbRef) { //Needs tested
+				var noSQLDBReference = null,
+					databaseKey = null;
+
+				if (data && dbRef) {
+					noSQLDBReference = dataService.getReference(dbRef),
+					dataService.update(noSQLDBReference, data);
 				}
 			},
 			"redirectUserToCompletePayment": function (data) {

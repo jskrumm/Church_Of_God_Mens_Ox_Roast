@@ -12,6 +12,9 @@ define(["firebase"], function (Firebase) {
 
 			return uniqueIDPostRef.key();
 		},
+		"update": function (rootRef, data) {
+			rootRef.update(data);
+		},
 		"serializeToObject": function (form) {
 			var serializedObject = {},
 				serializedArray = $(form).serializeArray(),

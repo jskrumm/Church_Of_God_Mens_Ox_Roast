@@ -1585,6 +1585,9 @@ define('service/data',["firebase"], function (Firebase) {
 
 			return uniqueIDPostRef.key();
 		},
+		"update": function (rootRef, data) {
+			rootRef.update(data);
+		},
 		"serializeToObject": function (form) {
 			var serializedObject = {},
 				serializedArray = $(form).serializeArray(),
@@ -1686,6 +1689,8 @@ define('module/submitRegistration',["service/data", "templates/error", "service/
 					preparedFormData = publicMembers.prepareDataForSubmission(serializedForm, privateMembers.unwantedDataFields);
 					uniqueDataKey = publicMembers.addDataToDatabase(preparedFormData, privateMembers.dbReference);
 
+					preparedFormData.FirebaseKey = uniqueDataKey //Needs tested
+
 					$.ajax({
 						type: "POST",
 		                url: formAction,
@@ -1695,7 +1700,8 @@ define('module/submitRegistration',["service/data", "templates/error", "service/
 						dataShowingError = (data && data.errorMessage) ? true : false;
 
 						if (dataShowingError === false) {
-		                	publicMembers.redirectUserToCompletePayment(data, uniqueDataKey);
+							publicMembers.updateDataFromDatabase({"paymentCommitted": Boolean(data.paymentCommitted), "paymentConfirmed": Boolean(data.paymentConfirmed)}, data.firebaseUrlToKey); //Needs tested
+		                	publicMembers.redirectUserToCompletePayment(data);
 		            	} else {
 		            		publicMembers.removeDataFromDatabase(privateMembers.dbReference + "/" + uniqueDataKey);
 		            		publicMembers.processError(data);
@@ -1756,6 +1762,15 @@ define('module/submitRegistration',["service/data", "templates/error", "service/
 					dataService.set(noSQLDBReference, null);
 				}
 			},
+			"updateDataFromDatabase": function (data, dbRef) { //Needs tested
+				var noSQLDBReference = null,
+					databaseKey = null;
+
+				if (data && dbRef) {
+					noSQLDBReference = dataService.getReference(dbRef),
+					dataService.update(noSQLDBReference, data);
+				}
+			},
 			"redirectUserToCompletePayment": function (data) {
 				var redirectUrl = null;
 
@@ -1809,20 +1824,33 @@ define('section/registrationForm',['module/submitRegistration'], function(submit
 		};
 	};
 });
-define('module/registrationDetails',['service/window', 'service/data', 'templates/registration'], function (windowService, dataService, registrationTemplates) {
+define('module/registrationDetails',['lodash','service/window', 'service/data', 'templates/registration'], function (_, windowService, dataService, registrationTemplates) {
 	"use strict";
 
 	var privateMembers = {
-			"firebaseRootReference": "https://shining-heat-3928.firebaseio.com/oxroast/registration/2016"
+			"firebaseRootReference": "https://shining-heat-3928.firebaseio.com/oxroast/registration/2016",
+			"allPassTypes": [
+				{"name": "2 Day Pass", "type": "2"},
+				{"name": "1 Day Pass", "type": "1"},
+				{"name": "12 and under", "type": "0"},
+				{"name": "Golfing", "type": "G"},
+				{"name": "Fishing", "type": "F"},
+				{"name": "Paintball", "type": "P"}
+			]
 		},
 		publicMembers = {
 			"listen": function () {
 				$(document).on("registrationDetails:load", publicMembers.loadContent);
 			},
 			"loadContent": function () {
-				var firebaseKey = windowService.getParameterByName("FIREBASEKEY"),
+				var firebaseKey = windowService.getParameterByName("confirmationId"),
 					firebaseReferenceAtKey = privateMembers.firebaseRootReference + "/" + firebaseKey,
-					firebaseDataReference = dataService.getReference(firebaseReferenceAtKey);
+					firebaseDataReference = dataService.getReference(firebaseReferenceAtKey),
+					successfulPayment = ($(".success").length) ? true : false;
+
+				firebaseDataReference.update({ //Needs test and needs to use the data service
+					"paymentConfirmed": successfulPayment
+				});
 
 				firebaseDataReference.on("value", publicMembers.processInformation);
 			},
@@ -1832,7 +1860,31 @@ define('module/registrationDetails',['service/window', 'service/data', 'template
 				publicMembers.showDetails(userRegistration);
 			},
 			"showDetails": function(data) {
-				var markup = registrationTemplates.confirmationInformation(data);
+				var firebaseKey = windowService.getParameterByName("confirmationId"), //Needs tested
+					markup = null,
+					eventPassTypeObject = _.find(privateMembers.allPassTypes, "type", data.eventPass || ""), //Needs tested
+					golfPassTypeObject = _.find(privateMembers.allPassTypes, "type", data.golfPass || ""), //Needs tested
+					fishingPassTypeObject = _.find(privateMembers.allPassTypes, "type", data.fishingPass || ""), //Needs tested
+					paintballPassTypeObject = _.find(privateMembers.allPassTypes, "type", data.paintballPass || ""); //Needs tested
+
+				data.confirmationId = firebaseKey; //Needs tested
+
+				console.log(data.fishingPass);
+				console.log(_.find(privateMembers.allPassTypes, "type", ""));
+				console.log(data.paintballPass);
+				console.log(_.find(privateMembers.allPassTypes, "type", data.paintballPass));
+
+				data.eventPass = _.result(eventPassTypeObject, "name"); //Needs tested
+				data.golfPass = _.result(golfPassTypeObject, "name"); //Needs tested
+				data.fishingPass = _.result(fishingPassTypeObject, "name"); //Needs tested
+				data.paintballPass = _.result(paintballPassTypeObject, "name"); //Needs tested
+				data.activities = [
+					data.golfPass,
+					data.fishingPass,
+					data.paintballPass
+				]; //Needs tested
+
+				markup = registrationTemplates.confirmationInformation(data);
 
 				$("#registration-details").append(markup);
 			}

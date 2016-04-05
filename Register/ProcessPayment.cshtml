@@ -14,7 +14,7 @@
 		Dictionary<string, string> jsonDataObject = new Dictionary<string, string>();
 		string encodeJSON = null;
 		object decodedJSON = null;
-		string firebasekey = Request["CUSTOM"];
+		string firebasekey = Request["FirebaseKey"];
 
 		 //Create new name/value collection from form data and put it in a variable
         NameValueCollection postedForm = new NameValueCollection(Request.Form);
@@ -45,7 +45,7 @@
             postedForm.Add("METHOD", App.ExpressCheckoutMethod);
             postedForm.Add("PAYMENTREQUEST_0_PAYMENTACTION", App.ExpressCheckoutPaymentAction);
             postedForm.Add("PAYMENTREQUEST_0_CURRENCYCODE", App.ExpressCheckoutCurrencyCode);
-            postedForm.Add("RETURNURL", App.ExpressCheckoutReturnUrl + "?FIREBASEKEY=" + firebasekey); //We shouldn't send the key this way, we should send this to paypal and then they tell us!
+            postedForm.Add("RETURNURL", App.ExpressCheckoutReturnUrl + "?confirmationId=" + firebasekey); //We shouldn't send the key this way, we should send this to paypal and then they tell us!
             postedForm.Add("CANCELURL", App.ExpressCheckoutCancelUrl);
             ///postedForm.Add("LOGOIMG", App.LogoImageUrl);
 
@@ -72,7 +72,7 @@
                 string token = responseObj.Get("TOKEN");
                 string expressCheckoutCmd = "_express-checkout";
             
-            	jsonDataObject.Add("firebaseUrl", App.FirebaseURL);
+            	jsonDataObject.Add("firebaseUrlToKey", App.FirebaseURL + "/" + firebasekey);
             	jsonDataObject.Add("paymentCommitted", "true");
             	jsonDataObject.Add("paymentConfirmed", "false");
             	jsonDataObject.Add("redirectUrl", App.ProdPayAuthUrl + "?cmd=" + expressCheckoutCmd + "&token=" + token);

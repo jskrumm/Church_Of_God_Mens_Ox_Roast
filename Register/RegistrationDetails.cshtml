@@ -15,7 +15,6 @@
 
     string token = Request["token"];
     string payerId = Request["PayerId"];
-   @*  string confirmID = Request["FIREBASEKEY"]; *@
 
     //build action
     var strGetExpressCheckoutDetails = new StringBuilder();
@@ -42,9 +41,7 @@
     if (getDetatailsResponseObj.Get("ACK") == "Success") {
         Regex regexObj = new Regex(@"[^\d]");
 
-        token = getDetatailsResponseObj.Get("TOKEN");  
-        @* var email = getDetatailsResponseObj.Get("EMAIL"); *@
-       @*  var confirmID = regexObj.Replace(token, ""); *@
+        token = getDetatailsResponseObj.Get("TOKEN");
         gotExpressCheckoutDetails = true;
        
 
