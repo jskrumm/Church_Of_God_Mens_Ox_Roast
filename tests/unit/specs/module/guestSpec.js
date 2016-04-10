@@ -86,7 +86,7 @@ define(['lodash', 'templates/registration', 'module/guest', 'service/register'],
 
 					describe('tries to see if we know the pass type', function() {
 						beforeEach(function() {
-							spyOn(_, "find")
+							spyOn(_, "find");
 							module.getValue(fakeJQueryRaidoInput);
 						});
 

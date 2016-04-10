@@ -129,6 +129,40 @@ define(["service/data", "firebase"], function (service, Firebase) {
 				});
 			});
 
+			describe('update', function() {
+				it('that is defined', function() {
+					expect(service.update).toBeDefined();
+				});
+
+				it('that is a function', function() {
+					expect(service.update).toEqual(jasmine.any(Function));
+				});
+
+				describe('that when it is called', function() {
+					var rootRef = new window.Firebase(reference),
+						expectedDataToSet = {
+							"paymentConfirmed": true
+						};
+
+					beforeEach(function() {
+						spyOn(rootRef, "update");
+
+						service.update(rootRef, expectedDataToSet);
+					});
+
+
+					describe('updates existing data to a reference given', function() {
+						it('by calling the Firebase "update" method', function() {
+							expect(rootRef.update).toHaveBeenCalled();
+						});
+
+						it('by calling the Firebase "update" method with the supplied data to update', function() {
+							expect(rootRef.update).toHaveBeenCalledWith(expectedDataToSet);
+						});
+					});
+				});
+			});
+
 			describe('serializeToObject', function() {
 				it('that is defined', function() {
 					expect(service.serializeToObject).toBeDefined();

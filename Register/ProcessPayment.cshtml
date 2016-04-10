@@ -78,7 +78,7 @@
             	jsonDataObject.Add("redirectUrl", App.ProdPayAuthUrl + "?cmd=" + expressCheckoutCmd + "&token=" + token);
 
             } else { //If the response from PayPal is not successful
-            	jsonDataObject.Add("error", App.CantConnectToPayPal);
+            	jsonDataObject.Add("errorMessage", App.CantConnectToPayPal);
             }
 
             encodeJSON = Json.Encode(jsonDataObject);
@@ -86,7 +86,7 @@
 
             Json.Write(decodedJSON, Response.Output);
         } else {
-        	jsonDataObject.Add("error", App.MissingInformation);
+        	jsonDataObject.Add("errorMessage", App.MissingInformation);
 			
         	encodeJSON = Json.Encode(jsonDataObject);
 			decodedJSON = Json.Decode(encodeJSON);

@@ -31,7 +31,7 @@ define(["service/data", "templates/error", "service/window"], function (dataServ
 					preparedFormData = publicMembers.prepareDataForSubmission(serializedForm, privateMembers.unwantedDataFields);
 					uniqueDataKey = publicMembers.addDataToDatabase(preparedFormData, privateMembers.dbReference);
 
-					preparedFormData.FirebaseKey = uniqueDataKey //Needs tested
+					preparedFormData.FirebaseKey = uniqueDataKey
 
 					$.ajax({
 						type: "POST",
@@ -42,7 +42,7 @@ define(["service/data", "templates/error", "service/window"], function (dataServ
 						dataShowingError = (data && data.errorMessage) ? true : false;
 
 						if (dataShowingError === false) {
-							publicMembers.updateDataFromDatabase({"paymentCommitted": Boolean(data.paymentCommitted), "paymentConfirmed": Boolean(data.paymentConfirmed)}, data.firebaseUrlToKey); //Needs tested
+							publicMembers.updateDataFromDatabase({"paymentCommitted": Boolean(data.paymentCommitted), "paymentConfirmed": Boolean(data.paymentConfirmed)}, data.firebaseUrlToKey);
 		                	publicMembers.redirectUserToCompletePayment(data);
 		            	} else {
 		            		publicMembers.removeDataFromDatabase(privateMembers.dbReference + "/" + uniqueDataKey);
@@ -104,7 +104,7 @@ define(["service/data", "templates/error", "service/window"], function (dataServ
 					dataService.set(noSQLDBReference, null);
 				}
 			},
-			"updateDataFromDatabase": function (data, dbRef) { //Needs tested
+			"updateDataFromDatabase": function (data, dbRef) {
 				var noSQLDBReference = null,
 					databaseKey = null;
 
@@ -130,8 +130,7 @@ define(["service/data", "templates/error", "service/window"], function (dataServ
 				var markup = templateError.error(data);
 
 				$("#registration-form > fieldset:first-of-type").prepend(markup);
-			},
-
+			}
 		};
 
 	return publicMembers;

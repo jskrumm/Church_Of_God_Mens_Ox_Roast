@@ -71,7 +71,7 @@ define(["module/submitRegistration", "service/data", "templates/error", "service
 							"guests": []
 						},
 						fakeSuccessAjaxResponse = {
-							"firebaseUrl": "",
+							"firebaseUrlToKey": "",
 			            	"paymentCommitted": "true",
 			            	"paymentConfirmed": "false",
 			            	"redirectUrl": ""
@@ -92,6 +92,7 @@ define(["module/submitRegistration", "service/data", "templates/error", "service
 						spyOn(module, "addDataToDatabase").and.returnValue(unqiueKey);
 						spyOn(module, "redirectUserToCompletePayment");
 						spyOn(module, "removeDataFromDatabase");
+						spyOn(module, "updateDataFromDatabase");
 
 					});
 
@@ -187,13 +188,23 @@ define(["module/submitRegistration", "service/data", "templates/error", "service
 										module.submitForm(event);
 									});
 
+									describe('update the database with information on the users payment status', function() {
+										it('using the modules updateDataFromDatabase method', function() {
+											expect(module.updateDataFromDatabase).toHaveBeenCalled();
+										});
+
+										it('using the modules updateDataFromDatabase method and providing it the correct information to update and a database reference url', function() {
+											expect(module.updateDataFromDatabase).toHaveBeenCalledWith({"paymentCommitted": Boolean(fakeSuccessAjaxResponse.paymentCommitted), "paymentConfirmed": Boolean(fakeSuccessAjaxResponse.paymentConfirmed)}, fakeSuccessAjaxResponse.firebaseUrlToKey);
+										});
+									});
+
 									describe('redirect the user to complete payment', function() {
 										it('using the modules method redirectUserToCompletePayment', function() {
 											expect(module.redirectUserToCompletePayment).toHaveBeenCalled();
 										});
 
-										it('using the modules method redirectUserToCompletePayment and providing the data return from the response and the unqiueKey from Firebase', function() {
-											expect(module.redirectUserToCompletePayment).toHaveBeenCalledWith(fakeSuccessAjaxResponse, unqiueKey);
+										it('using the modules method redirectUserToCompletePayment and providing the data return from the response', function() {
+											expect(module.redirectUserToCompletePayment).toHaveBeenCalledWith(fakeSuccessAjaxResponse);
 										});
 									});
 
@@ -540,6 +551,87 @@ define(["module/submitRegistration", "service/data", "templates/error", "service
 					});
 				});
 			});
+
+			describe('updateDataFromDatabase', function() {
+				it('that is defined', function() {
+					expect(module.updateDataFromDatabase).toBeDefined();
+				});
+
+				it('that is a function', function() {
+					expect(module.updateDataFromDatabase).toEqual(jasmine.any(Function));
+				});
+
+				describe('that when called', function() {
+					var reference = "https://shining-heat-3928.firebaseio.com/oxroast/registration/2016",
+						rootRef = new window.Firebase(reference),
+						dataToUpdate = {
+							"lastname": "test",
+							"firstname": "test"
+						},
+						returnValue = null,
+						unqiueKey = "KDIE83KD";
+
+					beforeEach(function() {
+						spyOn(dataService, "getReference").and.returnValue(rootRef);
+						spyOn(dataService, "update");
+					});
+
+					describe('if the function is given the data to update to the db and the db reference', function() {
+						beforeEach(function() {
+							returnValue = module.updateDataFromDatabase(dataToUpdate, reference);
+						});
+
+						describe('then we get a reference to the Firebase registration data', function() {
+							it('using the data service method getReference', function() {
+								expect(dataService.getReference).toHaveBeenCalled();
+							});
+
+							it('using the data service method getReference and giving it the Firbase url', function() {
+								expect(dataService.getReference).toHaveBeenCalledWith(reference);
+							});
+						});
+
+						describe('then we use the Firbase reference to update data to the no SQL DB', function() {
+							it('using the data service method set', function() {
+								expect(dataService.update).toHaveBeenCalled();
+							});
+
+							it('using the data service method update and giving it the Firbase reference and data to update to Firebase', function() {
+								expect(dataService.update).toHaveBeenCalledWith(rootRef, dataToUpdate);
+							});
+						});
+					});
+
+					describe('if the function isnt given any data', function() {
+						beforeEach(function() {
+							returnValue = module.updateDataFromDatabase();
+						});
+
+						it('then we dont get a reference to the Firebase registration data', function() {
+							expect(dataService.getReference).not.toHaveBeenCalled();
+						});
+
+						it('then we dont use the Firebase reference to update data to the no SQL DB', function() {
+							expect(dataService.update).not.toHaveBeenCalled();
+						});
+					});
+
+					describe('if the function isnt given a db reference', function() {
+						beforeEach(function() {
+							returnValue = module.updateDataFromDatabase(dataToUpdate);
+						});
+
+						it('then we dont get a reference to the Firebase registration data', function() {
+							expect(dataService.getReference).not.toHaveBeenCalled();
+						});
+
+						it('then we dont use the Firebase reference to update data to the no SQL DB', function() {
+							expect(dataService.update).not.toHaveBeenCalled();
+						});
+					});
+				});
+			});
+
 
 			describe('removeDataFromDatabase', function() {
 				it('that is defined', function() {
