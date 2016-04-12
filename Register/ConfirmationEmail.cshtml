@@ -15,34 +15,65 @@
         NameValueCollection postedForm = new NameValueCollection(Request.Form);
         string encodeJSON = null;
         object decodedJSON = null;
+        string confirmationId = postedForm["confirmationId"];
+        string firstName = postedForm["firstname"];
+        string lastName = postedForm["lastname"];
+        string phoneNumber = postedForm["PAYMENTREQUEST_0_SHIPTOPHONENUM"];
+        string email = postedForm["EMAIL"];
+        string church = postedForm["church-atteding"];
+        string eventPass = postedForm["eventPass"];
+        var activities = Json.Decode(postedForm["activities"]);
+        //string[] activities = Request.Form.GetValues("activities");
 
         if (!postedForm["confirmationId"].IsEmpty()) {
             try {
                 var emailBody = new StringBuilder();
 
-                //Send user email and copy email to info@ohiomensoxroast.org
                 emailBody.Append("<html>");
                 emailBody.Append("<body style='margin: 0'>");
                 emailBody.Append("<h3>Purchase Confirmation Information</h3>");
                 emailBody.Append("<table>");
-                emailBody.Append("<tr><td>Confirmation #:</td><td>" + postedForm["confirmationId"] + "</td></tr>"); //This should probably be the FirebaseKey
+                emailBody.Append("<tr><td>Confirmation #:</td><td>" + confirmationId + "</td></tr>");
                 emailBody.Append("<tr><td>Confirmation Date:</td><td>" + DateTime.Now.ToString("G") + "</td></tr>");
                 emailBody.Append("<tr><td></td></tr>");
                 emailBody.Append("<h3>Details</h3>");
-                emailBody.Append("<tr><td>First Name:</td><td>" + postedForm["firstname"] + "</td></tr>");
-                emailBody.Append("<tr><td>Last Name:</td><td>" + postedForm["lastname"] + "</td></tr>");
-                emailBody.Append("<tr><td>Phone Number:</td><td>" + postedForm["PAYMENTREQUEST_0_SHIPTOPHONENUM"] + "</td></tr>");
-                emailBody.Append("<tr><td>Email:</td><td>" + postedForm["EMAIL"] + "</td></tr>");
+                emailBody.Append("<tr><td>First Name:</td><td>" + firstName + "</td></tr>");
+                emailBody.Append("<tr><td>Last Name:</td><td>" + lastName + "</td></tr>");
+                emailBody.Append("<tr><td>Phone Number:</td><td>" + phoneNumber + "</td></tr>");
+                emailBody.Append("<tr><td>Email:</td><td>" + email + "</td></tr>");
                 
-                if (postedForm["church-atteding"] != null) {
-                	emailBody.Append("<tr><td>Church:</td><td>" + postedForm["church-atteding"] + "</td></tr>");
+                if (church != null) {
+                	emailBody.Append("<tr><td>Church:</td><td>" + church + "</td></tr>");
                 }
 
-                emailBody.Append("<tr><td>Event Pass:</td><td>" + postedForm["eventPass"] + "</td></tr>");
+                emailBody.Append("<tr><td>Event Pass:</td><td>" + eventPass + "</td></tr>");
 
-                if (postedForm["golfPass"] != null || postedForm["fishingPass"] != null || postedForm["paintballPass"] != null) {
-                	emailBody.Append("<tr><td>Activity Passes:</td><td>" + postedForm["golfPass"] + ", " + postedForm["fishingPass"] + ", " + postedForm["paintballPass"] + "</td></tr>");
-                }
+                //if (activities.Length > 0) {
+                //    emailBody.Append("<tr><td>Activity Passes:</td><td></td></tr>");
+                    foreach (var activitiy in activities) {
+                        emailBody.Append("<tr><td></td><td>" + activitiy + "</td></tr>");
+                    }	
+                //}
+
+                //if (postedForm["guests"] != null || postedForm["guests"].Length > 0) {
+                //        emailBody.Append("<tr><td colspan='2'><h4>Guest Information</h4></td></tr>");
+                //        emailBody.Append("<tr><td colspan='2'>");
+                //        emailBody.Append("<table>");
+                //        emailBody.Append("<tr><th>First Name</th><th>Last Name</th><th>Event Pass</th><th>Activities</th><th>Guest Cost</th></tr>");
+
+                //        foreach (var guest in postedForm["guests"]) {
+                //            emailBody.Append("<tr>");
+                //            emailBody.Append("<td>" + guest.firstname + "</td>");
+                //            emailBody.Append("<td>" + guest.lastname + "</td>");
+                //            emailBody.Append("<td>" + guest.eventPassType + "</td>");
+                //            emailBody.Append("<td>" + guest.activities + "</td>");
+                //            emailBody.Append("<td>$" + guest.totalCost + "</td>");
+                //            emailBody.Append("</tr>");
+                //        }
+
+                //        emailBody.Append("</table>");
+                //        emailBody.Append("</td></tr>");
+               //}
 
                 emailBody.Append("<tr><td>Grand Total:</td><td>" + postedForm["PAYMENTREQUEST_0_AMT"] + "</td></tr>");
                 emailBody.Append("</table>");
@@ -66,6 +97,7 @@
             	jsonDataObject.Add("errorMessage", App.UnableToSendEmail);
             }
 
+            //jsonDataObject.Add("blah",  @activities);
             encodeJSON = Json.Encode(jsonDataObject);
             decodedJSON = Json.Decode(encodeJSON);
 

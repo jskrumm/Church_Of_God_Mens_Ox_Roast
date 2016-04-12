@@ -36,20 +36,21 @@ define(['lodash','service/window', 'service/data', 'templates/registration', 'te
 
 				publicMembers.showDetails(userRegistration);
 
-				$.ajax({
-					type: "POST",
-	                url: "/Register/ConfirmationEmail",
-	                data: userRegistration,
-	                dataType: "json"
-				}).done(function(data) {
-					if (data.status === "failed") {
-						publicMembers.processError(data);
-					}
-				}).fail(function() {
-					publicMembers.processError({
-						"errorMessage": privateMembers.error.unableToSendEmail
-					});
-				});
+				//DOESNT WORK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				// $.ajax({
+				// 	type: "POST",
+	   //              url: "/Register/ConfirmationEmail",
+	   //              data: JSON.stringify(userRegistration),
+	   //              dataType: "json"
+				// }).done(function(data) {
+				// 	if (data.status === "failed") {
+				// 		publicMembers.processError(data);
+				// 	}
+				// }).fail(function() {
+				// 	publicMembers.processError({
+				// 		"errorMessage": privateMembers.error.unableToSendEmail
+				// 	});
+				// });
 			},
 			"showDetails": function(data) {
 				var firebaseKey = windowService.getParameterByName("confirmationId"),
@@ -82,7 +83,7 @@ define(['lodash','service/window', 'service/data', 'templates/registration', 'te
 			},
 			"getPassType": function(passValue) {
 				var value = "",
-					passTypeObject = _.find(privateMembers.allPassTypes, "type", passValue),
+					passTypeObject = (passValue) ? _.find(privateMembers.allPassTypes, "type", passValue) : undefined, //Needs tested
 					isPassTypeObjectUndefined = _.isUndefined(passTypeObject),
 					isPasstypeObjectAnObject = _.isObject(passTypeObject);
 

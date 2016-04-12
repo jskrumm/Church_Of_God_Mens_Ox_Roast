@@ -203,7 +203,7 @@ define(["lodash", "module/registrationDetails", "service/window", "service/data"
 						});
 					});
 
-					describe('make an ajax call to the server', function() {
+					xdescribe('make an ajax call to the server', function() {
 						it('using the jQuery ajax method', function() {
 							module.processInformation({"val": firebaseSnapshotValueSpy});
 
@@ -449,7 +449,7 @@ define(["lodash", "module/registrationDetails", "service/window", "service/data"
 						beforeEach(function() {
 							spyOn(_, "find").and.returnValue({});
 							spyOn(_, "isObject");
-							module.getPassType();
+							module.getPassType("2");
 						});
 
 						it('using the lodash isObject function', function() {
