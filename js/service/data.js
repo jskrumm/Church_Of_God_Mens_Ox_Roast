@@ -2,6 +2,16 @@ define(["firebase"], function (Firebase) {
 	return {
 		"getReference": function (reference) {
 			var rootRef = new window.Firebase(reference);
+		//		authData = rootRef.getAuth();
+
+		//	if (authData === null) {
+		//		this.authAnonymously(rootRef).then(function(value){
+		//			console.log(value);
+		//		});
+		//	} else {
+		//		return rootRef;
+		//		console.log("Authenticated user with uid:", authData.uid);
+		//	}
 
 			return rootRef;
 		},
@@ -36,6 +46,19 @@ define(["firebase"], function (Firebase) {
 			}
 
 			return serializedObject;
+		},
+		"authAnonymously": function(rootRef) {
+			var deferred = $.Deferred();
+
+			rootRef.authAnonymously(function(error, authData) {
+				if (error) {
+				   deferred.reject(error);
+				} else {
+				 	deferred.resolve(authData);
+				}
+			});
+
+			return deferred.promise();
 		}
 	};
 });

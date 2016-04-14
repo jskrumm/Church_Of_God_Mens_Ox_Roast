@@ -1575,6 +1575,16 @@ define('service/data',["firebase"], function (Firebase) {
 	return {
 		"getReference": function (reference) {
 			var rootRef = new window.Firebase(reference);
+		//		authData = rootRef.getAuth();
+
+		//	if (authData === null) {
+		//		this.authAnonymously(rootRef).then(function(value){
+		//			console.log(value);
+		//		});
+		//	} else {
+		//		return rootRef;
+		//		console.log("Authenticated user with uid:", authData.uid);
+		//	}
 
 			return rootRef;
 		},
@@ -1609,6 +1619,19 @@ define('service/data',["firebase"], function (Firebase) {
 			}
 
 			return serializedObject;
+		},
+		"authAnonymously": function(rootRef) {
+			var deferred = $.Deferred();
+
+			rootRef.authAnonymously(function(error, authData) {
+				if (error) {
+				   deferred.reject(error);
+				} else {
+				 	deferred.resolve(authData);
+				}
+			});
+
+			return deferred.promise();
 		}
 	};
 });
@@ -1681,7 +1704,9 @@ define('module/submitRegistration',["service/data", "templates/error", "service/
 					serializedForm = null,
 					preparedFormData = null,
 					uniqueDataKey = null,
-					dataShowingError = null;
+					dataShowingError = null,
+					paymentCommitted = false,
+					paymentConfirmed = false;
 
 				if (isFormValid === true) {
 					formAction = form.attr("action");
@@ -1700,7 +1725,10 @@ define('module/submitRegistration',["service/data", "templates/error", "service/
 						dataShowingError = (data && data.errorMessage) ? true : false;
 
 						if (dataShowingError === false) {
-							publicMembers.updateDataFromDatabase({"paymentCommitted": Boolean(data.paymentCommitted), "paymentConfirmed": Boolean(data.paymentConfirmed)}, data.firebaseUrlToKey);
+							paymentCommitted = (data.paymentCommitted === "true") ? true : false; //Needs Tested
+							paymentConfirmed = (data.paymentConfirmed === "true") ? true : false; //Needs Tested
+
+							publicMembers.updateDataFromDatabase({"paymentCommitted": paymentCommitted, "paymentConfirmed": paymentConfirmed}, data.firebaseUrlToKey);
 		                	publicMembers.redirectUserToCompletePayment(data);
 		            	} else {
 		            		publicMembers.removeDataFromDatabase(privateMembers.dbReference + "/" + uniqueDataKey);

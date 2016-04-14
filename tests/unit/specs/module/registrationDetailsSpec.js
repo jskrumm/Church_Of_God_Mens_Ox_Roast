@@ -100,7 +100,7 @@ define(["lodash", "module/registrationDetails", "service/window", "service/data"
 
 				describe('that when called', function() {
 					var firebaseKey = "-KESj6x4Hcgol7Tjc6Wv",
-						reference = "https://shining-heat-3928.firebaseio.com/oxroast/registration/2016/" + firebaseKey,
+						reference = "https://ohio-mens-ox-roast.firebaseio.com/oxroast/registration/2016/" + firebaseKey,
 						rootRef = new window.Firebase(reference),
 						firebaseOnSpy = null;
 

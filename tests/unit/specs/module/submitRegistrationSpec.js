@@ -562,7 +562,7 @@ define(["module/submitRegistration", "service/data", "templates/error", "service
 				});
 
 				describe('that when called', function() {
-					var reference = "https://shining-heat-3928.firebaseio.com/oxroast/registration/2016",
+					var reference = "https://ohio-mens-ox-roast.firebaseio.com/oxroast/registration/2016",
 						rootRef = new window.Firebase(reference),
 						dataToUpdate = {
 							"lastname": "test",

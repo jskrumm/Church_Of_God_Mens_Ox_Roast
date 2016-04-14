@@ -2,7 +2,7 @@ define(['lodash','service/window', 'service/data', 'templates/registration', 'te
 	"use strict";
 
 	var privateMembers = {
-			"firebaseRootReference": "https://shining-heat-3928.firebaseio.com/oxroast/registration/2016",
+			"firebaseRootReference": "https://ohio-mens-ox-roast.firebaseio.com/oxroast/registration/2016",
 			"allPassTypes": [
 				{"name": "2 Day Pass", "type": "2"},
 				{"name": "1 Day Pass", "type": "1"},

@@ -8,7 +8,7 @@ define(["service/data", "templates/error", "service/window"], function (dataServ
 				"cantConnectToPayPal": "Sorry, we are having some trouble communicating to PayPal and can not complete your registration. We would love for you to attend this years Ohio Men's Ox Roast And Retreat, so please try again later or contact us at info@ohiomensoxroast.org and we can do your registration for you."
 			},
 			"unwantedDataFields": ["guest_firstname", "guest_lastname", "eventGuestPass"],
-			"dbReference": "https://shining-heat-3928.firebaseio.com/oxroast/registration/2016"
+			"dbReference": "https://ohio-mens-ox-roast.firebaseio.com/oxroast/registration/2016"
 		},
 		publicMembers = {
 			"bindEvents": function (settings) {
@@ -23,7 +23,9 @@ define(["service/data", "templates/error", "service/window"], function (dataServ
 					serializedForm = null,
 					preparedFormData = null,
 					uniqueDataKey = null,
-					dataShowingError = null;
+					dataShowingError = null,
+					paymentCommitted = false,
+					paymentConfirmed = false;
 
 				if (isFormValid === true) {
 					formAction = form.attr("action");
@@ -42,7 +44,10 @@ define(["service/data", "templates/error", "service/window"], function (dataServ
 						dataShowingError = (data && data.errorMessage) ? true : false;
 
 						if (dataShowingError === false) {
-							publicMembers.updateDataFromDatabase({"paymentCommitted": Boolean(data.paymentCommitted), "paymentConfirmed": Boolean(data.paymentConfirmed)}, data.firebaseUrlToKey);
+							paymentCommitted = (data.paymentCommitted === "true") ? true : false; //Needs Tested
+							paymentConfirmed = (data.paymentConfirmed === "true") ? true : false; //Needs Tested
+
+							publicMembers.updateDataFromDatabase({"paymentCommitted": paymentCommitted, "paymentConfirmed": paymentConfirmed}, data.firebaseUrlToKey);
 		                	publicMembers.redirectUserToCompletePayment(data);
 		            	} else {
 		            		publicMembers.removeDataFromDatabase(privateMembers.dbReference + "/" + uniqueDataKey);
