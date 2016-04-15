@@ -159,7 +159,7 @@ define(["module/submitRegistration", "service/data", "templates/error", "service
 							});
 
 							it('using the modules method addDataToDatabase and providing it the preparedData and the firebase url', function() {
-								expect(module.addDataToDatabase).toHaveBeenCalledWith(preparedData, "https://shining-heat-3928.firebaseio.com/oxroast/registration/2016");		
+								expect(module.addDataToDatabase).toHaveBeenCalledWith(preparedData, "https://ohio-mens-ox-roast.firebaseio.com/oxroast/registration/2016");		
 							});	
 						});
 
@@ -194,7 +194,7 @@ define(["module/submitRegistration", "service/data", "templates/error", "service
 										});
 
 										it('using the modules updateDataFromDatabase method and providing it the correct information to update and a database reference url', function() {
-											expect(module.updateDataFromDatabase).toHaveBeenCalledWith({"paymentCommitted": Boolean(fakeSuccessAjaxResponse.paymentCommitted), "paymentConfirmed": Boolean(fakeSuccessAjaxResponse.paymentConfirmed)}, fakeSuccessAjaxResponse.firebaseUrlToKey);
+											expect(module.updateDataFromDatabase).toHaveBeenCalledWith({"paymentCommitted": true, "paymentConfirmed": false}, fakeSuccessAjaxResponse.firebaseUrlToKey);
 										});
 									});
 
@@ -230,7 +230,7 @@ define(["module/submitRegistration", "service/data", "templates/error", "service
 										});
 
 										it('using the modules method removeDataFromDatabase and proving it the datbase reference that contains the unqiueKey to remove', function() {
-											expect(module.removeDataFromDatabase).toHaveBeenCalledWith("https://shining-heat-3928.firebaseio.com/oxroast/registration/2016" + "/" + unqiueKey);
+											expect(module.removeDataFromDatabase).toHaveBeenCalledWith("https://ohio-mens-ox-roast.firebaseio.com/oxroast/registration/2016" + "/" + unqiueKey);
 										});
 									});
 
@@ -259,7 +259,7 @@ define(["module/submitRegistration", "service/data", "templates/error", "service
 									});
 
 									it('using the modules method removeDataFromDatabase and proving it the datbase reference that contains the unqiueKey to remove', function() {
-										expect(module.removeDataFromDatabase).toHaveBeenCalledWith("https://shining-heat-3928.firebaseio.com/oxroast/registration/2016" + "/" + unqiueKey);
+										expect(module.removeDataFromDatabase).toHaveBeenCalledWith("https://ohio-mens-ox-roast.firebaseio.com/oxroast/registration/2016" + "/" + unqiueKey);
 									});
 								});
 
@@ -435,7 +435,7 @@ define(["module/submitRegistration", "service/data", "templates/error", "service
 				});
 
 				describe('that when called', function() {
-					var reference = "https://shining-heat-3928.firebaseio.com/oxroast/registration/2016",
+					var reference = "https://ohio-mens-ox-roast.firebaseio.com/oxroast/registration/2016",
 						rootRef = new window.Firebase(reference),
 						data = {
 							"PAYMENTREQUEST_0_AMT": "325",
@@ -643,7 +643,7 @@ define(["module/submitRegistration", "service/data", "templates/error", "service
 				});
 
 				describe('that when called', function() {
-					var reference = "https://shining-heat-3928.firebaseio.com/oxroast/registration/2016",
+					var reference = "https://ohio-mens-ox-roast.firebaseio.com/oxroast/registration/2016",
 						rootRef = new window.Firebase(reference),
 						unqiueKey = "KDIE83KD",
 						givenReference = reference + "/" + unqiueKey;

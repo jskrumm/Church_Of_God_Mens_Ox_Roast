@@ -47,6 +47,7 @@ define('module/registerGuest',[],function () {
 		"showGuestInputs": function () {
 			$("#hasGuests").val(true);
 			$("#guests").removeClass("hidden");
+			$("button, p", ".hasGuests").hide(); //Remove when hideGuestInputs works correctly.
 
 			$("#guest_firstname", "#guests").rules( "add", {
 				required: true,
@@ -73,7 +74,7 @@ define('module/registerGuest',[],function () {
 			  	}
 			});
 		},
-		"hideGuestInputs": function () {
+		"hideGuestInputs": function () { //Doesnt remove guest and reset the total
 			$("#hasGuests").val(false);
 			$("#guests").addClass("hidden");
 
@@ -1689,7 +1690,7 @@ define('module/submitRegistration',["service/data", "templates/error", "service/
 				"cantConnectToPayPal": "Sorry, we are having some trouble communicating to PayPal and can not complete your registration. We would love for you to attend this years Ohio Men's Ox Roast And Retreat, so please try again later or contact us at info@ohiomensoxroast.org and we can do your registration for you."
 			},
 			"unwantedDataFields": ["guest_firstname", "guest_lastname", "eventGuestPass"],
-			"dbReference": "https://shining-heat-3928.firebaseio.com/oxroast/registration/2016"
+			"dbReference": "https://ohio-mens-ox-roast.firebaseio.com/oxroast/registration/2016"
 		},
 		publicMembers = {
 			"bindEvents": function (settings) {
@@ -1855,7 +1856,7 @@ define('module/registrationDetails',['lodash','service/window', 'service/data', 
 	"use strict";
 
 	var privateMembers = {
-			"firebaseRootReference": "https://shining-heat-3928.firebaseio.com/oxroast/registration/2016",
+			"firebaseRootReference": "https://ohio-mens-ox-roast.firebaseio.com/oxroast/registration/2016",
 			"allPassTypes": [
 				{"name": "2 Day Pass", "type": "2"},
 				{"name": "1 Day Pass", "type": "1"},

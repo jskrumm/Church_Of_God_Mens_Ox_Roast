@@ -9,6 +9,7 @@ define(function () {
 		"showGuestInputs": function () {
 			$("#hasGuests").val(true);
 			$("#guests").removeClass("hidden");
+			$("button, p", ".hasGuests").hide(); //Remove when hideGuestInputs works correctly.
 
 			$("#guest_firstname", "#guests").rules( "add", {
 				required: true,
@@ -35,7 +36,7 @@ define(function () {
 			  	}
 			});
 		},
-		"hideGuestInputs": function () {
+		"hideGuestInputs": function () { //Doesnt remove guest and reset the total
 			$("#hasGuests").val(false);
 			$("#guests").addClass("hidden");
 
