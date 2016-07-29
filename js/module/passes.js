@@ -1,7 +1,8 @@
 define(["lodash", "service/register"], function (_, registerService) {
 	"use strict";
-
-	var publicMembers = {
+	var privateMembers = {
+		"freePasses": ["F"]
+	}, publicMembers = {
 		"bindEvents": function (settings) {
 			$(settings.scope).on("change", ".event-pass-types input[type='radio'], .activity-pass-types input[type='checkbox']", {"scope": settings.scope}, publicMembers.triggerSetTotalEvent);
 			$(settings.scope).on("setTotal", publicMembers.setTotal);
@@ -13,7 +14,7 @@ define(["lodash", "service/register"], function (_, registerService) {
 		"setTotal": function (event, target) {
 			var selectedEventPasses = $(".event-pass-types input[type='radio']:checked, .activity-pass-types input[type='checkbox']:checked", target),
 				cachedTotalTarget = $("#total"),
-				selectedEventPassPrices = _.map(selectedEventPasses, publicMembers.getPriceFromDataAttr),
+				selectedEventPassPrices = _.without(_.map(selectedEventPasses, publicMembers.getPriceFromDataAttr), undefined),
 				currentTotal = cachedTotalTarget.text() || 0,
 				grandTotal = registerService.total(selectedEventPassPrices, currentTotal);
 
@@ -23,7 +24,16 @@ define(["lodash", "service/register"], function (_, registerService) {
 			cachedTotalTarget.text(grandTotal);
 		},
 		"getPriceFromDataAttr": function (element) {
-			return $(element).attr("data-price");
+			var cachedElement = $(element),
+				elementValue = $(element).val(),
+				elementPrice = $(element).attr("data-price"),
+				eventPassIsFree = (_.indexOf(privateMembers.freePasses, elementValue) >= 0) ? true : false;
+
+			if (eventPassIsFree === true) {
+				elementPrice = undefined;
+			}
+
+			return elementPrice;
 		},
 		"deductAmount": function (event, amount) {
 			var cachedTotalTarget = $("#total"),

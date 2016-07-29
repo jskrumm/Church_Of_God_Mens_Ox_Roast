@@ -9,7 +9,8 @@ define(["lodash", "templates/registration", "service/register"], function (_, re
 				{"name": "Golfing", "type": "G"},
 				{"name": "Fishing", "type": "F"},
 				{"name": "Paintball", "type": "P"}
-			]
+			],
+			"freePasses": ["F"]
 		}, 
 		publicMembers = {
 			"bindEvents": function (settings) {
@@ -87,13 +88,22 @@ define(["lodash", "templates/registration", "service/register"], function (_, re
 			},
 			"getTotalForGuestPassesSelect": function () {
 				var selectedEventPasses = $(".event-pass-types input[type='radio']:checked, .activity-pass-types input[type='checkbox']:checked", "#guests"),
-					selectedEventPassPrices = _.map(selectedEventPasses, publicMembers.getPriceFromDataAttr),
+					selectedEventPassPrices = _.without(_.map(selectedEventPasses, publicMembers.getPriceFromDataAttr), undefined),
 					selectedEventPassPricesTotal = registerService.total(selectedEventPassPrices);
 
 				return selectedEventPassPricesTotal;
 			},
 			"getPriceFromDataAttr": function (element) {
-				return $(element).attr("data-price");
+				var cachedElement = $(element),
+					elementValue = $(element).val(),
+					elementPrice = $(element).attr("data-price"),
+					eventPassIsFree = (_.indexOf(privateMembers.freePasses, elementValue) >= 0) ? true : false;
+
+				if (eventPassIsFree === true) {
+					elementPrice = undefined;
+				}
+
+				return elementPrice;
 			}
 		};
 

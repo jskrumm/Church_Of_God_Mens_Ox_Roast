@@ -79,9 +79,23 @@ define(["lodash", "module/passes", "service/register"], function (_, module, reg
 				});
 
 				describe('that when called', function() {
+					beforeEach(function() {
+						spyOn($.fn, "val");
+						spyOn($.fn, "attr");
+						spyOn(_, "indexOf");
+					});
+					describe('gets the value on the element passed to the function', function() {
+						beforeEach(function() {
+							module.getPriceFromDataAttr(fakeJQueryObject);
+						});
+
+						it('using teh jQuery val function', function() {
+							expect($.fn.val).toHaveBeenCalled();
+						});
+					});
+
 					describe('checks for an attribute data-price is on the element passed to the function', function() {
 						beforeEach(function() {
-							spyOn($.fn, "attr");
 							module.getPriceFromDataAttr(fakeJQueryObject);
 						});
 
@@ -94,17 +108,52 @@ define(["lodash", "module/passes", "service/register"], function (_, module, reg
 						});
 					});
 
-					it('returns the data attribute value if one exits for data-price', function() {
-						returnVal = module.getPriceFromDataAttr(fakeJQueryObject);
+					describe('determines if the event pass should be free', function() {
+						beforeEach(function() {
+							$.fn.val.and.returnValue("F");
+							
+							module.getPriceFromDataAttr(fakeJQueryObject);
+						});
 
-						expect(returnVal).toEqual("55");
+						it('using the lodash indexOf function', function() {
+							expect(_.indexOf).toHaveBeenCalled();
+						});
+
+						it('using the lodash indexOf function and passing it the array of free passes and the value from the element passes to the function', function() {
+							expect(_.indexOf).toHaveBeenCalledWith(jasmine.any(Array), "F");
+						});
 					});
 
-					it('returns undefined if the data attribute data-price does not exit', function() {
-						returnVal = module.getPriceFromDataAttr($('<input type="radio" id="test" name="test" value="2"/>'));
+					describe('if the event pass is free', function() {
+						it('returns undefined', function() {
+							_.indexOf.and.returnValue(1);
 
-						expect(returnVal).toEqual(undefined);
+							returnVal = module.getPriceFromDataAttr($('<input type="radio" id="test" name="test" value="2"/>'));
+
+							expect(returnVal).toEqual(undefined);
+						});
 					});
+
+					describe('if the event pass is not free', function() {
+						beforeEach(function() {
+							_.indexOf.and.returnValue(-1);
+						});
+
+						it('returns the data attribute value if one exits for data-price', function() {
+							$.fn.attr.and.returnValue("55");
+
+							returnVal = module.getPriceFromDataAttr(fakeJQueryObject);
+
+							expect(returnVal).toEqual("55");
+						});
+
+						it('returns undefined if the data attribute data-price does not exit', function() {
+							returnVal = module.getPriceFromDataAttr($('<input type="radio" id="test" name="test" value="2"/>'));
+
+							expect(returnVal).toEqual(undefined);
+						});
+					});
+
 				});
 			});
 

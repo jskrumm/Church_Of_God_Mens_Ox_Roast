@@ -60,6 +60,9 @@
             <li>
                 If have never attended the Ohio Men's Ox Roast and Retreat and you are one of the first 60 people to register you will pay half price, but you must contact our registration manager to qualify.
             </li>
+            <li>
+                Fishing is FREE as part of this years Ohio Men's Ox Roast and Retreat!
+            </li>
         </ul>
         <p>
             If you would like to get more information bout these special offers please contact our registration manager Steve Krumm at steven.krumm@gmail.com
@@ -109,8 +112,8 @@
                     <label for="golfPass">Golf Pass - $45</label>
                 </li>
                 <li>
-                    <input type="checkbox" id="fishingPass" name="fishingPass" value="F" data-price="25" @(Request["fishingPass"] == "F" ? "checked=checked" : "")>
-                    <label for="fishingPass">Fishing Pass - $25</label>
+                    <input type="checkbox" id="fishingPass" name="fishingPass" value="F" data-price="0" @(Request["fishingPass"] == "F" ? "checked=checked" : "")>
+                    <label for="fishingPass">Fishing Pass - FREE</label>
                 </li>
                 <li>
                     <input type="checkbox" id="paintballPass" name="paintballPass" value="P" data-price="5" @(Request["paintballPass"] == "P" ? "checked=checked" : "")>
@@ -205,8 +208,8 @@
                     <label for="golfGuestPass">Golf Pass - $45</label>
                 </li>
                 <li>
-                    <input type="checkbox" id="fishingGuestPass" name="fishingGuestPass" value="F" data-price="25"/>
-                    <label for="fishingGuestPass">Fishing Pass - $25</label>
+                    <input type="checkbox" id="fishingGuestPass" name="fishingGuestPass" value="F" data-price="0"/>
+                    <label for="fishingGuestPass">Fishing Pass - FREE</label>
                 </li>
                 <li>
                     <input type="checkbox" id="paintballGuestPass" name="paintballGuestPass" value="P" data-price="5"/>
